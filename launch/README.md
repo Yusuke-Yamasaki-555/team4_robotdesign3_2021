@@ -1,0 +1,1 @@
+crane_x7_with_table.launch　は、crane_x7_gazebo/launch　からコピー。
