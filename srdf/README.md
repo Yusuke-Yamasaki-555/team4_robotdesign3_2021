@@ -1,1 +1,3 @@
 srdfは、~/catkin_ws/src/crane_x7_ros/crane_x7_moveit_config/launch/planning_context.launch　で読んでいる。名前や参照先の変更を行う場合は、そのlaunchファイルの必要箇所を書き換えること。
+
+棒を見つけられなかったときのモーションも作りたい。(首を傾げるでも良いかも？)　スライドへの反映必要。
