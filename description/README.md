@@ -1,0 +1,1 @@
+modelsは、.worldに対応しているディレクトリ~/.gazebo/models/のコピー。元の方にsdfモデルetcを適応することでgazeboにモデルが適応される。(サンプルの机や木箱と同じ)
