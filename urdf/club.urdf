@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<robot name="club">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://team4_robotdesign3_2021/urdf/model/club.dae"/>
+      </geometry>
+      <origin xyz="0.25 0 0" rpy="0 0 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://team4_robotdesign3_2021/urdf/model/club.dae"/>
+      </geometry>
+      <origin xyz="0.25 0 0" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass>1.0</mass>
+      <inertia>
+        <ixx>0.083</ixx>
+        <ixy>0.0</ixy>
+        <ixz>0.0</ixz>
+        <iyy>0.083</iyy>
+        <iyz>0.0</iyz>
+        <izz>0.083</izz>
+      </inertia>
+    </inertial>
+  </link>
+</robot>
