@@ -25,7 +25,7 @@
   </include>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find crane_x7_gazebo)/worlds/table.world"/>
+    <arg name="world_name" value="$(find team4_robotdesign3_2021)/urdf/table.world"/>
     <arg name="debug" value="$(arg gazebo_debug)" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="paused" value="$(arg paused)"/>
@@ -37,9 +37,9 @@
   <param name="robot_description"
     command="$(find xacro)/xacro --inorder '$(find crane_x7_d435)/urdf/crane_x7_d435.xacro' use_effort_gripper:=$(arg use_effort_gripper)"
     />
- <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+ <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot (argsでロボットの場所を指定しているっぽい)-->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-        args="-urdf -model crane_x7 -param robot_description -z 1.02"/>
+        args="-urdf -model crane_x7 -param robot_description -z 0"/>
 
 
  <!--moveit関連の読み込み-->
