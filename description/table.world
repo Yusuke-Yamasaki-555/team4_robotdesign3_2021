@@ -23,8 +23,16 @@
         <uri>model://wood_cube_5cm</uri>
       </include>
 
-      <pose>2.75 2.75 0 0 0 0</pose>
+      <pose>-2.75 -2.75 0 0 0 0</pose>
     </model>
+
+    <!--model name="club">
+      <include>
+        <uri>model://club</uri>
+      </include>
+
+      <pose>0.25 0 0 0 0 0</pose>
+    </model-->
 
     <model name="club">
       <include>
@@ -32,14 +40,6 @@
       </include>
 
       <pose>0.25 0 0 0 0 0</pose>
-    </model>
-
-    <model name="box1">
-      <include>
-        <uri>model://box1</uri>
-      </include>
-
-      <pose>3 3 1 0 0 0</pose>
     </model>
 
     <model name="ground_plane">
