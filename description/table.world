@@ -18,12 +18,12 @@
       <!--pose>0.29 0 0 0 0 1.5708</pose>
     </model-->
 
-    <model name="wood_cube_5cm">
+    <model name="can_id0">
       <include>
-        <uri>model://wood_cube_5cm</uri>
+        <uri>model://can_id0</uri>
       </include>
 
-      <pose>-2.75 -2.75 0 0 0 0</pose>
+      <pose>0.525 0.01 0.2 0 0 0</pose>
     </model>
 
     <model name="stand">

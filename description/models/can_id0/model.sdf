@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+<model name="can_id0">
+  <pose>0.525 0.01 0.2 0 0 0</pose>
+    <link name="link">
+      <inertial>
+        <mass>1.0</mass>
+        <inertia>
+          <ixx>0.081</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.081</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.081</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://can_id0/meshes/can_id0.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+          <uri>model://can_id0/meshes/can_id0.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
