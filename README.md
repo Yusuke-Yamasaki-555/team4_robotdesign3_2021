@@ -22,6 +22,9 @@ cit robot-design-3-2021 crane_x7
 
 業務連絡：
 　各ディレクトリのREADME.mdは、好きに書き換えてくれて構わない。共有メモの感覚で。
+  パス設定方法：~/.bashrc内最下段に以下を書き込み。あとはいつも道理のビルドをして、~/.gazebo/models/内の重複ものを消せばOK。
+  　export GAZEBO_MODEL_PATH=$HOME/catkin_ws/src/team4_robotdesign3_2021/description/models:$GAZEBO_MODEL_PATH
+
 
 中間発表スライド：
 https://docs.google.com/presentation/d/10579iWYMIuUj-ryrvBYHtZIV1r_oiTxQpfvfWUjjHhE/edit?pli=1#slide=id.gfa179629e3_0_115
