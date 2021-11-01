@@ -24,7 +24,7 @@
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
  
     <group_state name="init" group="arm">
-        <joint name="crane_x7_shoulder_fixed_part_pan_joint" value="0*3.14159/180" />
+        <joint name="crane_x7_shoulder_fixed_part_pan_joint" value="0" />
           <!--z軸第一関節  deg:-170~170-->
         <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0" />
           <!--y軸第一関節  deg:-90~90-->
@@ -44,8 +44,8 @@
     <group_state name="bow" group="arm">
         <joint name="crane_x7_shoulder_fixed_part_pan_joint" value="0" />
           <!--z軸第一関節  deg:-170~170-->
-        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="-25*3.14159/180" />
-          <!--y軸第一関節  deg:-90~90  -0.44-->
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="-0.44" />
+          <!--y軸第一関節  deg:-90~90-->
         <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" />
           <!--z軸第二関節  deg:-90~90-->
         <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.94" />
