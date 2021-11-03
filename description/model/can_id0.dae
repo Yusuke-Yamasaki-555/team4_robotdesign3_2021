@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.93.5 commit date:2021-10-05, commit time:12:04, hash:a791bdabd0b2</authoring_tool>
     </contributor>
-    <created>2021-10-31T07:47:04</created>
-    <modified>2021-10-31T07:47:04</modified>
+    <created>2021-11-03T11:58:36</created>
+    <modified>2021-11-03T11:58:36</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -307,7 +307,7 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="平面" name="平面" type="NODE">
-        <matrix sid="transform">-7.54979e-9 7.54979e-9 1 0.065 0.1 -8.74228e-9 7.54979e-8 0 8.74228e-9 0.1 -7.54979e-8 0 0 0 0 1</matrix>
+        <matrix sid="transform">-3.7749e-9 3.7749e-9 1 0.0325 0.05 -4.37114e-9 7.54979e-8 0 4.37114e-9 0.05 -7.54979e-8 0 0 0 0 1</matrix>
         <instance_geometry url="#平面-mesh" name="平面">
           <bind_material>
             <technique_common>
@@ -319,15 +319,15 @@
         </instance_geometry>
       </node>
       <node id="円柱_002" name="円柱.002" type="NODE">
-        <matrix sid="transform">0.065 0 0 0 0 0.065 0 0 0 0 0.001 -0.15 0 0 0 1</matrix>
+        <matrix sid="transform">0.0325 0 0 0 0 0.0325 0 0 0 0 0.005 -0.08 0 0 0 1</matrix>
         <instance_geometry url="#円柱_002-mesh" name="円柱.002"/>
       </node>
       <node id="円柱_001" name="円柱.001" type="NODE">
-        <matrix sid="transform">0.065 0 0 0 0 0.065 0 0 0 0 0.001 0.15 0 0 0 1</matrix>
+        <matrix sid="transform">0.0325 0 0 0 0 0.0325 0 0 0 0 5e-4 0.075 0 0 0 1</matrix>
         <instance_geometry url="#円柱_001-mesh" name="円柱.001"/>
       </node>
       <node id="円柱" name="円柱" type="NODE">
-        <matrix sid="transform">0.065 0 0 0 0 0.065 0 0 0 0 0.15 0 0 0 0 1</matrix>
+        <matrix sid="transform">0.0325 0 0 0 0 0.0325 0 0 0 0 0.075 0 0 0 0 1</matrix>
         <instance_geometry url="#円柱-mesh" name="円柱">
           <bind_material>
             <technique_common>
