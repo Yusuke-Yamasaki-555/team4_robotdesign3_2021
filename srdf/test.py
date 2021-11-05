@@ -13,8 +13,8 @@ def main():
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
     
-    arm.set_max_velocity_scaling_factor(0.5)
-    arm.set_max_acceleration_scaling_factor(0.35)
+    arm.set_max_velocity_scaling_factor(0.5) #  bow
+    arm.set_max_acceleration_scaling_factor(0.35) #  bow
 
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
         rospy.sleep(1.0)
@@ -36,13 +36,17 @@ def main():
     arm.set_named_target("bow")
     arm.go()
 
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
     print("search_target")
     arm.set_named_target("search_target")
     arm.go()
 
     print("init_pose")
     arm.set_named_target("init")
-    a = arm.go()
+    arm.go()
 
 if __name__ == '__main__':
     try:
