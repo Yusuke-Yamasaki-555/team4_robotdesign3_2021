@@ -36,6 +36,10 @@ def main():
     arm.set_named_target("bow")
     arm.go()
 
+    print("search_target")
+    arm.set_named_target("search_target")
+    arm.go()
+
     print("init_pose")
     arm.set_named_target("init")
     a = arm.go()
