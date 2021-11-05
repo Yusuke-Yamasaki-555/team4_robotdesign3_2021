@@ -24,7 +24,7 @@
       <visual name="visual">
         <geometry>
           <mesh>
-          <uri>model://club/meshes/club.dae</uri>
+            <uri>model://club/meshes/club.dae</uri>
           </mesh>
         </geometry>
       </visual>
