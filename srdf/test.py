@@ -34,7 +34,10 @@ def main():
 
     print("bow_pose")
     arm.set_named_target("bow")
-    arm.go()
+    a = arm.go() #  モーションが終了したら、その結果がaに代入される
+
+    if a:
+        print("success")
 
     print("init_pose")
     arm.set_named_target("init")
