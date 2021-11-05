@@ -43,6 +43,9 @@ def main():
     arm.set_named_target("init")
     arm.go()
 
+    arm.set_max_velocity_scaling_factor(1.0) #  search_target
+    arm.set_max_acceleration_scaling_factor(1.0) #  search_target
+
     print("search_target")
     arm.set_named_target("search_target")
     arm.go()
