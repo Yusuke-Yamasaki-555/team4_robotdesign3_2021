@@ -39,7 +39,7 @@
         <uri>model://club</uri>
       </include>
 
-      <pose>0 0.25 0 0 1.57 1.57</pose>
+      <pose>0 0.25 0 0 0 0</pose>
     </model>
 
     <model name="ground_plane">
