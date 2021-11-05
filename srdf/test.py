@@ -54,6 +54,17 @@ def main():
     arm.set_named_target("init")
     arm.go()
 
+    arm.set_max_velocity_scaling_factor(0.05) #  hold
+    arm.set_max_acceleration_scaling_factor(1.0) #  hold
+
+    print("hold")
+    arm.set_named_target("hold")
+    arm.go()
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
 if __name__ == '__main__':
     try:
         if not rospy.is_shutdown():
