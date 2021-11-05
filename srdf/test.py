@@ -50,6 +50,17 @@ def main():
     arm.set_named_target("search_target")
     arm.go()
 
+    arm.set_max_velocity_scaling_factor(0.8) #  tilt_neck & rev_tilt_neck
+    arm.set_max_acceleration_scaling_factor(1.0) #  tilt neck & rev_tilt_neck
+
+    print("tilt_neck")
+    arm.set_named_target("tilt_neck")
+    arm.go()
+
+    print("rev_tilt_neck")
+    arm.set_named_target("rev_tilt_neck")
+    arm.go()
+
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
