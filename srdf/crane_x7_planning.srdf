@@ -40,7 +40,7 @@
         <joint name="crane_x7_wrist_joint" value="-1.57" />
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
-    <group_state name="stand-by" group="arm">
+    <group_state name="stand_by" group="arm">
         <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.349" />
           <!--y軸第一関節  deg:-90~90-->
         <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" />
