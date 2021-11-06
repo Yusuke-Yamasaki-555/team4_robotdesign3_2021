@@ -89,6 +89,7 @@ def main():
     #  arm.set_named_target("stand_by")
     #  arm.go()
 
+    # search_club → happy_club → 掴む姿勢
     #  """
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
