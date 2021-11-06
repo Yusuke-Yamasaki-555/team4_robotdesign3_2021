@@ -32,7 +32,7 @@ def main():
 
     rospy.sleep(1.0)
 
-    print("bow_pose")
+    print("bow")
     arm.set_named_target("bow")
     a = arm.go() #  モーションが終了したら、その結果がaに代入される
 
@@ -42,6 +42,9 @@ def main():
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
+
+    gripper.set_joint_value_target([0.8, 0.8])
+    gripper.go()
 
     arm.set_max_velocity_scaling_factor(0.5) #  search_target
     arm.set_max_acceleration_scaling_factor(0.5) #  search_target
@@ -82,6 +85,9 @@ def main():
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
+
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
 
 if __name__ == '__main__':
     try:
