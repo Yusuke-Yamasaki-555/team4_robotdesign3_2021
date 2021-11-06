@@ -109,13 +109,7 @@ def main():
     arm.set_max_velocity_scaling_factor(1.0) #  happy_club
     arm.set_max_acceleration_scaling_factor(1.0) #  happy_club
     print("happy_club")
-    arm.set_joint_value_target([current_pose[0],\
-                            current_pose[1],\
-                            current_pose[2],\
-                            current_pose[3],\
-                            current_pose[4],\
-                            0.785,\
-                            current_pose[6]])
+    arm.set_joint_value_target(current_pose)
     arm.set_named_target("happy_club")
     arm.go()
     gripper.set_joint_value_target([0.8, 0.8])
