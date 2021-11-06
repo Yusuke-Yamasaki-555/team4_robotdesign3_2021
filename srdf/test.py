@@ -45,7 +45,7 @@ def main():
 
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
-
+    """
     arm.set_max_velocity_scaling_factor(0.5) #  search_target
     arm.set_max_acceleration_scaling_factor(0.5) #  search_target
 
@@ -88,6 +88,20 @@ def main():
     print("stand_by")
     arm.set_named_target("stand_by")
     arm.go()
+    """
+    search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
+    search_club.position.x = 0
+    search_club.position.y = 0.26
+    search_club.position.z = 0.2
+    qu = quaternion_from_euler(0, 3.14, 0)
+    search_club.orientation.x = qu[0]
+    search_club.orientation.y = qu[1]
+    search_club.orientation.z = qu[2]
+    search_club.orientation.w = qu[3]
+    arm.set_pose_target(search_club)
+    arm.go()
+
+    rospy.sleep(1.0)
 
     print("init_pose")
     arm.set_named_target("init")
