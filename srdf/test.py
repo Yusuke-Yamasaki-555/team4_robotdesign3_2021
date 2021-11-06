@@ -90,7 +90,7 @@ def main():
     #  arm.go()
 
     # search_club → happy_club → 掴む姿勢
-    #  """
+    """
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
     search_club.position.y = 0.26
@@ -113,12 +113,13 @@ def main():
     arm.set_max_acceleration_scaling_factor(1.0) #  happy_club
     print("happy_club")
     
+    #  喜ぶ姿勢になる(happy_club) from SRDF
     arm.set_named_target("happy_club")
-    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",current_pose[0])
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",current_pose[0]) #  現在の第一関節z軸を維持
     arm.go()
 
     '''
-    #  喜ぶ姿勢になる(happy_club)
+    #  喜ぶ姿勢になる(happy_club) from pose_target
     happy_club = deepcopy(search_club)
     qu2 = quaternion_from_euler(0, 0.873, 1.57)
     happy_club.orientation.x = qu2[0]
@@ -148,7 +149,7 @@ def main():
 
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
-    # """
+    """
 
     #  print("init_pose")
     #  arm.set_named_target("init")
