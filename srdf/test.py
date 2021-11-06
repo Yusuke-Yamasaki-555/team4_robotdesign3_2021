@@ -92,11 +92,11 @@ def main():
     search_club.position.x = 0
     search_club.position.y = 0.26
     search_club.position.z = 0.2
-    qu = quaternion_from_euler(0, 3.14, 0)
-    search_club.orientation.x = qu[0]
-    search_club.orientation.y = qu[1]
-    search_club.orientation.z = qu[2]
-    search_club.orientation.w = qu[3]
+    qu1 = quaternion_from_euler(0, 3.14, 0)
+    search_club.orientation.x = qu1[0]
+    search_club.orientation.y = qu1[1]
+    search_club.orientation.z = qu1[2]
+    search_club.orientation.w = qu1[3]
     print("search_club")
     arm.set_pose_target(search_club)
     arm.go()
@@ -111,11 +111,12 @@ def main():
     print("happy_club")
     
     happy_club = search_club
-    qu = quaternion_from_euler(0, 0.873, 0)
-    happy_club.orientation.x = qu[0]
-    happy_club.orientation.y = qu[1]
-    happy_club.orientation.z = qu[2]
-    happy_club.orientation.w = qu[3]
+    qu2 = quaternion_from_euler(0, 0.873, 0)
+    happy_club.orientation.x = qu2[0]
+    happy_club.orientation.y = qu2[1]
+    happy_club.orientation.z = qu2[2]
+    happy_club.orientation.w = qu2[3]
+    arm.set_pose_target(happy_club)
 
     #  arm.set_joint_value_target(current_pose) #  現在の各関節の角度の値を目標値に代入。これで現在の姿勢＋happy_clubができる。
     #  arm.set_named_target("happy_club")
