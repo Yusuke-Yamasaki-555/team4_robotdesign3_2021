@@ -101,6 +101,7 @@ def main():
     search_club.orientation.w = qu1[3]
     print("search_club")
     arm.set_pose_target(search_club)
+    print(search_club)
     arm.go()
     #  """
 
@@ -119,10 +120,9 @@ def main():
     happy_club.orientation.z = qu2[2]
     happy_club.orientation.w = qu2[3]
     arm.set_pose_target(happy_club)
-
-    #  arm.set_joint_value_target(current_pose) #  現在の各関節の角度の値を目標値に代入。これで現在の姿勢＋happy_clubができる。
-    #  arm.set_named_target("happy_club")
+    print(happy_club)
     arm.go()
+
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
     gripper.set_joint_value_target([0.015, 0.015])
@@ -134,6 +134,7 @@ def main():
 
     print("search_club")
     arm.set_pose_target(search_club)
+    print(search_club)
     arm.go()
 
     gripper.set_joint_value_target([0.8, 0.8])
