@@ -25,6 +25,9 @@ def main():
     arm.set_named_target("init") #  返り値：None
     a = arm.go() #  返り値：bool type
 
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
+
     print(a)
 
     if a:
@@ -98,6 +101,10 @@ def main():
     arm.set_pose_target(search_club)
     arm.go()
     #  """
+
+    current_pose = arm.get_current_pose().pose #  現在のアームの姿勢を表示
+    print("Current Pose:")
+    print(current_pose)
 
     arm.set_max_velocity_scaling_factor(1.0) #  happy_club
     arm.set_max_acceleration_scaling_factor(1.0) #  happy_club
