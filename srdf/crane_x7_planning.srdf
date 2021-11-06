@@ -107,20 +107,8 @@
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
     <group_state name="happy_club" group="arm">
-        <joint name="crane_x7_shoulder_fixed_part_pan_joint" value="0" />
-          <!--z軸第一関節  deg:-170~170-->
-        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0" />
-          <!--y軸第一関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" />
-          <!--z軸第二関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="0" />
-          <!--y軸第二関節  deg:-161~2-->
-        <joint name="crane_x7_lower_arm_fixed_part_joint" value="0" />
-          <!--z軸第三関節  deg:-159~87-->
-        <joint name="crane_x7_lower_arm_revolute_part_joint" value="0" />
+        <joint name="crane_x7_lower_arm_revolute_part_joint" value="0.785" />
           <!--y軸第三関節  deg:-90~90-->
-        <joint name="crane_x7_wrist_joint" value="0" />
-          <!--z軸gripper回転  deg:-170~170-->
     </group_state>
     <group_state name="happy_end" group="arm">
         <joint name="crane_x7_shoulder_fixed_part_pan_joint" value="0" />
@@ -205,11 +193,11 @@
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
 
-    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+<!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="end_effector" parent_link="crane_x7_gripper_base_link" group="gripper" />
-    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+<!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <virtual_joint name="table" type="fixed" parent_frame="world" child_link="base_link" />
-    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+<!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="crane_x7_gripper_base_link" link2="crane_x7_gripper_finger_a_link" reason="Adjacent" />
     <disable_collisions link1="crane_x7_gripper_base_link" link2="crane_x7_gripper_finger_b_link" reason="Adjacent" />
     <disable_collisions link1="crane_x7_gripper_base_link" link2="crane_x7_lower_arm_fixed_part_joint_cover_l_link" reason="Never" />
