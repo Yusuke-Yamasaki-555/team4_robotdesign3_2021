@@ -102,7 +102,7 @@ def main():
     arm.go()
     #  """
 
-    current_pose = arm.get_current_pose().pose #  現在のアームの姿勢を表示
+    current_pose = arm.get_current_joint_values() #  現在の各角度の値をリストで取得
     print("Current Pose:")
     print(current_pose)
 
