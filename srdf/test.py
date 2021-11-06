@@ -43,14 +43,21 @@ def main():
     arm.set_named_target("init")
     arm.go()
 
-    arm.set_max_velocity_scaling_factor(1.0) #  search_target
-    arm.set_max_acceleration_scaling_factor(1.0) #  search_target
+    arm.set_max_velocity_scaling_factor(0.5) #  search_target
+    arm.set_max_acceleration_scaling_factor(0.5) #  search_target
 
     print("search_target")
     arm.set_named_target("search_target")
     arm.go()
 
-    arm.set_max_velocity_scaling_factor(0.8) #  tilt_neck & rev_tilt_neck
+    arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
+    arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
+
+    print("emotions_stand_by")
+    arm.set_named_target("emotions_stand_by")
+    arm.go()
+
+    arm.set_max_velocity_scaling_factor(1.0) #  tilt_neck & rev_tilt_neck
     arm.set_max_acceleration_scaling_factor(1.0) #  tilt neck & rev_tilt_neck
 
     print("tilt_neck")
