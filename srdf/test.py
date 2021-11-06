@@ -7,7 +7,7 @@ import geometry_msgs
 import rosnode
 from tf.transformations import quaternion_from_euler
 
-from copy import copy
+from copy import deepcopy
 
 def main():
     rospy.init_node("motion_test")
@@ -103,7 +103,6 @@ def main():
     arm.set_pose_target(search_club)
     print(search_club)
     arm.go()
-    #  """
 
     current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
     print("Current Pose:")
@@ -113,8 +112,9 @@ def main():
     arm.set_max_acceleration_scaling_factor(1.0) #  happy_club
     print("happy_club")
     
-    happy_club = copy(search_club)
-    qu2 = quaternion_from_euler(0, 0.873, 0)
+    #  喜ぶ姿勢になる(happy_club)
+    happy_club = deepcopy(search_club)
+    qu2 = quaternion_from_euler(0, 0.873, 1.57)
     happy_club.orientation.x = qu2[0]
     happy_club.orientation.y = qu2[1]
     happy_club.orientation.z = qu2[2]
@@ -123,6 +123,7 @@ def main():
     print(happy_club)
     arm.go()
 
+    #  手を開閉させて喜ぶ(happy_club)
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
     gripper.set_joint_value_target([0.015, 0.015])
@@ -132,6 +133,7 @@ def main():
     gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
 
+    #  棒を掴む体勢に戻る
     print("search_club")
     arm.set_pose_target(search_club)
     print(search_club)
@@ -139,6 +141,8 @@ def main():
 
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
+    # """
+
     #  print("init_pose")
     #  arm.set_named_target("init")
     #  arm.go()
