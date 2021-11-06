@@ -7,6 +7,8 @@ import geometry_msgs
 import rosnode
 from tf.transformations import quaternion_from_euler
 
+from copy import copy
+
 def main():
     rospy.init_node("motion_test")
     robot = moveit_commander.RobotCommander()
@@ -110,7 +112,7 @@ def main():
     arm.set_max_acceleration_scaling_factor(1.0) #  happy_club
     print("happy_club")
     
-    happy_club = search_club
+    happy_club = copy(search_club)
     qu2 = quaternion_from_euler(0, 0.873, 0)
     happy_club.orientation.x = qu2[0]
     happy_club.orientation.y = qu2[1]
