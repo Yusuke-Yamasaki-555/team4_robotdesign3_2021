@@ -82,6 +82,13 @@ def main():
     arm.set_named_target("hold")
     arm.go()
 
+    arm.set_max_velocity_scaling_factor(1.0) #  stand_by
+    arm.set_max_acceleration_scaling_factor(0.35) #  stand_by
+
+    print("stand_by")
+    arm.set_named_target("stand_by")
+    arm.go()
+
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
