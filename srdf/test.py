@@ -95,7 +95,7 @@ def main():
     search_club.position.x = 0
     search_club.position.y = 0.26
     search_club.position.z = 0.2
-    qu1 = quaternion_from_euler(0, 3.14, 0)
+    qu1 = quaternion_from_euler(0, 3.14, 3.14)
     search_club.orientation.x = qu1[0]
     search_club.orientation.y = qu1[1]
     search_club.orientation.z = qu1[2]
@@ -113,6 +113,11 @@ def main():
     arm.set_max_acceleration_scaling_factor(1.0) #  happy_club
     print("happy_club")
     
+    arm.set_named_target("happy_club")
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",current_pose[0])
+    arm.go()
+
+    '''
     #  喜ぶ姿勢になる(happy_club)
     happy_club = deepcopy(search_club)
     qu2 = quaternion_from_euler(0, 0.873, 1.57)
@@ -123,6 +128,7 @@ def main():
     arm.set_pose_target(happy_club)
     print(happy_club)
     arm.go()
+    '''
 
     #  手を開閉させて喜ぶ(happy_club)
     gripper.set_joint_value_target([0.8, 0.8])
