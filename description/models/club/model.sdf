@@ -6,12 +6,12 @@
       <inertial>
         <mass>1.0</mass>
         <inertia>
-          <ixx>0.1</ixx>
+          <ixx>0.081</ixx>
           <ixy>0.0</ixy>
           <ixz>0.0</ixz>
-          <iyy>0.1</iyy>
+          <iyy>0.081</iyy>
           <iyz>0.0</iyz>
-          <izz>0.1</izz>
+          <izz>0.081</izz>
         </inertia>
       </inertial>
       <collision name="collision">
@@ -24,7 +24,7 @@
       <visual name="visual">
         <geometry>
           <mesh>
-          <uri>model://club/meshes/club.dae</uri>
+            <uri>model://club/meshes/club.dae</uri>
           </mesh>
         </geometry>
       </visual>
