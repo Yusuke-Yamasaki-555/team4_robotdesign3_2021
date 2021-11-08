@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #画像の中心座標は(x, y) = 640, 480, 目標座標は(x, y) = 377, 227
-from re import search
 from sys import exec_prefix
 import cv_bridge
 import rospy
