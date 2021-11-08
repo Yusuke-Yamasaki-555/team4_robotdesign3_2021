@@ -160,15 +160,15 @@
     <group_state name="release_club" group="arm">
         <joint name="crane_x7_shoulder_fixed_part_pan_joint" value="0" />
           <!--z軸第一関節  deg:-170~170-->
-        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0" />
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="-0.349" />
           <!--y軸第一関節  deg:-90~90-->
         <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" />
           <!--z軸第二関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="0" />
+        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.92" />
           <!--y軸第二関節  deg:-161~2-->
         <joint name="crane_x7_lower_arm_fixed_part_joint" value="0" />
           <!--z軸第三関節  deg:-159~87-->
-        <joint name="crane_x7_lower_arm_revolute_part_joint" value="0" />
+        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.873" />
           <!--y軸第三関節  deg:-90~90-->
         <joint name="crane_x7_wrist_joint" value="0" />
           <!--z軸gripper回転  deg:-170~170-->
