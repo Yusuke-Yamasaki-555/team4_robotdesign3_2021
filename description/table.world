@@ -42,6 +42,14 @@
       <pose>0 0.25 0 -1.57 0 0</pose>
     </model>
 
+    <model name="club_ARmarker">
+      <include>
+        <uri>model://ARmarker_id06</uri>
+      </include>
+
+      <pose>0 0.24 0 0 0 0</pose>
+    </model>
+
     <model name="ground_plane">
       <include>
         <uri>model://ground_plane</uri>
