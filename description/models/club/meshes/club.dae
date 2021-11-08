@@ -3,10 +3,10 @@
   <asset>
     <contributor>
       <author>Blender User</author>
-      <authoring_tool>Blender 2.93.5 commit date:2021-10-05, commit time:12:04, hash:a791bdabd0b2</authoring_tool>
+      <authoring_tool>Blender 2.82.7</authoring_tool>
     </contributor>
-    <created>2021-11-07T00:15:21</created>
-    <modified>2021-11-07T00:15:21</modified>
+    <created>2021-11-08T14:37:18</created>
+    <modified>2021-11-08T14:37:18</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -76,25 +76,15 @@
     </light>
   </library_lights>
   <library_effects>
-    <effect id="マテリアル_005-effect">
+    <effect id="マテリアル_009-effect">
       <profile_COMMON>
-        <newparam sid="ar06_png-surface">
-          <surface type="2D">
-            <init_from>ar06_png</init_from>
-          </surface>
-        </newparam>
-        <newparam sid="ar06_png-sampler">
-          <sampler2D>
-            <source>ar06_png-surface</source>
-          </sampler2D>
-        </newparam>
         <technique sid="common">
           <lambert>
             <emission>
               <color sid="emission">0 0 0 1</color>
             </emission>
             <diffuse>
-              <texture texture="ar06_png-sampler" texcoord="UVマップ"/>
+              <color sid="diffuse">0 0 0 1</color>
             </diffuse>
             <index_of_refraction>
               <float sid="ior">1.45</float>
@@ -138,14 +128,10 @@
       </profile_COMMON>
     </effect>
   </library_effects>
-  <library_images>
-    <image id="ar06_png" name="ar06_png">
-      <init_from>ar06.png</init_from>
-    </image>
-  </library_images>
+  <library_images/>
   <library_materials>
-    <material id="マテリアル_005-material" name="マテリアル.005">
-      <instance_effect url="#マテリアル_005-effect"/>
+    <material id="マテリアル_009-material" name="マテリアル.009">
+      <instance_effect url="#マテリアル_009-effect"/>
     </material>
     <material id="マテリアル_001-material" name="マテリアル.001">
       <instance_effect url="#マテリアル_001-effect"/>
@@ -189,7 +175,7 @@
         <vertices id="立方体-mesh-vertices">
           <input semantic="POSITION" source="#立方体-mesh-positions"/>
         </vertices>
-        <triangles material="マテリアル_005-material" count="12">
+        <triangles material="マテリアル_009-material" count="12">
           <input semantic="VERTEX" source="#立方体-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#立方体-mesh-normals" offset="1"/>
           <input semantic="TEXCOORD" source="#立方体-mesh-map-0" offset="2" set="0"/>
@@ -289,7 +275,7 @@
         <instance_geometry url="#立方体-mesh" name="立方体">
           <bind_material>
             <technique_common>
-              <instance_material symbol="マテリアル_005-material" target="#マテリアル_005-material">
+              <instance_material symbol="マテリアル_009-material" target="#マテリアル_009-material">
                 <bind_vertex_input semantic="UVマップ" input_semantic="TEXCOORD" input_set="0"/>
               </instance_material>
             </technique_common>
@@ -336,7 +322,7 @@
         </node>
       </node>
       <node id="円柱" name="円柱" type="NODE">
-        <matrix sid="transform">0.0225 0 0 0 0 0.0225 0 0 0 0 0.04 0 0 0 0 1</matrix>
+        <matrix sid="transform">0.0225 0 0 0 0 0.0225 0 0 0 0 0.04 -0.002 0 0 0 1</matrix>
         <instance_geometry url="#円柱-mesh" name="円柱">
           <bind_material>
             <technique_common>
