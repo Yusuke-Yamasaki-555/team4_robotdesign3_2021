@@ -157,8 +157,25 @@ def main():
     arm.set_named_target("init")
     arm.go()
 
+    #  棒を離す動作
+    print("release_club")
+    arm.set_named_target("release_club")
+    arm.go()
+
     gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
+    print("bow")
+    arm.set_named_target("bow")
+    arm.go()
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
 
 if __name__ == '__main__':
     try:
