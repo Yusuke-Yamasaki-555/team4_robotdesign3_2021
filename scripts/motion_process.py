@@ -48,7 +48,25 @@ import actionlib
         各Action_Serverの立ち上げ＆start
 """
     # def release_club_motion(self,<クライアントから送られるデータ名>):
+"""
+        この関数では、release_club をする動作をServiceとして提供する
+        動作の速度＆加速度の比率を定義
+        動作を行う(test.py参照)
+        動作の完了報告を返す
+"""
     # def swing_club_motion(self,<クライアントから送られるデータ名>):
+"""
+        この関数では、swing_club をする動作をActionとして提供する
+        swing_set_club
+            動作の速度＆加速度の比率を定義
+            動作を行う(test.py参照)
+            動作の完了報告をfeedback
+        swing_club
+            動作の速度＆加速度の比率を定義
+            動作を行う(test.py参照)
+                ここで、印に当てるか外すかを決めてから、動作を行う
+            動作の完了報告を返す
+"""
     # def search_club_motion(self,<クライアントから送られるデータ名>):
     # def search_target_motion(self,<クライアントから送られるデータ名>):
     # def check_target_motion(self,<クライアントから送られるデータ名>):
