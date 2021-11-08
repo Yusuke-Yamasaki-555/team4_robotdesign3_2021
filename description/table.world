@@ -47,7 +47,7 @@
         <uri>model://ARmarker_id06</uri>
       </include>
 
-      <pose>0 0.24 0 0 0 0</pose>
+      <pose>0 0.19 0 0 0 0</pose>
     </model>
 
     <model name="ground_plane">

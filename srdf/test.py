@@ -94,7 +94,7 @@ def main():
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
     search_club.position.y = 0.26
-    search_club.position.z = 0.2
+    search_club.position.z = 0.3
     qu1 = quaternion_from_euler(0, 3.14, 3.14)
     search_club.orientation.x = qu1[0]
     search_club.orientation.y = qu1[1]
