@@ -37,6 +37,7 @@ def main():
 
     rospy.sleep(1.0)
 
+    """
     print("bow")
     arm.set_named_target("bow")
     a = arm.go() #  モーションが終了したら、その結果がaに代入される
@@ -151,7 +152,7 @@ def main():
 
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
-    #  """
+    """
 
     print("init_pose")
     arm.set_named_target("init")
@@ -176,6 +177,7 @@ def main():
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
+    #  """
 
 if __name__ == '__main__':
     try:
