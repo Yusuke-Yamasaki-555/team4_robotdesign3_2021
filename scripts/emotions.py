@@ -18,7 +18,8 @@
     rospy.sleep(1.0)
     class Emotions_Serverのインスタンスを作成
     各サービスのインスタンスを作成
-    rospy.spin()   
+    while not rospy.is_shutdown():
+        rospy.spin()   
 """
 
 # class Preparation_motion(object):
