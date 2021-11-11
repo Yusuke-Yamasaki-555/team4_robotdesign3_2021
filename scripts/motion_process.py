@@ -20,8 +20,10 @@ import actionlib
     gripper = moveit_commander.MoveGroupCommander("gripper")
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
     rospy.sleep(1.0)
+
     class Motion_Process_Serverのインスタンスを作成
     各サービスのインスタンスを作成
+
     while not rospy.is_shutdown():
         rospy.spin()   
 """

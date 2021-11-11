@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -37,6 +37,7 @@ def main():
 
     rospy.sleep(1.0)
 
+    """
     print("bow")
     arm.set_named_target("bow")
     a = arm.go() #  モーションが終了したら、その結果がaに代入される
@@ -48,53 +49,53 @@ def main():
     arm.set_named_target("init")
     arm.go()
 
-    #  gripper.set_joint_value_target([0.8, 0.8])
-    #  gripper.go()
+    gripper.set_joint_value_target([0.8, 0.8])
+    gripper.go()
 
-    #  arm.set_max_velocity_scaling_factor(0.5) #  search_target
-    #  arm.set_max_acceleration_scaling_factor(0.5) #  search_target
-    #  print("search_target")
-    #  arm.set_named_target("search_target")
-    #  arm.go()
+    arm.set_max_velocity_scaling_factor(0.5) #  search_target
+    arm.set_max_acceleration_scaling_factor(0.5) #  search_target
+    print("search_target")
+    arm.set_named_target("search_target")
+    arm.go()
 
-    #  arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
-    #  arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
-    #  print("emotions_stand_by")
-    #  arm.set_named_target("emotions_stand_by")
-    #  arm.go()
+    arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
+    arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
+    print("emotions_stand_by")
+    arm.set_named_target("emotions_stand_by")
+    arm.go()
 
-    #  arm.set_max_velocity_scaling_factor(1.0) #  tilt_neck & rev_tilt_neck
-    #  arm.set_max_acceleration_scaling_factor(1.0) #  tilt neck & rev_tilt_neck
-    #  print("tilt_neck")
-    #  arm.set_named_target("tilt_neck")
-    #  arm.go()
+    arm.set_max_velocity_scaling_factor(1.0) #  tilt_neck & rev_tilt_neck
+    arm.set_max_acceleration_scaling_factor(1.0) #  tilt neck & rev_tilt_neck
+    print("tilt_neck")
+    arm.set_named_target("tilt_neck")
+    arm.go()
 
-    #  print("rev_tilt_neck")
-    #  arm.set_named_target("rev_tilt_neck")
-    #  arm.go()
+    print("rev_tilt_neck")
+    arm.set_named_target("rev_tilt_neck")
+    arm.go()
 
-    #  print("init_pose")
-    #  arm.set_named_target("init")
-    #  arm.go()
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
 
-    #  arm.set_max_velocity_scaling_factor(0.05) #  hold
-    #  arm.set_max_acceleration_scaling_factor(1.0) #  hold
-    #  print("hold")
-    #  arm.set_named_target("hold")
-    #  arm.go()
+    arm.set_max_velocity_scaling_factor(0.05) #  hold
+    arm.set_max_acceleration_scaling_factor(1.0) #  hold
+    print("hold")
+    arm.set_named_target("hold")
+    arm.go()
 
-    #  arm.set_max_velocity_scaling_factor(1.0) #  stand_by
-    #  arm.set_max_acceleration_scaling_factor(0.35) #  stand_by
-    #  print("stand_by")
-    #  arm.set_named_target("stand_by")
-    #  arm.go()
+    arm.set_max_velocity_scaling_factor(1.0) #  stand_by
+    arm.set_max_acceleration_scaling_factor(0.35) #  stand_by
+    print("stand_by")
+    arm.set_named_target("stand_by")
+    arm.go()
 
     # search_club → happy_club → 掴む姿勢
-    """
+    #  """
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
     search_club.position.y = 0.26
-    search_club.position.z = 0.2
+    search_club.position.z = 0.3
     qu1 = quaternion_from_euler(0, 3.14, 3.14)
     search_club.orientation.x = qu1[0]
     search_club.orientation.y = qu1[1]
@@ -132,6 +133,8 @@ def main():
     '''
 
     #  手を開閉させて喜ぶ(happy_club)
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
     gripper.set_joint_value_target([0.015, 0.015])
@@ -151,12 +154,30 @@ def main():
     gripper.go()
     """
 
-    #  print("init_pose")
-    #  arm.set_named_target("init")
-    #  arm.go()
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
 
-    #  gripper.set_joint_value_target([0.015, 0.015])
-    #  gripper.go()
+    #  棒を離す動作
+    print("release_club")
+    arm.set_named_target("release_club")
+    arm.go()
+
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
+    print("bow")
+    arm.set_named_target("bow")
+    arm.go()
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+    #  """
 
 if __name__ == '__main__':
     try:
