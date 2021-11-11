@@ -189,6 +189,8 @@ def main():
     #    → gripper_close → gripper_open → gripper_close → gripper_open → gripper_close → gripper_open → gripper_close
 
     print("Start happy_end")
+    arm.set_max_velocity_scaling_factor(1.0)
+    arm.set_max_acceleration_scaling_factor(0.4)
 
     print("Open gripper")
     gripper.set_joint_value_target([0.8, 0.8])
@@ -265,7 +267,7 @@ def main():
     print("Close gripper")
     gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
-    
+
     #  """
 
 if __name__ == '__main__':
