@@ -184,8 +184,7 @@ def main():
 
     # motion:happy_end
     # init → gripper_open → happy_end_1 → happy_end_init → happy_end_2 → happy_end_init 
-    #  → happy_end_3　→ happy_end_init → happy_end_-rotate → happy_end_+lotate 
-    #   → happy_end_-rotate → happy_end_+rotate → happy_end_init 
+    #  → happy_end_3　→ happy_end_init → happy_end_-rotate → happy_end_+lotate → happy_end_init 
     #    → gripper_close → gripper_open → gripper_close → gripper_open → gripper_close → gripper_open → gripper_close
 
     print("Start happy_end")
@@ -228,13 +227,13 @@ def main():
     arm.set_named_target("happy_end_+rotate")
     arm.go()
 
-    print("happy_end_-rotate")
-    arm.set_named_target("happy_end_-rotate")
-    arm.go()
+    # print("happy_end_-rotate")
+    # arm.set_named_target("happy_end_-rotate")
+    # arm.go()
 
-    print("happy_end_+rotate")
-    arm.set_named_target("happy_end_+rotate")
-    arm.go()
+    # print("happy_end_+rotate")
+    # arm.set_named_target("happy_end_+rotate")
+    # arm.go()
 
     print("happy_end_init")
     arm.set_named_target("happy_end_init")
