@@ -86,22 +86,64 @@ def main():
         arm.set_named_target("emotions_stand_by")
         arm.go()
 
+# dislikeの動きは、もっと嫌がっている感が出せるはず。要調整
         arm.set_max_velocity_scaling_factor(1.0) #  dislike
-        arm.set_max_acceleration_scaling_factor(0.35) #  dislike
+        arm.set_max_acceleration_scaling_factor(0.35) #  dislike　ここの調整が重要かも鴨
         print("dislike_1")
         arm.set_named_target("dislike_1")
+        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+        
+        # ここのif文は関数にするべき
+        if current_pose[0] >= 0:
+            z_axis_1 = current_pose[0] - 0.593
+        else:
+            z_axis_1 = current_pose[0] + 0.593
+     
+        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
         print("dislike_2")
         arm.set_named_target("dislike_2")
+
+        # ここのif文は関数にするべき
+        if current_pose[0] >= 0:
+            z_axis_1 = current_pose[0] - 0.593
+        else:
+            z_axis_1 = current_pose[0] + 0.593
+     
+        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
         print("dislike_3")
         arm.set_named_target("dislike_3")
+        
+        # ここのif文は関数にするべき
+        if current_pose[0] >= 0:
+            z_axis_1 = current_pose[0] - 0.593
+        else:
+            z_axis_1 = current_pose[0] + 0.593
+     
+        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
         print("dislike_4")
         arm.set_named_target("dislike_4")
+        
+                # ここのif文は関数にするべき
+        if current_pose[0] >= 0:
+            z_axis_1 = current_pose[0] - 0.593
+        else:
+            z_axis_1 = current_pose[0] + 0.593
+     
+        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
         print("dislike_5")
         arm.set_named_target("dislike_5")
+
+                # ここのif文は関数にするべき
+        if current_pose[0] >= 0:
+            z_axis_1 = current_pose[0] - 0.593
+        else:
+            z_axis_1 = current_pose[0] + 0.593
+     
+        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
 
     arm.set_max_velocity_scaling_factor(1.0) #  stand_by (motion中のstand_by)
