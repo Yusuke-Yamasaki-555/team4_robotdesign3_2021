@@ -94,54 +94,60 @@ def main():
         current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
         
         # ここのif文は関数にするべき
-        if current_pose[0] >= 0:
-            z_axis_1 = current_pose[0] - 0.593
+        if current_pose[0] >= 0.01:
+            z_axis_1 = current_pose[0] - 0.559
+            flag = True
         else:
-            z_axis_1 = current_pose[0] + 0.593
+            z_axis_1 = current_pose[0] + 0.559
+            flag = False
      
         arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
         print("dislike_2")
         arm.set_named_target("dislike_2")
+        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
 
         # ここのif文は関数にするべき
-        if current_pose[0] >= 0:
-            z_axis_1 = current_pose[0] - 0.593
+        if flag:
+            z_axis_1 = current_pose[0] - 0.559
         else:
-            z_axis_1 = current_pose[0] + 0.593
+            z_axis_1 = current_pose[0] + 0.559
      
         arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
         print("dislike_3")
         arm.set_named_target("dislike_3")
+        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
         
         # ここのif文は関数にするべき
-        if current_pose[0] >= 0:
-            z_axis_1 = current_pose[0] - 0.593
+        if flag:
+            z_axis_1 = current_pose[0] - 0.559
         else:
-            z_axis_1 = current_pose[0] + 0.593
+            z_axis_1 = current_pose[0] + 0.559
      
         arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
         print("dislike_4")
         arm.set_named_target("dislike_4")
-        
+        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
                 # ここのif文は関数にするべき
-        if current_pose[0] >= 0:
-            z_axis_1 = current_pose[0] - 0.593
+        if flag:
+            z_axis_1 = current_pose[0] - 0.559
         else:
-            z_axis_1 = current_pose[0] + 0.593
+            z_axis_1 = current_pose[0] + 0.559
      
         arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
         print("dislike_5")
         arm.set_named_target("dislike_5")
+        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
 
                 # ここのif文は関数にするべき
-        if current_pose[0] >= 0:
-            z_axis_1 = current_pose[0] - 0.593
+        if flag:
+            z_axis_1 = current_pose[0] - 0.559
         else:
-            z_axis_1 = current_pose[0] + 0.593
+            z_axis_1 = current_pose[0] + 0.559
      
         arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         arm.go()
