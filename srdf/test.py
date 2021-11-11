@@ -38,10 +38,11 @@ def main():
     rospy.sleep(1.0)
 
     """
-    print("bow")
+    print("bow") #  bow
     arm.set_named_target("bow")
-    a = arm.go() #  モーションが終了したら、その結果がaに代入される
 
+    # Code test (check)
+    a = arm.go() #  モーションが終了したら、その結果がaに代入される
     if a:
         print("success")
 
@@ -69,7 +70,6 @@ def main():
     print("tilt_neck")
     arm.set_named_target("tilt_neck")
     arm.go()
-
     print("rev_tilt_neck")
     arm.set_named_target("rev_tilt_neck")
     arm.go()
@@ -84,14 +84,14 @@ def main():
     arm.set_named_target("hold")
     arm.go()
 
-    arm.set_max_velocity_scaling_factor(1.0) #  stand_by
+    arm.set_max_velocity_scaling_factor(1.0) #  stand_by (motion中のstand_by)
     arm.set_max_acceleration_scaling_factor(0.35) #  stand_by
     print("stand_by")
     arm.set_named_target("stand_by")
     arm.go()
 
-    # search_club → happy_club → 掴む姿勢
     #  """
+    # search_club → happy_club → 掴む姿勢
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
     search_club.position.y = 0.26
@@ -152,11 +152,15 @@ def main():
 
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
-    """
+
+    # """
 
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
+
+    arm.set_max_velocity_scaling_factor(0.5)
+    arm.set_max_acceleration_scaling_factor(0.35)
 
     #  棒を離す動作
     print("release_club")
@@ -177,6 +181,91 @@ def main():
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
+
+    # motion:happy_end
+    # init → gripper_open → happy_end_1 → happy_end_init → happy_end_2 → happy_end_init 
+    #  → happy_end_3　→ happy_end_init → happy_end_-rotate → happy_end_+lotate 
+    #   → happy_end_-rotate → happy_end_+rotate → happy_end_init 
+    #    → gripper_close → gripper_open → gripper_close → gripper_open → gripper_close → gripper_open → gripper_close
+
+    print("Start happy_end")
+
+    print("Open gripper")
+    gripper.set_joint_value_target([0.8, 0.8])
+    gripper.go()
+
+    print("happy_end_1")
+    arm.set_named_target("happy_end_1")
+    arm.go()
+
+    print("happy_end_init")
+    arm.set_named_target("happy_end_init")
+    arm.go()
+
+    print("happy_end_2")
+    arm.set_named_target("happy_end_2")
+    arm.go()
+
+    print("happy_end_init")
+    arm.set_named_target("happy_end_init")
+    arm.go()
+
+    print("happy_end_3")
+    arm.set_named_target("happy_end_3")
+    arm.go()
+
+    print("happy_end_init")
+    arm.set_named_target("happy_end_init")
+    arm.go()
+
+    print("happy_end_-rotate")
+    arm.set_named_target("happy_end_-rotate")
+    arm.go()
+
+    print("happy_end_+rotate")
+    arm.set_named_target("happy_end_+rotate")
+    arm.go()
+
+    print("happy_end_-rotate")
+    arm.set_named_target("happy_end_-rotate")
+    arm.go()
+
+    print("happy_end_+rotate")
+    arm.set_named_target("happy_end_+rotate")
+    arm.go()
+
+    print("happy_end_init")
+    arm.set_named_target("happy_end_init")
+    arm.go()
+
+    print("Close gripper")
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
+
+    print("Open gripper")
+    gripper.set_joint_value_target([0.8, 0.8])
+    gripper.go()
+    
+    print("Close gripper")
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
+
+    print("Open gripper")
+    gripper.set_joint_value_target([0.8, 0.8])
+    gripper.go()
+
+    print("Close gripper")
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
+
+    print("Open gripper")
+    gripper.set_joint_value_target([0.8, 0.8])
+    gripper.go()
+
+    print("Close gripper")
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
+    
     #  """
 
 if __name__ == '__main__':
