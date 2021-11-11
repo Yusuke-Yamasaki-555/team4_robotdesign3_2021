@@ -67,11 +67,14 @@ import actionlib
                 ここで、印に当てるか外すかを決めてから、動作を行う
             動作の完了報告を返す
 """
-    # def search_club_motion(self,<クライアントから送られるデータ名>):
-    # def search_target_motion(self,<クライアントから送られるデータ名>):
-    # def check_target_motion(self,<クライアントから送られるデータ名>):
-
-# if __init__=="__main__":
+    # def search(self,<クライアントから送られるデータ名>):
+      #img_processのsearchメソッドに動作命令を出す
+      #見つけたことを報告
+    #def adjust(self, data):
+      #img_processのadjustメソッドに動作命令を出す
+      #動作量を受け取り、動かす
+      #動作完了報告を出す
+# if __name__=="__main__":
 """
     いつものように try except を組んで、main()を実行
 """
