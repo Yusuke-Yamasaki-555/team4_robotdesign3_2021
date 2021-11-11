@@ -59,8 +59,8 @@ def main():
     arm.set_named_target("search_target")
     arm.go()
 
-    change = 0
-    if change == 0:
+    change = "dislike"
+    if change == "tilt":
         print("Start tilt_neck")
 
         arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
@@ -77,7 +77,7 @@ def main():
         print("rev_tilt_neck")
         arm.set_named_target("rev_tilt_neck")
         arm.go()
-    elif change == 1:
+    elif change == "dislike":
         print("Start dislike")
 
         arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
@@ -87,7 +87,7 @@ def main():
         arm.go()
 
         arm.set_max_velocity_scaling_factor(1.0) #  dislike
-        arm.set_max_acceleration_scaling_factor(1.0) #  dislike
+        arm.set_max_acceleration_scaling_factor(0.35) #  dislike
         print("dislike_1")
         arm.set_named_target("dislike_1")
         arm.go()
