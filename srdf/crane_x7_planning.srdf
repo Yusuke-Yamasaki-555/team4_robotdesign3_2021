@@ -7,11 +7,13 @@
     A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
 -->
 <robot name="crane_x7">
-    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
-    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
-    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
-    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
-    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <!--Introduction-->
+      <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+      <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+      <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+      <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+      <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+      <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group name="arm">
         <chain base_link="crane_x7_mounting_plate_link" tip_link="crane_x7_gripper_base_link" />
     </group>
@@ -21,8 +23,7 @@
         <joint name="crane_x7_gripper_finger_a_joint" />
         <joint name="crane_x7_gripper_finger_b_joint" />
     </group>
-    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
- 
+
 <!--basic motion-->
     <group_state name="init" group="arm">
         <joint name="crane_x7_shoulder_fixed_part_pan_joint" value="0" />
@@ -90,20 +91,74 @@
         <joint name="crane_x7_wrist_joint" value="-1.57" />
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
-    <group_state name="dislike" group="arm">
-        <joint name="crane_x7_shoulder_fixed_part_pan_joint" value="0" />
-          <!--z軸第一関節  deg:-170~170-->
-        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0" />
+    <group_state name="dislike_1" group="arm">
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.524" />
+          <!--y軸第一関節  deg:-90~90-->
+        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0.873" />
+          <!--z軸第二関節  deg:-90~90-->
+        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.57" />
+          <!--y軸第二関節  deg:-161~2-->
+        <joint name="crane_x7_lower_arm_fixed_part_joint" value="0.698" />
+          <!--z軸第三関節  deg:-159~87-->
+        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.698" />
+          <!--y軸第三関節  deg:-90~90-->
+        <joint name="crane_x7_wrist_joint" value="-1.57" />
+          <!--z軸gripper回転  deg:-170~170-->
+    </group_state>
+      <group_state name="dislike_2" group="arm">
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.524" />
+          <!--y軸第一関節  deg:-90~90-->
+        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="-0.873" />
+          <!--z軸第二関節  deg:-90~90-->
+        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.75" />
+          <!--y軸第二関節  deg:-161~2-->
+        <joint name="crane_x7_lower_arm_fixed_part_joint" value="-0.698" />
+          <!--z軸第三関節  deg:-159~87-->
+        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.524" />
+          <!--y軸第三関節  deg:-90~90-->
+        <joint name="crane_x7_wrist_joint" value="-1.57" />
+          <!--z軸gripper回転  deg:-170~170-->
+    </group_state>
+      <group_state name="dislike_3" group="arm">
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.524" />
+          <!--y軸第一関節  deg:-90~90-->
+        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0.873" />
+          <!--z軸第二関節  deg:-90~90-->
+        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.92" />
+          <!--y軸第二関節  deg:-161~2-->
+        <joint name="crane_x7_lower_arm_fixed_part_joint" value="0.698" />
+          <!--z軸第三関節  deg:-159~87-->
+        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.349" />
+          <!--y軸第三関節  deg:-90~90-->
+        <joint name="crane_x7_wrist_joint" value="-1.57" />
+          <!--z軸gripper回転  deg:-170~170-->
+    </group_state>
+      <group_state name="dislike_4" group="arm">
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.524" />
+          <!--y軸第一関節  deg:-90~90-->
+        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="-0.873" />
+          <!--z軸第二関節  deg:-90~90-->
+        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-2.09" />
+          <!--y軸第二関節  deg:-161~2-->
+        <joint name="crane_x7_lower_arm_fixed_part_joint" value="-0.698" />
+          <!--z軸第三関節  deg:-159~87-->
+        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.175" />
+          <!--y軸第三関節  deg:-90~90-->
+        <joint name="crane_x7_wrist_joint" value="-1.57" />
+          <!--z軸gripper回転  deg:-170~170-->
+    </group_state>
+      <group_state name="dislike_5" group="arm">
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.524" />
           <!--y軸第一関節  deg:-90~90-->
         <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" />
           <!--z軸第二関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="0" />
+        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-2.44" />
           <!--y軸第二関節  deg:-161~2-->
         <joint name="crane_x7_lower_arm_fixed_part_joint" value="0" />
           <!--z軸第三関節  deg:-159~87-->
         <joint name="crane_x7_lower_arm_revolute_part_joint" value="0" />
           <!--y軸第三関節  deg:-90~90-->
-        <joint name="crane_x7_wrist_joint" value="0" />
+        <joint name="crane_x7_wrist_joint" value="-1.57" />
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
     <group_state name="happy_club" group="arm">
