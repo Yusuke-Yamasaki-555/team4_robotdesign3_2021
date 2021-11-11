@@ -37,7 +37,7 @@ def main():
 
     rospy.sleep(1.0)
 
-    """
+    # """
     print("bow") #  bow
     arm.set_named_target("bow")
 
@@ -59,30 +59,50 @@ def main():
     arm.set_named_target("search_target")
     arm.go()
 
-    arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
-    arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
-    print("emotions_stand_by")
-    arm.set_named_target("emotions_stand_by")
-    arm.go()
+    change = 0
+    if change == 0:
+        print("Start tilt_neck")
 
-    arm.set_max_velocity_scaling_factor(1.0) #  tilt_neck & rev_tilt_neck
-    arm.set_max_acceleration_scaling_factor(1.0) #  tilt neck & rev_tilt_neck
-    print("tilt_neck")
-    arm.set_named_target("tilt_neck")
-    arm.go()
-    print("rev_tilt_neck")
-    arm.set_named_target("rev_tilt_neck")
-    arm.go()
+        arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
+        arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
+        print("emotions_stand_by")
+        arm.set_named_target("emotions_stand_by")
+        arm.go()
 
-    print("init_pose")
-    arm.set_named_target("init")
-    arm.go()
+        arm.set_max_velocity_scaling_factor(1.0) #  tilt_neck & rev_tilt_neck
+        arm.set_max_acceleration_scaling_factor(1.0) #  tilt neck & rev_tilt_neck
+        print("tilt_neck")
+        arm.set_named_target("tilt_neck")
+        arm.go()
+        print("rev_tilt_neck")
+        arm.set_named_target("rev_tilt_neck")
+        arm.go()
+    elif change == 1:
+        print("Start dislike")
 
-    arm.set_max_velocity_scaling_factor(0.05) #  hold
-    arm.set_max_acceleration_scaling_factor(1.0) #  hold
-    print("hold")
-    arm.set_named_target("hold")
-    arm.go()
+        arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
+        arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
+        print("emotions_stand_by")
+        arm.set_named_target("emotions_stand_by")
+        arm.go()
+
+        arm.set_max_velocity_scaling_factor(1.0) #  dislike
+        arm.set_max_acceleration_scaling_factor(1.0) #  dislike
+        print("dislike_1")
+        arm.set_named_target("dislike_1")
+        arm.go()
+        print("dislike_2")
+        arm.set_named_target("dislike_2")
+        arm.go()
+        print("dislike_3")
+        arm.set_named_target("dislike_3")
+        arm.go()
+        print("dislike_4")
+        arm.set_named_target("dislike_4")
+        arm.go()
+        print("dislike_5")
+        arm.set_named_target("dislike_5")
+        arm.go()
 
     arm.set_max_velocity_scaling_factor(1.0) #  stand_by (motion中のstand_by)
     arm.set_max_acceleration_scaling_factor(0.35) #  stand_by
@@ -90,7 +110,17 @@ def main():
     arm.set_named_target("stand_by")
     arm.go()
 
+    arm.set_max_velocity_scaling_factor(1.0) #  hold
+    arm.set_max_acceleration_scaling_factor(0.2) #  hold
+    print("hold")
+    arm.set_named_target("hold")
+    arm.go()
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
     #  """
+    """
     # search_club → happy_club → 掴む姿勢
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
@@ -155,6 +185,7 @@ def main():
 
     # """
 
+    """
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
@@ -267,6 +298,11 @@ def main():
     gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
 
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
+    print("Finish")
     #  """
 
 if __name__ == '__main__':
