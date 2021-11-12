@@ -28,4 +28,7 @@ cit robot-design-3-2021 crane_x7
 
 
 中間発表スライド：
-https://docs.google.com/presentation/d/10579iWYMIuUj-ryrvBYHtZIV1r_oiTxQpfvfWUjjHhE/edit?pli=1#slide=id.gfa179629e3_0_115
+https://docs.google.com/presentation/d/0579iWYMIuUj-ryrvBYHtZIV1r_oiTxQpfvfWUjjHhE/edit?pli=1#slide=id.gfa179629e3_0_115
+
+中間審査スライド：
+https://docs.google.com/presentation/d/tpdYi2m5gKSQwnyu7kb8FYfR5NCdw_Xt4EQMoiLcIX8/edit#slide=id.p
