@@ -7,12 +7,13 @@ import geometry_msgs
 import rosnode
 from tf.transformations import quaternion_from_euler
 
-from std_srvs.srv import SetBool, SetBoolResponse 
+from std_srvs.srv import SetBool, SetBoolResponse #  SetBoolは標準搭載のservice
 
-vel = 1.0
-acc = 1.0
-# '''
-def main():
+# グローバル変数
+vel = 1.0  # set_max_velocity_scaling_factorの引数
+acc = 1.0  # set_max_acceleration_scaling_factorの引数
+
+def main():  # このnodeの玄関
     """
     この中でいつもの定型文を書く。
     node名：emotions
@@ -30,55 +31,47 @@ def main():
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
         rospy.sleep(1.0)
 
-    server = Emotions_Server()
-    bow = rospy.Service("bow", SetBool, server.bow_motion)
+    server = Emotions_Server()  # Emotions_Serverのインスタンス化
+    bow = rospy.Service("bow", SetBool, server.bow_motion)  # bow のservice開始
 
-    print("Node:emotions Ready")
-    rospy.spin()
-# '''
-class Preparation_motion:
+    print("server:emotions Ready")
+    rospy.spin()  # 無限ループ
+
+class Preparation_motion:  # Emotions_Serverから呼び出される、基本動作の関数をまとめたクラス
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
-    """
-    このクラスでは、init , stand_by , emotions_stand_by をそれぞれ関数として持ち、class Emotions_Serverに提供する
-    Service_Serverにはならない
-    各関数の最後：return 動作結果
-    """
-    def init(self):
-        self.arm.set_max_velocity_scaling_factor(vel)
+
+    def init(self):  # 棒立ちの動作
+        self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
         self.arm.set_max_acceleration_scaling_factor(acc)
 
         print("server:init_pose")
-        self.arm.set_named_target("init")
-        self.arm.go()
+        self.arm.set_named_target("init") #  SRDFからinitのステータスを読み込み
+        self.arm.go() #  動作の実行
 
 class Emotions_Server: 
-    preparation = Preparation_motion()
+    preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
 
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
 
-    def bow_motion(self, data):
-        """
-        この関数では、bow をする動作をServiceとして提供する
-        動作の速度＆加速度の比率を定義
-        動作を行う(test.py参照)
-        動作の完了報告を返す
-        """
+    def bow_motion(self, data):  # お辞儀をする動作（data:clientからの入力データ）
+        # グローバル変数のvelとaccの値を、お辞儀用の値にする
         global vel, acc
         vel = 0.5
         acc = 0.35
 
-        self.arm.set_max_velocity_scaling_factor(vel) #  bow
-        self.arm.set_max_acceleration_scaling_factor(acc) #  bow
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
 
+        # お辞儀の動作の処理
         resp = SetBoolResponse()
         if data.data == True:
             try:
                 print("server:bow")
                 self.arm.set_named_target("bow")
                 self.arm.go()
-                self.preparation.init()
+                self.preparation.init() #  class:Preparation_motion内のinit関数を実行
                 resp.message = "client:Success bow_motion"
                 resp.success = True
                 print("server:Finish bow_motion")
