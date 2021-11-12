@@ -8,6 +8,9 @@ import rosnode
 from tf.transformations import quaternion_from_euler
 
 from std_srvs.srv import SetBool, SetBoolResponse 
+
+vel = 1.0
+acc = 1.0
 # '''
 def main():
     """
@@ -34,6 +37,7 @@ def main():
     rospy.spin()
 # '''
 class Preparation_motion:
+    global vel, acc
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
     """
@@ -41,15 +45,16 @@ class Preparation_motion:
     Service_Serverにはならない
     各関数の最後：return 動作結果
     """
-    def init(self):
-        self.arm.set_max_velocity_scaling_factor(0.5)
-        self.arm.set_max_acceleration_scaling_factor(0.35)
+    def init(self, vel, acc):
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
 
         print("init_pose")
         self.arm.set_named_target("init")
         self.arm.go()
 
 class Emotions_Server: 
+    global vel, acc
     preparation = Preparation_motion()
 
     arm = moveit_commander.MoveGroupCommander("arm")
@@ -62,8 +67,11 @@ class Emotions_Server:
         動作を行う(test.py参照)
         動作の完了報告を返す
         """
-        self.arm.set_max_velocity_scaling_factor(0.5) #  bow
-        self.arm.set_max_acceleration_scaling_factor(0.35) #  bow
+        self.vel = 0.5
+        self.acc = 0.35
+
+        self.arm.set_max_velocity_scaling_factor(self.vel) #  bow
+        self.arm.set_max_acceleration_scaling_factor(self.acc) #  bow
 
         resp = SetBoolResponse()
         if data.data == True:
@@ -71,7 +79,7 @@ class Emotions_Server:
                 print("bow")
                 self.arm.set_named_target("bow")
                 self.arm.go()
-                self.preparation.init()
+                self.preparation.init(self.vel, self.acc)
                 resp.message = "Success bow_motion"
                 resp.success = True
             except:
