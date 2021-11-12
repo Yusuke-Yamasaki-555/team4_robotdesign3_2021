@@ -8,7 +8,7 @@ import rosnode
 from tf.transformations import quaternion_from_euler
 
 from std_srvs.srv import SetBool, SetBoolResponse 
-'''
+# '''
 def main():
     """
     この中でいつもの定型文を書く。
@@ -21,17 +21,18 @@ def main():
     各サービスのインスタンスを作成
     while not rospy.is_shutdown():
         rospy.spin()   
-    """
+    """ 
     rospy.init_node("emotions")
 
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
         rospy.sleep(1.0)
 
-    bow = rospy.Service("bow", SetBool, Emotions_Server.bow_motion)
+    server = Emotions_Server()
+    bow = rospy.Service("bow", SetBool, server.bow_motion)
 
     print("Node:emotions Ready")
     rospy.spin()
-'''
+# '''
 class Preparation_motion:
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
@@ -41,6 +42,9 @@ class Preparation_motion:
     各関数の最後：return 動作結果
     """
     def init(self):
+        self.arm.set_max_velocity_scaling_factor(0.5)
+        self.arm.set_max_acceleration_scaling_factor(0.35)
+
         print("init_pose")
         self.arm.set_named_target("init")
         self.arm.go()
@@ -58,6 +62,9 @@ class Emotions_Server:
         動作を行う(test.py参照)
         動作の完了報告を返す
         """
+        self.arm.set_max_velocity_scaling_factor(0.5) #  bow
+        self.arm.set_max_acceleration_scaling_factor(0.35) #  bow
+
         resp = SetBoolResponse()
         if data.data == True:
             try:
@@ -65,12 +72,11 @@ class Emotions_Server:
                 self.arm.set_named_target("bow")
                 self.arm.go()
                 self.preparation.init()
-                resp.message = "Success"
+                resp.message = "Success bow_motion"
                 resp.success = True
             except:
-                resp.message = "Failure"
+                resp.message = "Failure bow_motion"
                 resp.success = False
-        print("finish bow")
         return resp
             
     # def tilt_neck_motion(self,<クライアントから送られるデータ名>):
@@ -111,6 +117,8 @@ if __name__ == '__main__':
     """
     try:
         if not rospy.is_shutdown():
+            main()
+            '''
             rospy.init_node("emotions")
 
             while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
@@ -121,5 +129,6 @@ if __name__ == '__main__':
 
             print("Node:emotions Ready")
             rospy.spin()
+            '''
     except rospy.ROSInterruptException:
         pass
