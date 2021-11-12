@@ -37,7 +37,6 @@ def main():
     rospy.spin()
 # '''
 class Preparation_motion:
-    global vel, acc
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
     """
@@ -45,16 +44,15 @@ class Preparation_motion:
     Service_Serverにはならない
     各関数の最後：return 動作結果
     """
-    def init(self, vel, acc):
+    def init(self):
         self.arm.set_max_velocity_scaling_factor(vel)
         self.arm.set_max_acceleration_scaling_factor(acc)
 
-        print("init_pose")
+        print("server:init_pose")
         self.arm.set_named_target("init")
         self.arm.go()
 
 class Emotions_Server: 
-    global vel, acc
     preparation = Preparation_motion()
 
     arm = moveit_commander.MoveGroupCommander("arm")
@@ -67,23 +65,25 @@ class Emotions_Server:
         動作を行う(test.py参照)
         動作の完了報告を返す
         """
-        self.vel = 0.5
-        self.acc = 0.35
+        global vel, acc
+        vel = 0.5
+        acc = 0.35
 
-        self.arm.set_max_velocity_scaling_factor(self.vel) #  bow
-        self.arm.set_max_acceleration_scaling_factor(self.acc) #  bow
+        self.arm.set_max_velocity_scaling_factor(vel) #  bow
+        self.arm.set_max_acceleration_scaling_factor(acc) #  bow
 
         resp = SetBoolResponse()
         if data.data == True:
             try:
-                print("bow")
+                print("server:bow")
                 self.arm.set_named_target("bow")
                 self.arm.go()
-                self.preparation.init(self.vel, self.acc)
-                resp.message = "Success bow_motion"
+                self.preparation.init()
+                resp.message = "client:Success bow_motion"
                 resp.success = True
+                print("server:Finish bow_motion")
             except:
-                resp.message = "Failure bow_motion"
+                resp.message = "client:Failure bow_motion"
                 resp.success = False
         return resp
             
@@ -126,17 +126,5 @@ if __name__ == '__main__':
     try:
         if not rospy.is_shutdown():
             main()
-            '''
-            rospy.init_node("emotions")
-
-            while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
-                rospy.sleep(1.0)
-
-            server = Emotions_Server()
-            data = rospy.Service('bow', SetBool, server.bow_motion)
-
-            print("Node:emotions Ready")
-            rospy.spin()
-            '''
     except rospy.ROSInterruptException:
         pass
