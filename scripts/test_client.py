@@ -5,6 +5,7 @@ import rospy
 import moveit_commander
 import rosnode
 
+
 from std_srvs.srv import SetBool
 
 def main():
@@ -18,11 +19,13 @@ def main():
     rospy.wait_for_service("bow")
 
     
-    bow = rospy.ServiceProxy("bow",SetBool)
-    bow(True)
+    bow = rospy.ServiceProxy('bow',SetBool)
 
-    if bow.success:
-        print("finish")
+    bool = True
+    result = bow(bool)
+
+    if result.success:
+        print(result.message)
 
 if __name__ == '__main__':
     try:

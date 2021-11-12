@@ -8,7 +8,7 @@ import rosnode
 from tf.transformations import quaternion_from_euler
 
 from std_srvs.srv import SetBool, SetBoolResponse 
-
+'''
 def main():
     """
     この中でいつもの定型文を書く。
@@ -31,7 +31,7 @@ def main():
 
     print("Node:emotions Ready")
     rospy.spin()
-
+'''
 class Preparation_motion(object):
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
@@ -51,7 +51,7 @@ class Emotions_Server(object):
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
 
-    def bow_motion(self,data):
+    def bow_motion(self, data):
         """
         この関数では、bow をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
@@ -59,7 +59,7 @@ class Emotions_Server(object):
         動作の完了報告を返す
         """
         resp = SetBoolResponse()
-        if data.data:
+        if data.data == True:
             try:
                 print("bow")
                 self.arm.set_named_target("bow")
@@ -111,6 +111,14 @@ if __name__ == '__main__':
     """
     try:
         if not rospy.is_shutdown():
-            main()
+            rospy.init_node("emotions")
+
+            while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
+                rospy.sleep(1.0)
+
+            bow = rospy.Service("bow", SetBool, Emotions_Server.bow_motion)
+
+            print("Node:emotions Ready")
+            rospy.spin()
     except rospy.ROSInterruptException:
         pass
