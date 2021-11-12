@@ -7,7 +7,7 @@ import geometry_msgs
 import rosnode
 from tf.transformations import quaternion_from_euler
 
-from std_srvs.srv import SetBool, SetBoolResponse #  SetBoolは標準搭載のservice
+from std_srvs.srv import SetBool, SetBoolResponse #  SetBoolは標準搭載のservice( 入力:bool data , 出力:bool success / string message )
 
 # グローバル変数
 vel = 1.0  # set_max_velocity_scaling_factorの引数
