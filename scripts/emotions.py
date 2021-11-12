@@ -43,7 +43,7 @@
 
     # def bow_motion(self,<クライアントから送られるデータ名>):
 """
-        このクラスでは、bow をする動作をServiceとして提供する
+        この関数では、bow をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
         動作を行う(test.py参照)
         動作の完了報告を返す
@@ -51,7 +51,7 @@
 
     # def tilt_neck_motion(self,<クライアントから送られるデータ名>):
 """
-        このクラスでは、tile_neck をする動作をServiceとして提供する
+        この関数では、tile_neck をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
        動作を行う(test.py参照)
         動作の完了報告を返す
@@ -59,7 +59,7 @@
 
     # def dislike_motion(self,<クライアントから送られるデータ名>):
 """
-        このクラスでは、dislike をする動作をServiceとして提供する
+        この関数では、dislike をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
         動作を行う(test.py参照)
         動作の完了報告を返す
@@ -67,7 +67,7 @@
 
     # def happy_club_motion(self,<クライアントから送られるデータ名>):
 """
-        このクラスでは、happy_club をする動作をServiceとして提供する
+        この関数では、happy_club をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
         動作を行う(test.py参照)
         動作の完了報告を返す
@@ -75,7 +75,7 @@
 
     # def happy_end_motion(self,<クライアントから送られるデータ名>):
 """
-        このクラスでは、happy_end をする動作をServiceとして提供する
+        この関数では、happy_end をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
         動作を行う(test.py参照)
         動作の完了報告を返す

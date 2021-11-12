@@ -37,6 +37,7 @@ def main():
 
     rospy.sleep(1.0)
 
+    """
     print("bow")
     arm.set_named_target("bow")
     a = arm.go() #  モーションが終了したら、その結果がaに代入される
@@ -94,7 +95,7 @@ def main():
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
     search_club.position.y = 0.26
-    search_club.position.z = 0.2
+    search_club.position.z = 0.3
     qu1 = quaternion_from_euler(0, 3.14, 3.14)
     search_club.orientation.x = qu1[0]
     search_club.orientation.y = qu1[1]
@@ -151,14 +152,32 @@ def main():
 
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
-    #  """
+    """
 
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
 
+    #  棒を離す動作
+    print("release_club")
+    arm.set_named_target("release_club")
+    arm.go()
+
     gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
+    print("bow")
+    arm.set_named_target("bow")
+    arm.go()
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+    #  """
 
 if __name__ == '__main__':
     try:
