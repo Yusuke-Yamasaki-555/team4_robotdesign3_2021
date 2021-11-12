@@ -32,7 +32,7 @@ def main():
     print("Node:emotions Ready")
     rospy.spin()
 '''
-class Preparation_motion(object):
+class Preparation_motion:
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
     """
@@ -45,8 +45,8 @@ class Preparation_motion(object):
         self.arm.set_named_target("init")
         self.arm.go()
 
-class Emotions_Server(object): 
-    preparation = Preparation_motion
+class Emotions_Server: 
+    preparation = Preparation_motion()
 
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
@@ -116,7 +116,8 @@ if __name__ == '__main__':
             while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
                 rospy.sleep(1.0)
 
-            bow = rospy.Service("bow", SetBool, Emotions_Server.bow_motion)
+            server = Emotions_Server()
+            data = rospy.Service('bow', SetBool, server.bow_motion)
 
             print("Node:emotions Ready")
             rospy.spin()
