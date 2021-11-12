@@ -7,7 +7,7 @@ import geometry_msgs
 import rosnode
 from tf.transformations import quaternion_from_euler
 
-from std_srvs import SetBool, SetBoolResponce 
+from std_srvs.srv import SetBool, SetBoolResponse 
 
 def main():
     """
@@ -58,7 +58,7 @@ class Emotions_Server(object):
         動作を行う(test.py参照)
         動作の完了報告を返す
         """
-        resp = SetBoolResponce()
+        resp = SetBoolResponse()
         if data.data:
             try:
                 print("bow")
@@ -70,6 +70,7 @@ class Emotions_Server(object):
             except:
                 resp.message = "Failure"
                 resp.success = False
+        print("finish bow")
         return resp
             
     # def tilt_neck_motion(self,<クライアントから送られるデータ名>):

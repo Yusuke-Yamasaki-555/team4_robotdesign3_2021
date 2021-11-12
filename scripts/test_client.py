@@ -21,6 +21,9 @@ def main():
     bow = rospy.ServiceProxy("bow",SetBool)
     bow(True)
 
+    if bow.success:
+        print("finish")
+
 if __name__ == '__main__':
     try:
         if not rospy.is_shutdown():
