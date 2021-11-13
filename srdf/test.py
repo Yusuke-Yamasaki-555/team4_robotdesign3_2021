@@ -7,169 +7,49 @@ import geometry_msgs
 import rosnode
 from tf.transformations import quaternion_from_euler
 
-from copy import deepcopy
-
 def main():
     rospy.init_node("motion_test")
     robot = moveit_commander.RobotCommander()
     arm = moveit_commander.MoveGroupCommander("arm")
     gripper = moveit_commander.MoveGroupCommander("gripper")
-    
-    arm.set_max_velocity_scaling_factor(0.5) #  bow
-    arm.set_max_acceleration_scaling_factor(0.35) #  bow
 
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
         rospy.sleep(1.0)
 
     rospy.sleep(1.0)
 
-    print("init_pose")
-    arm.set_named_target("init") #  返り値：None
-    a = arm.go() #  返り値：bool type
-
+#===== bow =====
+    """
     gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
 
-    print(a)
+    arm.set_max_velocity_scaling_factor(0.5)
+    arm.set_max_acceleration_scaling_factor(0.35)
 
-    if a:
-        print("success")
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
 
-    rospy.sleep(1.0)
-
-    # """
     print("bow") #  bow
     arm.set_named_target("bow")
-
-    # Code test (check)
-    a = arm.go() #  モーションが終了したら、その結果がaに代入される
-    if a:
-        print("success")
+    arm.go()
 
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
-
-    gripper.set_joint_value_target([0.8, 0.8])
+    # """
+#===== search_club =====
+    """
+    gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
 
-    arm.set_max_velocity_scaling_factor(0.5) #  search_target
-    arm.set_max_acceleration_scaling_factor(0.35) #  search_target
-    print("search_target")
-    arm.set_named_target("search_target")
-    arm.go()
-
-    change = "dislike"
-
-    if change == "tilt":
-
-        print("Start tilt_neck")
-        arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
-        arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
-        print("emotions_stand_by")
-        arm.set_named_target("emotions_stand_by")
-        arm.go()
-        arm.set_max_velocity_scaling_factor(1.0) #  tilt_neck & rev_tilt_neck
-        arm.set_max_acceleration_scaling_factor(1.0) #  tilt neck & rev_tilt_neck
-        print("tilt_neck")
-        arm.set_named_target("tilt_neck")
-        arm.go()
-        print("rev_tilt_neck")
-        arm.set_named_target("rev_tilt_neck")
-        arm.go()
-
-    elif change == "dislike":
-
-        print("Start dislike")
-        arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
-        arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
-        print("emotions_stand_by")
-        arm.set_named_target("emotions_stand_by")
-        arm.go()
-        # dislikeの動きは、もっと嫌がっている感が出せるはず。要調整
-        arm.set_max_velocity_scaling_factor(1.0) #  dislike
-        arm.set_max_acceleration_scaling_factor(0.35) #  dislike　ここの調整が重要かも鴨
-        print("dislike_1")
-        arm.set_named_target("dislike_1")
-        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-        
-        # ここのif文は関数にするべき
-        if current_pose[0] >= 0.01:
-            z_axis_1 = current_pose[0] - 0.559
-            flag = True
-        else:
-            z_axis_1 = current_pose[0] + 0.559
-            flag = False
-     
-        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-        arm.go()
-        print("dislike_2")
-        arm.set_named_target("dislike_2")
-        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-
-        # ここのif文は関数にするべき
-        if flag:
-            z_axis_1 = current_pose[0] - 0.559
-        else:
-            z_axis_1 = current_pose[0] + 0.559
-     
-        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-        arm.go()
-        print("dislike_3")
-        arm.set_named_target("dislike_3")
-        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-        
-        # ここのif文は関数にするべき
-        if flag:
-            z_axis_1 = current_pose[0] - 0.559
-        else:
-            z_axis_1 = current_pose[0] + 0.559
-     
-        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-        arm.go()
-        print("dislike_4")
-        arm.set_named_target("dislike_4")
-        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-
-                # ここのif文は関数にするべき
-        if flag:
-            z_axis_1 = current_pose[0] - 0.559
-        else:
-            z_axis_1 = current_pose[0] + 0.559
-     
-        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-        arm.go()
-        print("dislike_5")
-        arm.set_named_target("dislike_5")
-        current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-
-                # ここのif文は関数にするべき
-        if flag:
-            z_axis_1 = current_pose[0] - 0.559
-        else:
-            z_axis_1 = current_pose[0] + 0.559
-     
-        arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-        arm.go()
-
-    arm.set_max_velocity_scaling_factor(1.0) #  stand_by (motion中のstand_by)
-    arm.set_max_acceleration_scaling_factor(0.35) #  stand_by
-    print("stand_by")
-    arm.set_named_target("stand_by")
-    arm.go()
-
-    arm.set_max_velocity_scaling_factor(1.0) #  hold
-    arm.set_max_acceleration_scaling_factor(0.2) #  hold
-    print("hold")
-    arm.set_named_target("hold")
-    arm.go()
+    arm.set_max_velocity_scaling_factor(0.5)
+    arm.set_max_acceleration_scaling_factor(0.35)
 
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
-    #  """
-    """
-    # search_club → happy_club → 掴む姿勢
+
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
     search_club.position.y = 0.26
@@ -183,32 +63,21 @@ def main():
     arm.set_pose_target(search_club)
     print(search_club)
     arm.go()
+    # """
+#===== happy_club =====(search_clubとセット)
+    """
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
 
-    current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-    print("Current Pose:")
-    print(current_pose)
+    arm.set_max_velocity_scaling_factor(0.5)
+    arm.set_max_acceleration_scaling_factor(0.35)
 
-    arm.set_max_velocity_scaling_factor(1.0) #  happy_club
-    arm.set_max_acceleration_scaling_factor(1.0) #  happy_club
-    print("happy_club")
-    
     #  喜ぶ姿勢になる(happy_club) from SRDF
+    current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
     arm.set_named_target("happy_club")
     arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",current_pose[0]) #  現在の第一関節z軸を維持
+    print("happy_club")
     arm.go()
-
-    '''
-    #  喜ぶ姿勢になる(happy_club) from pose_target
-    happy_club = deepcopy(search_club)
-    qu2 = quaternion_from_euler(0, 0.873, 1.57)
-    happy_club.orientation.x = qu2[0]
-    happy_club.orientation.y = qu2[1]
-    happy_club.orientation.z = qu2[2]
-    happy_club.orientation.w = qu2[3]
-    arm.set_pose_target(happy_club)
-    print(happy_club)
-    arm.go()
-    '''
 
     #  手を開閉させて喜ぶ(happy_club)
     gripper.set_joint_value_target([0.015, 0.015])
@@ -221,54 +90,221 @@ def main():
     gripper.go()
     gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
+    # """
+#===== search_target =====
+    """
+    gripper.set_joint_value_target([0.5, 0.5])
+    gripper.go()
 
-    #  棒を掴む体勢に戻る
-    print("search_club")
-    arm.set_pose_target(search_club)
-    print(search_club)
+    arm.set_max_velocity_scaling_factor(0.5)
+    arm.set_max_acceleration_scaling_factor(0.35)
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
+    print("search_target")
+    arm.set_named_target("search_target")
+    arm.go()
+    # """
+#===== tilt_neck =====(search_targetとセット)
+    """
+    gripper.set_joint_value_target([0.5, 0.5])
+    gripper.go()
+
+    arm.set_max_velocity_scaling_factor(1.0)
+    arm.set_max_acceleration_scaling_factor(1.0)
+
+    print("emotions_stand_by")
+    arm.set_named_target("emotions_stand_by")
+    arm.go()
+
+    print("tilt_neck")
+    arm.set_named_target("tilt_neck")
+    arm.go()
+
+    print("rev_tilt_neck")
+    arm.set_named_target("rev_tilt_neck")
+    arm.go()
+
+    print("search_target")
+    arm.set_named_target("search_target")
+    arm.go()
+    # """
+#===== dislike =====(search_targetとセット)
+    """
+    gripper.set_joint_value_target([1.0, 1.0])
+    gripper.go()
+
+    arm.set_max_velocity_scaling_factor(1.0)
+    arm.set_max_acceleration_scaling_factor(1.0)
+
+    print("emotions_stand_by")
+    arm.set_named_target("emotions_stand_by")
+    arm.go()
+
+    arm.set_max_velocity_scaling_factor(1.0)
+    arm.set_max_acceleration_scaling_factor(0.5)
+
+    print("dislike_1")
+    arm.set_named_target("dislike_1")
+    current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+       
+    # ここのif文は関数にするべき
+    if current_pose[0] >= 0.01:
+        z_axis_1 = current_pose[0] - 0.559
+        flag = True
+    else:
+        z_axis_1 = current_pose[0] + 0.559
+        flag = False
+    
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+    arm.go()
+    print("dislike_2")
+    arm.set_named_target("dislike_2")
+    current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
+    # ここのif文は関数にするべき
+    if flag:
+        z_axis_1 = current_pose[0] - 0.559
+    else:
+        z_axis_1 = current_pose[0] + 0.559
+     
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+    arm.go()
+    print("dislike_3")
+    arm.set_named_target("dislike_3")
+    current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+        
+    # ここのif文は関数にするべき
+    if flag:
+        z_axis_1 = current_pose[0] - 0.559
+    else:
+        z_axis_1 = current_pose[0] + 0.559
+     
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+    arm.go()
+    print("dislike_4")
+    arm.set_named_target("dislike_4")
+    current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
+    # ここのif文は関数にするべき
+    if flag:
+        z_axis_1 = current_pose[0] - 0.559
+    else:
+        z_axis_1 = current_pose[0] + 0.559
+     
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+    arm.go()
+    print("dislike_5")
+    arm.set_named_target("dislike_5")
+    current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
+    # ここのif文は関数にするべき
+    if flag:
+        z_axis_1 = current_pose[0] - 0.559
+    else:
+        z_axis_1 = current_pose[0] + 0.559
+     
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+    arm.go()
+
+    print("search_target")
+    arm.set_named_target("search_target")
+    arm.go()
+    # """
+#===== hold =====
+    """
+    gripper.set_joint_value_target([0.5, 0.5])
+    gripper.go()
+
+    arm.set_max_velocity_scaling_factor(0.5)
+    arm.set_max_acceleration_scaling_factor(0.35)
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
+    print("hold")
+    arm.set_named_target("hold")
+    arm.go()
+    # """
+#==== swing_club =====(holdとセット)=========================================
+    """
+    gripper.set_joint_value_target([0.5, 0.5])
+    gripper.go()
+
+    arm.set_max_velocity_scaling_factor(0.05)
+    arm.set_max_acceleration_scaling_factor(0.15)
+
+    print("swing_set_club")
+    arm.set_named_target("swing_set_club")
+    arm.go()
+
+    arm.set_max_velocity_scaling_factor(1.0)
+    arm.set_max_acceleration_scaling_factor(0.5)
+
+    print("swing_club")
+    arm.set_named_target("swing_club")
+    arm.go()
+    # """
+#===== stand_by =====
+    """
+    gripper.set_joint_value_target([0.5, 0.5])
+    gripper.go()
+
+    arm.set_max_velocity_scaling_factor(0.5)
+    arm.set_max_acceleration_scaling_factor(0.35)
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
+    print("stand_by")
+    arm.set_named_target("stand_by")
+    arm.go()
+    # """
+#===== release_club =====
+    """
+    gripper.set_joint_value_target([0.5, 0.5])
+    gripper.go()
+
+    arm.set_max_velocity_scaling_factor(0.5)
+    arm.set_max_acceleration_scaling_factor(0.35)
+
+    print("init_pose")
+    arm.set_named_target("init")
+    arm.go()
+
+    print("release_club")
+    arm.set_named_target("release_club")
     arm.go()
 
     gripper.set_joint_value_target([0.8, 0.8])
     gripper.go()
 
-    # """
-
-    """
     print("init_pose")
     arm.set_named_target("init")
-    arm.go()
-
-    arm.set_max_velocity_scaling_factor(0.5)
-    arm.set_max_acceleration_scaling_factor(0.35)
-
-    #  棒を離す動作
-    print("release_club")
-    arm.set_named_target("release_club")
     arm.go()
 
     gripper.set_joint_value_target([0.015, 0.015])
     gripper.go()
+    # """
+#==== happy_end =====
+    """
+    gripper.set_joint_value_target([0.015, 0.015])
+    gripper.go()
+
+    arm.set_max_velocity_scaling_factor(1.0)
+    arm.set_max_acceleration_scaling_factor(0.35)
 
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
 
-    print("bow")
-    arm.set_named_target("bow")
-    arm.go()
-
-    print("init_pose")
-    arm.set_named_target("init")
-    arm.go()
-
-    # motion:happy_end
     # init → gripper_open → happy_end_1 → happy_end_init → happy_end_2 → happy_end_init 
     #  → happy_end_3　→ happy_end_init → happy_end_-rotate → happy_end_+lotate → happy_end_init 
     #    → gripper_close → gripper_open → gripper_close → gripper_open → gripper_close → gripper_open → gripper_close
-
-    print("Start happy_end")
-    arm.set_max_velocity_scaling_factor(1.0)
-    arm.set_max_acceleration_scaling_factor(0.4)
 
     print("Open gripper")
     gripper.set_joint_value_target([0.8, 0.8])
@@ -306,14 +342,6 @@ def main():
     arm.set_named_target("happy_end_+rotate")
     arm.go()
 
-    # print("happy_end_-rotate")
-    # arm.set_named_target("happy_end_-rotate")
-    # arm.go()
-
-    # print("happy_end_+rotate")
-    # arm.set_named_target("happy_end_+rotate")
-    # arm.go()
-
     print("happy_end_init")
     arm.set_named_target("happy_end_init")
     arm.go()
@@ -349,9 +377,7 @@ def main():
     print("init_pose")
     arm.set_named_target("init")
     arm.go()
-
-    print("Finish")
-    #  """
+    # """
 
 if __name__ == '__main__':
     try:
