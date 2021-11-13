@@ -102,13 +102,7 @@ import actionlib
     if 中止命令が来た→emotions:tilt_neck を実行後、終了
     完了報告をresult
 """
-    # def search(self,<クライアントから送られるデータ名>):
-      #img_processのsearchメソッドに動作命令を出す
-      #見つけたことを報告
-    #def adjust(self, data):
-      #img_processのadjustメソッドに動作命令を出す
-      #動作量を受け取り、動かす
-      #動作完了報告を出す
+
 # if __name__=="__main__":
 """
     いつものように try except を組んで、main()を実行

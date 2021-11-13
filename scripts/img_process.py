@@ -52,20 +52,6 @@ class Img_process(Accept_img):
 def rtn_ar_info(img):
     print("hello")
 
-"""仮のコード
-    #ARマーカーがあるかどうか判定し、結果をmotion_processに返す
-def search(data):
-    print("hello")
-    #画像を取得、opencv形式に変換し、返す
-    def accept_img(data):
-        print("hello")
-#根本の回転角度を計算して、それをmotion_processに返す
-def adjust(data):
-    print("hello")
-    #画像を取得、opencv形式に変換し、返す
-    def accept_img(data):
-        print("hello")
-"""
 def main():
     #sub-pub or server-clientを宣言
     #オブジェクト生成
