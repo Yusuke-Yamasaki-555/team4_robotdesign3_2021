@@ -30,7 +30,7 @@ import actionlib
         if feedbackされてきた状態(回数)が一定を超えた
             中止命令
 
-    while 指定の色リストが全て処理されるまでループ
+    while 指定の色リストが全て処理されるまでループ(色はARマーカーと対応させる)
         while check_clubの結果が良になるまでループ
             search_target
                 if feedbackされてきた状態(回数)が一定を超えた

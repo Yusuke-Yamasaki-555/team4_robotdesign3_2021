@@ -54,21 +54,21 @@ def main():
     gripper.go()
 
     arm.set_max_velocity_scaling_factor(0.5) #  search_target
-    arm.set_max_acceleration_scaling_factor(0.5) #  search_target
+    arm.set_max_acceleration_scaling_factor(0.35) #  search_target
     print("search_target")
     arm.set_named_target("search_target")
     arm.go()
 
     change = "dislike"
-    if change == "tilt":
-        print("Start tilt_neck")
 
+    if change == "tilt":
+
+        print("Start tilt_neck")
         arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
         arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
         print("emotions_stand_by")
         arm.set_named_target("emotions_stand_by")
         arm.go()
-
         arm.set_max_velocity_scaling_factor(1.0) #  tilt_neck & rev_tilt_neck
         arm.set_max_acceleration_scaling_factor(1.0) #  tilt neck & rev_tilt_neck
         print("tilt_neck")
@@ -77,16 +77,16 @@ def main():
         print("rev_tilt_neck")
         arm.set_named_target("rev_tilt_neck")
         arm.go()
-    elif change == "dislike":
-        print("Start dislike")
 
+    elif change == "dislike":
+
+        print("Start dislike")
         arm.set_max_velocity_scaling_factor(1.0) #  emotions_stand_by
         arm.set_max_acceleration_scaling_factor(1.0) #  emotions_stand_by
         print("emotions_stand_by")
         arm.set_named_target("emotions_stand_by")
         arm.go()
-
-# dislikeの動きは、もっと嫌がっている感が出せるはず。要調整
+        # dislikeの動きは、もっと嫌がっている感が出せるはず。要調整
         arm.set_max_velocity_scaling_factor(1.0) #  dislike
         arm.set_max_acceleration_scaling_factor(0.35) #  dislike　ここの調整が重要かも鴨
         print("dislike_1")
