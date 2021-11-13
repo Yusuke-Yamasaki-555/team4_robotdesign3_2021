@@ -78,7 +78,7 @@ import actionlib
                 中止命令が来た→emotions:tilt_neck を実行後、終了
         emotions:happy_club
         棒を掴む(test.py参照)
-        SRDF:hold
+        Preparation_motion:hold
         完了報告をresult
 """
     # def search_target(self,<クライアントから送られるデータ名>):
