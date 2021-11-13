@@ -214,7 +214,7 @@ def main():
     arm.go()
     # """
 #===== hold =====
-    """
+    # """
     gripper.set_joint_value_target([0.5, 0.5])
     gripper.go()
 
@@ -230,7 +230,7 @@ def main():
     arm.go()
     # """
 #==== swing_club =====(holdとセット)=========================================
-    """
+    # """
     gripper.set_joint_value_target([0.5, 0.5])
     gripper.go()
 
@@ -239,6 +239,9 @@ def main():
 
     print("swing_set_club")
     arm.set_named_target("swing_set_club")
+    current_pose = arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+    z_axis_1 = current_pose[0] - 0.873
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
     arm.go()
 
     arm.set_max_velocity_scaling_factor(1.0)
@@ -246,6 +249,8 @@ def main():
 
     print("swing_club")
     arm.set_named_target("swing_club")
+    z_axis_1 = current_pose[0] + 0.873
+    arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
     arm.go()
     # """
 #===== stand_by =====
