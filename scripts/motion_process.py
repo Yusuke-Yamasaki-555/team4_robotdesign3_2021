@@ -67,6 +67,41 @@ import actionlib
                 ここで、印に当てるか外すかを決めてから、動作を行う
             動作の完了報告を返す
 """
+    # def search_club(self,<クライアントから送られるデータ名>):
+"""
+        search_clubをactionとして提供
+        while service:search_clubを使って、棒を探す(第一関節ｚ軸を一周する範囲を探す)
+            if
+                見つかった→見つかったことを今の状態(回数)と一緒にfeedback
+        　      見つからなかった→見つからなかったことを今の状態(回数)と一緒にfeedback(一定の回数に達すると、manageから中止命令が来る)
+            if
+                中止命令が来た→emotions:tilt_neck を実行後、終了
+        emotions:happy_club
+        棒を掴む(test.py参照)
+        SRDF:hold
+        完了報告をresult
+"""
+    # def search_target(self,<クライアントから送られるデータ名>):
+"""
+        search_targetをactionとして提供
+        while service:search_targetを使って、印を探す(第一関節ｚ軸を一周する範囲を探す)
+            if
+                見つかった→見つかったことを今の状態(回数)と一緒にfeedback
+        　      見つからなかった→見つからなかったことを今の状態(回数)と一緒にfeedback(一定の回数に達すると、manageから中止命令が来る)
+            if
+                中止命令が来た→emotions:tilt_neck を実行後、終了
+        if
+            嫌いなやつだった→emotions:dislike
+        完了報告をresult(嫌いなやつだったかどうかでresultを変える)
+"""
+    # def check_target(self,<クライアントから送られるデータ名>):
+"""
+    check_targetをactionとして提供
+    check_targetから印を探す
+    印の状態をfeedback(中止命令が来る)
+    if 中止命令が来た→emotions:tilt_neck を実行後、終了
+    完了報告をresult
+"""
     # def search(self,<クライアントから送られるデータ名>):
       #img_processのsearchメソッドに動作命令を出す
       #見つけたことを報告
