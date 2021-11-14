@@ -1,10 +1,10 @@
 #.srv
 
-#動作命令はstd_srvのSetBool
+#動作命令, 印の有無はstd_srvのSetBool
 
 #自作するもの
 
-#SetInt32: 動作量を出力
+#SetInt32: 位置調整の際の目標座標を入力、動作量を出力
 
 
 #.action
@@ -15,6 +15,6 @@
 
 #bool, int32, str: BoolIn, Int32In, StrIn (動作命令，入力, サービス名の入力など) 
 
-#bool: Feedback (途中経過, 印の有無など)
+#bool: BoolFB (途中経過, 印の有無など)
 
-#int32, bool: ResultInt, ResultBool (処理結果など)
+#int32, bool: IntResult, BoolResult (処理結果など)
