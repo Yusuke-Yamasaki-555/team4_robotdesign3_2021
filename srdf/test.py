@@ -107,7 +107,7 @@ def main():
     arm.set_named_target("search_target")
     arm.go()
     # """
-#===== tilt_neck =====(search_targetとセット)
+#===== emotions_stand_by =====(search_targetとセット)
     """
     gripper.set_joint_value_target([0.5, 0.5])
     gripper.go()
@@ -118,7 +118,9 @@ def main():
     print("emotions_stand_by")
     arm.set_named_target("emotions_stand_by")
     arm.go()
-
+    # """
+#===== tilt_neck =====(search_targetとセット)
+    """
     print("tilt_neck")
     arm.set_named_target("tilt_neck")
     arm.go()
@@ -214,7 +216,7 @@ def main():
     arm.go()
     # """
 #===== hold =====
-    # """
+    """
     gripper.set_joint_value_target([0.5, 0.5])
     gripper.go()
 
@@ -229,8 +231,8 @@ def main():
     arm.set_named_target("hold")
     arm.go()
     # """
-#==== swing_club =====(holdとセット)=========================================
-    # """
+#==== swing_club =====(holdとセット)
+    """
     gripper.set_joint_value_target([0.5, 0.5])
     gripper.go()
 
