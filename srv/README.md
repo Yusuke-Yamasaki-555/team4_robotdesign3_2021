@@ -2,6 +2,9 @@
 
 #動作命令はstd_srvのSetBool
 
+#自作するもの
+
+#SetInt32: 動作量などを出力
 
 
 #.action
@@ -14,4 +17,4 @@
 
 #bool: feedback (途中経過, 印の有無など)
 
-#int32: result (処理結果, 動作量など)
+#int32: result (処理結果など)
