@@ -13,7 +13,7 @@
 
 #型: メッセージの名前 (補足)
 
-#bool, int32, str: BoolIn, Int32In, StrIn (動作命令，入力, サービス名の入力など) 
+#bool, int32, str: BoolIn, Int32In, StrIn (動作命令，入力など) 
 
 #bool: BoolFB (途中経過, 印の有無など)
 
