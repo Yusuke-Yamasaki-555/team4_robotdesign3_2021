@@ -1,17 +1,18 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
 <model name="club">
-  <pose>0 0 0 0 0 0</pose>
+  <pose>0 0 0.04 0 0 0</pose>
     <link name="link">
       <inertial>
-        <mass>1.0</mass>
+        <mass>0.1</mass>
         <inertia>
-          <ixx>0.081</ixx>
+          <ixx>3e-3</ixx>
           <ixy>0.0</ixy>
           <ixz>0.0</ixz>
-          <iyy>0.081</iyy>
+          <iyy>3e-3</iyy>
           <iyz>0.0</iyz>
-          <izz>0.081</izz>
+          <izz>2.53125e-5</izz>
+          
         </inertia>
       </inertial>
       <collision name="collision">
@@ -20,11 +21,30 @@
             <uri>model://club/meshes/club.dae</uri>
           </mesh>
         </geometry>
+        <surface>
+          <contact>
+            <poissons_ratio>0.347</poissons_ratio>
+            <elastic_modulus>8.8e+09</elastic_modulus>
+            <ode>
+              <kp>100000</kp>
+              <kd>1</kd>
+              <max_vel>1.0</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+          <friction>
+            <torsional>
+              <coefficient>1.0</coefficient>
+              <use_patch_radius>0</use_patch_radius>
+              <surface_radius>0.065</surface_radius>
+            </torsional>
+          </friction>
+        </surface>
       </collision>
       <visual name="visual">
         <geometry>
           <mesh>
-            <uri>model://club/meshes/club.dae</uri>
+          <uri>model://club/meshes/club.dae</uri>
           </mesh>
         </geometry>
       </visual>
