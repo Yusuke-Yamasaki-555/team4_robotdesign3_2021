@@ -35,7 +35,7 @@ def main():  # このnodeの玄関
     bow = rospy.Service("bow", SetBool, server.bow_motion)  # bow のservice開始
     tilt_neck = rospy.Service("tilt_neck", SetBool, server.tilt_neck_motion)
 
-    print("server:emotions Ready")
+    print("server:emotions Ready\n")
     rospy.spin()  # 無限ループ
 
 class Preparation_motion:  # Emotions_Serverから呼び出される、基本動作の関数をまとめたクラス
@@ -87,14 +87,14 @@ class Emotions_Server:
 
                 self.preparation.init() #  class:Preparation_motion内のinit関数を実行
 
-                resp.message = "client:Success bow_motion"
+                resp.message = "client:Success bow_motion\n"
                 resp.success = True
                 print("server:Finish bow_motion\n")
             except:
-                resp.message = "client:Failure bow_motion"
+                resp.message = "client:Failure bow_motion\n"
                 resp.success = False
         
-        print("server:emotions Ready")
+        print("server:emotions Ready\n")
         return resp
             
     def tilt_neck_motion(self,data):  # 首を傾げる動作
@@ -119,20 +119,20 @@ class Emotions_Server:
                 print("==server:tilt_neck")
                 self.arm.set_named_target("tilt_neck")
                 self.arm.go()
-                rospy.sleep(0.5)
+                rospy.sleep(0.3)
 
                 print("==server:rev_tilt_neck")
                 self.arm.set_named_target("rev_tilt_neck")
                 self.arm.go()
 
-                resp.message = "client:Success tilt_neck"
+                resp.message = "client:Success tilt_neck\n"
                 resp.success = True
                 print("server:Finish tilt_neck\n")
             except:
-                resp.message = "client:Failure tilt_neck"
+                resp.message = "client:Failure tilt_neck\n"
                 resp.success = False
 
-        print("server:emotions Ready")
+        print("server:emotions Ready\n")
         return resp
 
 
