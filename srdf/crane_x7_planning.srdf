@@ -84,12 +84,7 @@
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
     <group_state name="tilt_neck" group="arm">
-        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.524" />
-          <!--y軸第一関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.4" />
-          <!--y軸第二関節  deg:-161~2-->
-        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.873" />
-          <!--y軸第三関節  deg:-90~90-->
+
         <joint name="crane_x7_wrist_joint" value="-2.27" />
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>

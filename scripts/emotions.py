@@ -111,10 +111,11 @@ class Emotions_Server:
                 print("server:Start tilt_neck")
                 self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
                 rospy.sleep(0.5)
-                # acc = 1.0
-                # self.arm.set_max_acceleration_scaling_factor(acc)
+                acc = 1.0
+                self.arm.set_max_acceleration_scaling_factor(acc)
                 print("==server:tilt_neck")
                 self.arm.set_named_target("tilt_neck")
+                self.arm.set_joint_value_target("crane_x7_shoulder_revolute_part_tilt_joint", 0.524) # バグ(?)対応
                 self.arm.go()
                 print("==server:rev_tilt_neck")
                 self.arm.set_named_target("rev_tilt_neck")
