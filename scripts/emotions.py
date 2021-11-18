@@ -33,6 +33,7 @@ def main():  # このnodeの玄関
 
     server = Emotions_Server()  # Emotions_Serverのインスタンス化
     bow = rospy.Service("bow", SetBool, server.bow_motion)  # bow のservice開始
+    tilt_neck = rospy.Service("tilt_neck", SetBool, server.tilt_neck_motion)
 
     print("server:emotions Ready")
     rospy.spin()  # 無限ループ
@@ -45,8 +46,16 @@ class Preparation_motion:  # Emotions_Serverから呼び出される、基本動
         self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
         self.arm.set_max_acceleration_scaling_factor(acc)
 
-        print("server:init_pose")
+        print("==server:init")
         self.arm.set_named_target("init") #  SRDFからinitのステータスを読み込み
+        self.arm.go() #  
+        
+    def emotions_stand_by(self):  # 棒立ちの動作
+        self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        print("==server:emotions_stand_by")
+        self.arm.set_named_target("emotions_stand_by") #  SRDFからinitのステータスを読み込み
         self.arm.go() #  動作の実行
 
 class Emotions_Server: 
@@ -68,7 +77,8 @@ class Emotions_Server:
         resp = SetBoolResponse()
         if data.data == True:
             try:
-                print("server:bow")
+                print("server:Start bow")
+                print("==server:bow")
                 self.arm.set_named_target("bow")
                 self.arm.go()
                 self.preparation.init() #  class:Preparation_motion内のinit関数を実行
@@ -80,13 +90,42 @@ class Emotions_Server:
                 resp.success = False
         return resp
             
-    # def tilt_neck_motion(self,<クライアントから送られるデータ名>):
-"""
+    def tilt_neck_motion(self,data):  # 首を傾げる動作
+        """
         この関数では、tile_neck をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
        動作を行う(test.py参照)
         動作の完了報告を返す
-"""
+        """
+        global vel, acc
+        vel = 1.0
+        acc = 0.35
+
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        # お辞儀の動作の処理
+        resp = SetBoolResponse()
+        if data.data == True:
+            try:
+                print("server:Start tilt_neck")
+                self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
+                acc = 1.0
+                self.arm.set_max_acceleration_scaling_factor(acc)
+                print("==server:tilt_neck")
+                self.arm.set_named_target("tilt_neck")
+                self.arm.go()
+                print("==server:rev_tilt_neck")
+                self.arm.set_named_target("rev_tilt_neck")
+                self.arm.go()
+                resp.message = "client:Success tilt_neck"
+                resp.success = True
+                print("server:Finish tilt_neck")
+            except:
+                resp.message = "client:Failure tilt_neck"
+                resp.success = False
+        return resp
+
 
     # def dislike_motion(self,<クライアントから送られるデータ名>):
 """

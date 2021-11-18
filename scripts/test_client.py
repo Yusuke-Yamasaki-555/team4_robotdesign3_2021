@@ -17,15 +17,23 @@ def main():
         rospy.sleep(1.0)
     
     rospy.wait_for_service("bow") #  service_serverの開始を待つ
-
+    rospy.wait_for_service("tilt_neck")
     
     bow = rospy.ServiceProxy('bow',SetBool) #  提供されているservice:bowをインスタンス化
+    tilt_neck = rospy.ServiceProxy('tilt_neck', SetBool)
 
-    bool = True
-    result = bow(bool) #  service:bowに入力。出力をresultに代入
+    bow_b = True
+    bow_res = bow(bow_b) #  service:bowに入力。出力をresultに代入
 
-    if result.success:
-        print(result.message)
+    if bow_res.success:
+        print(bow_res.message)
+
+    tilt_neck_b = True
+    tilt_neck_res = tilt_neck(tilt_neck_b)
+
+    if tilt_neck_res.success:
+        print(tilt_neck_res.message)
+
 
 if __name__ == '__main__':
     try:
