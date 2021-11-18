@@ -13,34 +13,22 @@ from cv_bridge import CvBridge, CvBridgeError
 from std_msgs.msg import Float32, Bool, String
 from math import asin
 
-#倒す物体に取り付けられているARマーカーのidを宣言
-target_AR_id = [1, 2, 3, 4, 10]
-
-#棒のARマーカーを宣言
-club_AR_id = 6
-
-#画像を受け取る。Img_processに継承
-class Accept_img:
-    def __init__(self):
-        # self.origin = origin
-        # 初期化
+class Img_process:
+    #target_AR_id: 検出するARマーカーのid
+    def __init__(self, target_AR_id):
+        #初期化
     
     def rtn_img(self):
         #画像を受信、OpenCV形式に変換
-        #return 変換後の画像
         # bridge = CvBridge()
         # try:
         #     self.origin = bridge.imgmsg_to_cv2(self.data, "passthrough")
         
         # except CvBridgeError as e:
         #     self.origin = False
+    #ARマーカーの情報を返す関数
+    def rtn_ar_info(self):
         
-        # return self.origin
-
-#メインの画像処理
-class Img_process(Accept_img):
-    def __init__(self):
-        #初期化
     def search(self):
         #ARマーカーがあるかどうか調べる
         # return True(ある場合) or false(ない場合)
@@ -48,9 +36,6 @@ class Img_process(Accept_img):
         #動作料を計算
         #retun 動作量
 
-#ARマーカーの情報を返す関数
-def rtn_ar_info(img):
-    print("hello")
 
 def main():
     #sub-pub or server-clientを宣言
@@ -58,9 +43,8 @@ def main():
 
 
 if __name__ == "__main__":
-    if __name__ == '__main__':
-        try:
-            if not rospy.is_shutdown():
-                main()
-        except rospy.ROSInterruptException:
-            pass
+    try:
+        if not rospy.is_shutdown():
+            main()
+    except rospy.ROSInterruptException:
+        pass
