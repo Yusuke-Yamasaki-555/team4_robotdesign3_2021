@@ -55,7 +55,7 @@ class Preparation_motion:  # Emotions_Serverから呼び出される、基本動
         self.arm.set_max_acceleration_scaling_factor(acc)
 
         print("==server:emotions_stand_by")
-        self.arm.set_named_target("emotions_stand_by") #  SRDFからinitのステータスを読み込み
+        self.arm.set_named_target("emotions_stand_by")
         self.arm.go() #  動作の実行
 
 class Emotions_Server: 
@@ -110,8 +110,9 @@ class Emotions_Server:
             try:
                 print("server:Start tilt_neck")
                 self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
-                acc = 1.0
-                self.arm.set_max_acceleration_scaling_factor(acc)
+                rospy.sleep(0.5)
+                # acc = 1.0
+                # self.arm.set_max_acceleration_scaling_factor(acc)
                 print("==server:tilt_neck")
                 self.arm.set_named_target("tilt_neck")
                 self.arm.go()
