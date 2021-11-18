@@ -115,7 +115,6 @@ class Emotions_Server:
                 self.arm.set_max_acceleration_scaling_factor(acc)
                 print("==server:tilt_neck")
                 self.arm.set_named_target("tilt_neck")
-                self.arm.set_joint_value_target("crane_x7_shoulder_revolute_part_tilt_joint", 0.524) # バグ(?)対応
                 self.arm.go()
                 print("==server:rev_tilt_neck")
                 self.arm.set_named_target("rev_tilt_neck")
