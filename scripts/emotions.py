@@ -77,11 +77,16 @@ class Emotions_Server:
         resp = SetBoolResponse()
         if data.data == True:
             try:
+                print("server:Reset pose")
+                self.preparation.init()
+
                 print("server:Start bow")
                 print("==server:bow")
                 self.arm.set_named_target("bow")
                 self.arm.go()
+
                 self.preparation.init() #  class:Preparation_motion内のinit関数を実行
+
                 resp.message = "client:Success bow_motion"
                 resp.success = True
                 print("server:Finish bow_motion")
@@ -91,12 +96,6 @@ class Emotions_Server:
         return resp
             
     def tilt_neck_motion(self,data):  # 首を傾げる動作
-        """
-        この関数では、tile_neck をする動作をServiceとして提供する
-        動作の速度＆加速度の比率を定義
-       動作を行う(test.py参照)
-        動作の完了報告を返す
-        """
         global vel, acc
         vel = 1.0
         acc = 0.35
@@ -111,14 +110,19 @@ class Emotions_Server:
                 print("server:Start tilt_neck")
                 self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
                 rospy.sleep(0.5)
+
                 acc = 1.0
                 self.arm.set_max_acceleration_scaling_factor(acc)
+
                 print("==server:tilt_neck")
                 self.arm.set_named_target("tilt_neck")
                 self.arm.go()
+                rospy.sleep(0.5)
+
                 print("==server:rev_tilt_neck")
                 self.arm.set_named_target("rev_tilt_neck")
                 self.arm.go()
+
                 resp.message = "client:Success tilt_neck"
                 resp.success = True
                 print("server:Finish tilt_neck")
