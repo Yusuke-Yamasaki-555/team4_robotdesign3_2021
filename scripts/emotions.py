@@ -89,7 +89,7 @@ class Emotions_Server:
 
                 resp.message = "client:Success bow_motion"
                 resp.success = True
-                print("server:Finish bow_motion")
+                print("server:Finish bow_motion\n")
             except:
                 resp.message = "client:Failure bow_motion"
                 resp.success = False
@@ -125,7 +125,7 @@ class Emotions_Server:
 
                 resp.message = "client:Success tilt_neck"
                 resp.success = True
-                print("server:Finish tilt_neck")
+                print("server:Finish tilt_neck\n")
             except:
                 resp.message = "client:Failure tilt_neck"
                 resp.success = False
