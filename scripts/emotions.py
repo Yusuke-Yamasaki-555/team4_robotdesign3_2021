@@ -93,6 +93,8 @@ class Emotions_Server:
             except:
                 resp.message = "client:Failure bow_motion"
                 resp.success = False
+        
+        print("server:emotions Ready")
         return resp
             
     def tilt_neck_motion(self,data):  # 首を傾げる動作
@@ -129,6 +131,8 @@ class Emotions_Server:
             except:
                 resp.message = "client:Failure tilt_neck"
                 resp.success = False
+
+        print("server:emotions Ready")
         return resp
 
 
