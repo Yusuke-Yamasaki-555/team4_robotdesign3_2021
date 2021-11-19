@@ -5,6 +5,10 @@ import rospy
 import moveit_commander
 import rosnode
 
+# テストの為
+from tf.transformations import quaternion_from_euler
+import geometry_msgs
+# /テストの為
 
 from std_srvs.srv import SetBool #  SetBoolは標準搭載のservice( 入力:bool data , 出力:bool success / string message )
 
@@ -47,7 +51,18 @@ def main():
         print(tilt_neck_res.message)
 
     # テスト用コード
-    arm.set_named_target("search_club")
+    search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
+    search_club.position.x = 0
+    search_club.position.y = 0.26
+    search_club.position.z = 0.3
+    qu1 = quaternion_from_euler(0, 3.14, 3.14)
+    search_club.orientation.x = qu1[0]
+    search_club.orientation.y = qu1[1]
+    search_club.orientation.z = qu1[2]
+    search_club.orientation.w = qu1[3]
+    print("search_club")
+    arm.set_pose_target(search_club)
+    print(search_club)
     arm.go()
     # /テスト用コード
 

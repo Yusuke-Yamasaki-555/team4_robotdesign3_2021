@@ -35,7 +35,7 @@ def main():  # このnodeの玄関
     bow = rospy.Service("bow", SetBool, server.bow_motion)  # bow のservice開始
     tilt_neck = rospy.Service("tilt_neck", SetBool, server.tilt_neck_motion)
     # dislike
-    happy_club = rospy.ServiceProxy("happy_club", SetBool, server.happy_club_motion)
+    happy_club = rospy.Service("happy_club", SetBool, server.happy_club_motion)
     # happy_end
 
     print("server:emotions Ready\n")
@@ -169,7 +169,7 @@ class Emotions_Server:
                 current_pose = self.arm.get_current_joint_values()
                 print("==server:current_pose")
                 print(current_pose)
-                print("\n")
+                print("")
 
                 print("=server:happy_club")
                 self.arm.set_named_target("happy_club")
