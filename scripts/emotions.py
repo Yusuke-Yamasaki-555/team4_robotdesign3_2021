@@ -34,6 +34,9 @@ def main():  # このnodeの玄関
     server = Emotions_Server()  # Emotions_Serverのインスタンス化
     bow = rospy.Service("bow", SetBool, server.bow_motion)  # bow のservice開始
     tilt_neck = rospy.Service("tilt_neck", SetBool, server.tilt_neck_motion)
+    # dislike
+    happy_club = rospy.ServiceProxy("happy_club", SetBool, server.happy_club_motion)
+    # happy_end
 
     print("server:emotions Ready\n")
     rospy.spin()  # 無限ループ
@@ -136,29 +139,71 @@ class Emotions_Server:
         return resp
 
 
-    # def dislike_motion(self,<クライアントから送られるデータ名>):
-"""
+    def dislike_motion(self,data):
+        """
         この関数では、dislike をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
         動作を行う(test.py参照)
         動作の完了報告を返す
-"""
+        """
+        global vel, acc
 
-    # def happy_club_motion(self,<クライアントから送られるデータ名>):
-"""
+    def happy_club_motion(self,data):
+        """
         この関数では、happy_club をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
         動作を行う(test.py参照)
         動作の完了報告を返す
-"""
+        """
+        global vel, acc
+        vel = 0.5
+        acc = 0.35
 
-    # def happy_end_motion(self,<クライアントから送られるデータ名>):
-"""
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        resp = SetBoolResponse()
+        if data.data == True:
+            try:
+                print("server:Start happy_club")
+                current_pose = self.arm.get_current_joint_values()
+                print("==server:current_pose")
+                print(current_pose)
+                print("\n")
+
+                print("=server:happy_club")
+                self.arm.set_named_target("happy_club")
+                self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",current_pose[0]) #  現在の第一関節z軸を維持
+                self.arm.go()
+            # 手を開閉させて喜ぶ(happy_club)
+                self.gripper.set_joint_value_target([0.015, 0.015])
+                self.gripper.go()
+                self.gripper.set_joint_value_target([0.8, 0.8])
+                self.gripper.go()
+                self.gripper.set_joint_value_target([0.015, 0.015])
+                self.gripper.go()
+                self.gripper.set_joint_value_target([0.8, 0.8])
+                self.gripper.go()
+                self.gripper.set_joint_value_target([0.015, 0.015])
+                self.gripper.go()
+
+                resp.message = "client:Success happy_club_motion\n"
+                resp.success = True
+                print("server:Finish happy_club_motion\n")
+            except:
+                resp.message = "client:Failure happy_club_motion\n"
+                resp.success = False
+        
+        print("server:emotions Ready\n")
+        return resp
+
+    def happy_end_motion(self,data):
+        """
         この関数では、happy_end をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
         動作を行う(test.py参照)
         動作の完了報告を返す
-"""
+        """
 
 if __name__ == '__main__':
     """
