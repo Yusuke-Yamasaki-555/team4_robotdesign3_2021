@@ -112,6 +112,8 @@ class Emotions_Server:
         resp = SetBoolResponse()
         if data.data == True:
             try:
+                current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
                 print("server:Start tilt_neck")
                 self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
                 rospy.sleep(0.5)
@@ -128,6 +130,9 @@ class Emotions_Server:
                 self.arm.set_named_target("rev_tilt_neck")
                 self.arm.go()
 
+                self.arm.set_joint_value_target(current_pose)
+                self.arm.go()
+
                 resp.message = "client:Success tilt_neck\n"
                 resp.success = True
                 print("server:Finish tilt_neck\n")
@@ -137,7 +142,6 @@ class Emotions_Server:
 
         print("server:emotions Ready\n")
         return resp
-
 
     def dislike_motion(self,data):
         """
@@ -224,6 +228,9 @@ class Emotions_Server:
                 self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
                 self.arm.go()
 
+                self.arm.set_joint_value_target(current_pose)
+                self.arm.go()
+
                 resp.message = "client:Success dislike\n"
                 resp.success = True
                 print("server:Finish dislike\n")
@@ -251,8 +258,9 @@ class Emotions_Server:
         resp = SetBoolResponse()
         if data.data == True:
             try:
-                print("server:Start happy_club")
                 current_pose = self.arm.get_current_joint_values()
+
+                print("server:Start happy_club")
                 print("==server:current_pose")
                 print(current_pose)
                 print("")
@@ -272,6 +280,9 @@ class Emotions_Server:
                 self.gripper.go()
                 self.gripper.set_joint_value_target([0.015, 0.015])
                 self.gripper.go()
+
+                self.arm.set_joint_value_target(current_pose)
+                self.arm.go()
 
                 resp.message = "client:Success happy_club_motion\n"
                 resp.success = True
@@ -301,6 +312,8 @@ class Emotions_Server:
         resp = SetBoolResponse()
         if data.data == True:
             try:
+                current_pose = self.arm.get_current_joint_values()
+
                 print("server:Start happy_end")
                 print("===server:Open gripper")
                 self.gripper.set_joint_value_target([0.8, 0.8])
@@ -371,7 +384,8 @@ class Emotions_Server:
                 self.gripper.go()
 
                 print("==server:init_pose")
-                self.arm.set_named_target("init")
+                # self.arm.set_named_target("init")
+                self.arm.set_joint_value_target(current_pose)
                 self.arm.go()
 
                 resp.message = "client:Success happy_end\n"
