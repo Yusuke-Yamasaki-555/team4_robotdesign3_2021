@@ -36,7 +36,7 @@ def main():  # このnodeの玄関
     tilt_neck = rospy.Service("tilt_neck", SetBool, server.tilt_neck_motion)
     dislike = rospy.Service('dislike', SetBool, server.dislike_motion)
     happy_club = rospy.Service("happy_club", SetBool, server.happy_club_motion)
-    # happy_end
+    happy_end = rospy.Service("happy_end", SetBool, server.happy_end_motion)
 
     print("server:emotions Ready\n")
     rospy.spin()  # 無限ループ
@@ -187,7 +187,7 @@ class Emotions_Server:
                 
                 self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
                 self.arm.go()
-                print("dislike_3")
+                print("==server:dislike_3")
                 self.arm.set_named_target("dislike_3")
                 current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
                     
@@ -290,6 +290,100 @@ class Emotions_Server:
         動作を行う(test.py参照)
         動作の完了報告を返す
         """
+        global vel, acc
+        vel = 1.0
+        acc = 0.35
+
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        # 首を傾げる動作の処理
+        resp = SetBoolResponse()
+        if data.data == True:
+            try:
+                print("server:Start happy_end")
+                print("===server:Open gripper")
+                self.gripper.set_joint_value_target([0.8, 0.8])
+                self.gripper.go()
+
+                print("==server:happy_end_1")
+                self.arm.set_named_target("happy_end_1")
+                self.arm.go()
+
+                print("==server:happy_end_init")
+                self.arm.set_named_target("happy_end_init")
+                self.arm.go()
+
+                print("==server:happy_end_2")
+                self.arm.set_named_target("happy_end_2")
+                self.arm.go()
+
+                print("==server:happy_end_init")
+                self.arm.set_named_target("happy_end_init")
+                self.arm.go()
+
+                print("==server:happy_end_3")
+                self.arm.set_named_target("happy_end_3")
+                self.arm.go()
+
+                print("==server:happy_end_init")
+                self.arm.set_named_target("happy_end_init")
+                self.arm.go()
+
+                print("==server:happy_end_-rotate")
+                self.arm.set_named_target("happy_end_-rotate")
+                self.arm.go()
+
+                print("==server:happy_end_+rotate")
+                self.arm.set_named_target("happy_end_+rotate")
+                self.arm.go()
+
+                print("==server:happy_end_init")
+                self.arm.set_named_target("happy_end_init")
+                self.arm.go()
+
+                print("==server:Close gripper")
+                self.gripper.set_joint_value_target([0.015, 0.015])
+                self.gripper.go()
+
+                print("==server:Open gripper")
+                self.gripper.set_joint_value_target([0.8, 0.8])
+                self.gripper.go()
+                
+                print("==server:Close gripper")
+                self.gripper.set_joint_value_target([0.015, 0.015])
+                self.gripper.go()
+
+                print("==server:Open gripper")
+                self.gripper.set_joint_value_target([0.8, 0.8])
+                self.gripper.go()
+
+                print("==server:Close gripper")
+                self.gripper.set_joint_value_target([0.015, 0.015])
+                self.gripper.go()
+
+                print("==server:Open gripper")
+                self.gripper.set_joint_value_target([0.8, 0.8])
+                self.gripper.go()
+
+                print("==server:Close gripper")
+                self.gripper.set_joint_value_target([0.015, 0.015])
+                self.gripper.go()
+
+                print("==server:init_pose")
+                self.arm.set_named_target("init")
+                self.arm.go()
+
+                resp.message = "client:Success happy_end\n"
+                resp.success = True
+                print("server:Finish happy_end\n")
+            except:
+                resp.message = "client:Failure happy_end\n"
+                resp.success = False
+
+        print("server:emotions Ready\n")
+        return resp
+
 
 if __name__ == '__main__':
     """

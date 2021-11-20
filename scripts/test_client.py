@@ -24,12 +24,13 @@ def main():
     rospy.wait_for_service("tilt_neck")
     rospy.wait_for_service("dislike")
     rospy.wait_for_service("happy_club")
+    rospy.wait_for_service("happy_end")
     
     bow = rospy.ServiceProxy('bow',SetBool) #  提供されているservice:bowをインスタンス化
     tilt_neck = rospy.ServiceProxy('tilt_neck', SetBool)
     dislike = rospy.ServiceProxy('dislike', SetBool)
     happy_club = rospy.ServiceProxy('happy_club', SetBool)
-    # happy_end
+    happy_end = rospy.ServiceProxy('happy_end', SetBool)
 
 #===== bow =====
     """
@@ -57,7 +58,7 @@ def main():
         print(tilt_neck_res.message)
     # """
 #===== dislike =====
-    # """
+    """
     # テスト用コード
     arm.set_named_target("search_target")
     arm.go()
@@ -99,7 +100,18 @@ def main():
     # """
 #===== happy_end =====
     # """
-    
+    # テスト用コード
+    arm.set_named_target("init")
+    arm.go()
+    # /テスト用コード
+
+    happy_end_b = True
+    happy_end_res = happy_end(happy_end_b) #  service:bowに入力。出力をresultに代入
+
+    if happy_end_res.success:
+        print(happy_end_res.message)
+    elif not happy_end_res.sccess:
+        print(happy_end_res.message)
     # """
 
 
