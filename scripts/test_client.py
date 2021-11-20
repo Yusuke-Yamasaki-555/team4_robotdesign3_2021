@@ -33,17 +33,17 @@ def main():
     happy_end = rospy.ServiceProxy('happy_end', SetBool)
 
 #===== bow =====
-    """
+    # """
     bow_b = True
     bow_res = bow(bow_b) #  service:bowに入力。出力をresultに代入
 
     if bow_res.success:
         print(bow_res.message)
-    elif not bow_res.sccess:
+    elif not bow_res.success:
         print(bow_res.message)
     # """
 #===== tilt_neck =====
-    """
+    # """
     # テスト用コード
     arm.set_named_target("search_target")
     arm.go()
@@ -54,11 +54,11 @@ def main():
 
     if tilt_neck_res.success:
         print(tilt_neck_res.message)
-    elif not tilt_neck_res.sccess:
+    elif not tilt_neck_res.success:
         print(tilt_neck_res.message)
     # """
 #===== dislike =====
-    """
+    # """
     # テスト用コード
     arm.set_named_target("search_target")
     arm.go()
@@ -70,10 +70,10 @@ def main():
     if dislike_res.success:
         print(dislike_res.message)
     elif not dislike_res.success:
-        print(dislike_res.messange)
+        print(dislike_res.message)
     # """
 #===== happy_club =====
-    """
+    # """
     # テスト用コード
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
@@ -88,6 +88,8 @@ def main():
     arm.set_pose_target(search_club)
     print(search_club)
     arm.go()
+
+    rospy.sleep(1.0)
     # /テスト用コード
 
     happy_club_b = True
@@ -95,7 +97,7 @@ def main():
 
     if happy_club_res.success:
         print(happy_club_res.message)
-    elif not happy_club_res.sccess:
+    elif not happy_club_res.success:
         print(happy_club_res.message)
     # """
 #===== happy_end =====
@@ -110,7 +112,7 @@ def main():
 
     if happy_end_res.success:
         print(happy_end_res.message)
-    elif not happy_end_res.sccess:
+    elif not happy_end_res.success:
         print(happy_end_res.message)
     # """
 
