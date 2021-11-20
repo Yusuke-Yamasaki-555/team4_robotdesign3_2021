@@ -34,7 +34,7 @@ def main():  # このnodeの玄関
     server = Emotions_Server()  # Emotions_Serverのインスタンス化
     bow = rospy.Service("bow", SetBool, server.bow_motion)  # bow のservice開始
     tilt_neck = rospy.Service("tilt_neck", SetBool, server.tilt_neck_motion)
-    # dislike
+    dislike = rospy.Service('dislike', SetBool, server.dislike_motion)
     happy_club = rospy.Service("happy_club", SetBool, server.happy_club_motion)
     # happy_end
 
@@ -108,7 +108,7 @@ class Emotions_Server:
         self.arm.set_max_velocity_scaling_factor(vel)
         self.arm.set_max_acceleration_scaling_factor(acc)
 
-        # お辞儀の動作の処理
+        # 首を傾げる動作の処理
         resp = SetBoolResponse()
         if data.data == True:
             try:
@@ -147,6 +147,92 @@ class Emotions_Server:
         動作の完了報告を返す
         """
         global vel, acc
+        vel = 1.0
+        acc = 0.35
+
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        # 首を傾げる動作の処理
+        resp = SetBoolResponse()
+        if data.data == True:
+            try:
+                print("server:Start dislike")
+                self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
+                rospy.sleep(0.5)
+                
+                print("==server:dislike_1")
+                self.arm.set_named_target("dislike_1")
+                current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+                
+                # ここのif文は関数にするべき
+                if current_pose[0] >= 0.01:
+                    z_axis_1 = current_pose[0] - 0.559
+                    flag = True
+                else:
+                    z_axis_1 = current_pose[0] + 0.559
+                    flag = False
+                
+                self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+                self.arm.go()
+                print("==server:dislike_2")
+                self.arm.set_named_target("dislike_2")
+                current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
+                # ここのif文は関数にするべき
+                if flag:
+                    z_axis_1 = current_pose[0] - 0.559
+                else:
+                    z_axis_1 = current_pose[0] + 0.559
+                
+                self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+                self.arm.go()
+                print("dislike_3")
+                self.arm.set_named_target("dislike_3")
+                current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+                    
+                # ここのif文は関数にするべき
+                if flag:
+                    z_axis_1 = current_pose[0] - 0.559
+                else:
+                    z_axis_1 = current_pose[0] + 0.559
+                
+                self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+                self.arm.go()
+                print("==server:dislike_4")
+                self.arm.set_named_target("dislike_4")
+                current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
+                # ここのif文は関数にするべき
+                if flag:
+                    z_axis_1 = current_pose[0] - 0.559
+                else:
+                    z_axis_1 = current_pose[0] + 0.559
+                
+                self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+                self.arm.go()
+                print("==server:dislike_5")
+                self.arm.set_named_target("dislike_5")
+                current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
+                # ここのif文は関数にするべき
+                if flag:
+                    z_axis_1 = current_pose[0] - 0.559
+                else:
+                    z_axis_1 = current_pose[0] + 0.559
+                
+                self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+                self.arm.go()
+
+                resp.message = "client:Success dislike\n"
+                resp.success = True
+                print("server:Finish dislike\n")
+            except:
+                resp.message = "client:Failure dislike\n"
+                resp.success = False
+
+        print("server:emotions Ready\n")
+        return resp
 
     def happy_club_motion(self,data):
         """
