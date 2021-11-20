@@ -161,20 +161,22 @@ class Emotions_Server:
         resp = SetBoolResponse()
         if data.data == True:
             try:
+                current_pose_init = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+
                 print("server:Start dislike")
                 self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
                 rospy.sleep(0.5)
                 
                 print("==server:dislike_1")
                 self.arm.set_named_target("dislike_1")
-                current_pose_init = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+                current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
                 
                 # ここのif文は関数にするべき
-                if current_pose_init[0] >= 0.01:
-                    z_axis_1 = current_pose_init[0] - 0.559
+                if current_pose[0] >= 0.01:
+                    z_axis_1 = current_pose[0] - 0.559
                     flag = True
                 else:
-                    z_axis_1 = current_pose_init[0] + 0.559
+                    z_axis_1 = current_pose[0] + 0.559
                     flag = False
                 
                 self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
