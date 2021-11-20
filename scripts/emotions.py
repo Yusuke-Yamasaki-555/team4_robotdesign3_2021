@@ -53,13 +53,22 @@ class Preparation_motion:  # Emotions_Serverから呼び出される、基本動
         self.arm.set_named_target("init") #  SRDFからinitのステータスを読み込み
         self.arm.go() #  
         
-    def emotions_stand_by(self):  # 棒立ちの動作
+    def stand_by(self):
+        self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        print("==server:stand_by")
+        self.arm.set_named_target("stand_by")
+        self.arm.go() #  動作の実行
+
+    def emotions_stand_by(self):
         self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
         self.arm.set_max_acceleration_scaling_factor(acc)
 
         print("==server:emotions_stand_by")
         self.arm.set_named_target("emotions_stand_by")
         self.arm.go() #  動作の実行
+
 
 class Emotions_Server: 
     preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
@@ -112,7 +121,7 @@ class Emotions_Server:
         resp = SetBoolResponse()
         if data.data == True:
             try:
-                current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+                # current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
 
                 print("server:Start tilt_neck")
                 self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
@@ -130,8 +139,9 @@ class Emotions_Server:
                 self.arm.set_named_target("rev_tilt_neck")
                 self.arm.go()
 
-                self.arm.set_joint_value_target(current_pose)
-                self.arm.go()
+                self.preparation.stand_by()
+                # self.arm.set_joint_value_target(current_pose)
+                # self.arm.go()
 
                 resp.message = "client:Success tilt_neck\n"
                 resp.success = True
@@ -161,7 +171,7 @@ class Emotions_Server:
         resp = SetBoolResponse()
         if data.data == True:
             try:
-                current_pose_init = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+                # current_pose_init = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
 
                 print("server:Start dislike")
                 self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
@@ -230,8 +240,9 @@ class Emotions_Server:
                 self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
                 self.arm.go()
 
-                self.arm.set_joint_value_target(current_pose_init)
-                self.arm.go()
+                self.preparation.stand_by()
+                # self.arm.set_joint_value_target(current_pose_init)
+                # self.arm.go()
 
                 resp.message = "client:Success dislike\n"
                 resp.success = True
