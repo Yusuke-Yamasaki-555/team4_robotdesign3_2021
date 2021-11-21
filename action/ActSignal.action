@@ -1,0 +1,8 @@
+bool BoolIn
+int32 Int32In
+string StrIn
+---
+bool BoolFB
+---
+int32 IntRes
+bool BoolRes
