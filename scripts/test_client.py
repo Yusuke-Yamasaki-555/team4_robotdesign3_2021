@@ -20,6 +20,8 @@ def main():
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
         rospy.sleep(1.0)
     
+#===== emotions =====
+    """
     rospy.wait_for_service("bow") #  service_serverの開始を待つ
     rospy.wait_for_service("tilt_neck")
     rospy.wait_for_service("dislike")
@@ -31,9 +33,19 @@ def main():
     dislike = rospy.ServiceProxy('dislike', SetBool)
     happy_club = rospy.ServiceProxy('happy_club', SetBool)
     happy_end = rospy.ServiceProxy('happy_end', SetBool)
+    """
+#===== /emotions =====
+
+#===== motion_process =====
+    # """
+    rospy.wait_for_service("release_club")
+
+    release_club = rospy.ServiceProxy('release_club', SetBool)
+    # """
+#===== /motion_process =====
 
 #===== bow =====
-    # """
+    """
     bow_b = True
     bow_res = bow(bow_b) #  service:bowに入力。出力をresultに代入
 
@@ -43,7 +55,7 @@ def main():
         print(bow_res.message)
     # """
 #===== tilt_neck =====
-    # """
+    """
     # テスト用コード
     arm.set_named_target("search_target")
     arm.go()
@@ -58,7 +70,7 @@ def main():
         print(tilt_neck_res.message)
     # """
 #===== dislike =====
-    # """
+    """
     # テスト用コード
     arm.set_named_target("search_target")
     arm.go()
@@ -73,7 +85,7 @@ def main():
         print(dislike_res.message)
     # """
 #===== happy_club =====
-    # """
+    """
     # テスト用コード
     search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
     search_club.position.x = 0
@@ -101,7 +113,7 @@ def main():
         print(happy_club_res.message)
     # """
 #===== happy_end =====
-    # """
+    """
     # テスト用コード
     arm.set_named_target("init")
     arm.go()
@@ -114,6 +126,16 @@ def main():
         print(happy_end_res.message)
     elif not happy_end_res.success:
         print(happy_end_res.message)
+    # """
+#===== release_club =====
+    # """
+    release_club_b = True
+    release_club_res = release_club(release_club_b)
+
+    if release_club_res.success:
+        print(release_club_res.message)
+    elif not release_club_res.success:
+        print(release_club_res.message)
     # """
 
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 import rospy
 import moveit_commander
 import geometry_msgs
@@ -23,7 +22,9 @@ def main():
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
         rospy.sleep(1.0)
 
-    # server = Motion_Process_Server()  # Motino_Process_Serverのインスタンス化
+    server = Motion_Process_Server()  # Motino_Process_Serverのインスタンス化
+
+    release_club = rospy.Service('release_club', SetBool, server.release_club_motion)
     # ここで、各サーバを立ち上げ、及び開始
 
     print("server:motion_process Ready\n")
@@ -45,7 +46,11 @@ class Preparation_motion:  # Motion_Process_Serverから呼び出される、基
 
         print("==server:init")
         self.arm.set_named_target("init") #  SRDFからinitのステータスを読み込み
-        self.arm.go() #
+        self.arm.go()
+
+    # def stand_by
+
+    # def hold
 
 class Motion_Process_Server(object):
     preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
@@ -57,13 +62,48 @@ class Motion_Process_Server(object):
         class Preparation_motionのインスタンス作成
         各Action_Serverの立ち上げ＆start
     """
-    # def release_club_motion(self,<クライアントから送られるデータ名>):
-    """
+    def release_club_motion(self,data):
+        """
         この関数では、release_club をする動作をServiceとして提供する
         動作の速度＆加速度の比率を定義
         動作を行う(test.py参照)
         動作の完了報告を返す
-    """
+        """
+        global vel, acc
+        vel = 0.5
+        acc = 0.35
+
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        # お辞儀の動作の処理
+        resp = SetBoolResponse()
+        if data.data == True:
+            try:
+                print("server:Start release_club")
+                print("==server:release_club")
+                self.arm.set_named_target("release_club")
+                self.arm.go()
+
+                self.gripper.set_joint_value_target([0.8, 0.8])
+                self.gripper.go()
+
+                self.preparation.init() #  class:Preparation_motion内のinit関数を実行
+
+                self.gripper.set_joint_value_target([0.015, 0.015])
+                self.gripper.go()
+
+                resp.message = "client:Success release_club_motion\n"
+                resp.success = True
+                print("server:Finish release_club_motion\n")
+            except:
+                resp.message = "client:Failure release_club_motion\n"
+                resp.success = False
+        
+        print("server:emotions Ready\n")
+        return resp
+            
+
     # def swing_club_motion(self,<クライアントから送られるデータ名>):
     """
         この関数では、swing_club をする動作をActionとして提供する
