@@ -1,14 +1,14 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-from re import A, M
 import rospy
 import moveit_commander
 import rosnode
 from math import pi, sin, cos
-from std_msgs.msg import Float32, Bool, String, Int32
+from std_srvs.srv import SetBool
+from team4_robotdesign3_2021.srv import SetInt32
+from team4_robotdesign3_2021.msg import ActSignalActionGoal, ActSignalFeedback, ActSignalResult
 from tf.transformations import quaternion_from_euler
 import geometry_msgs.msg
-# from img_process import target_sub_topic_name, target_pub_topic_name, club_pub_topic_name, club_sub_topic_name
 
 
 def radian(deg):
@@ -21,16 +21,6 @@ class Motion_process:
         self.arm.set_max_acceleration_scaling_factor(1.0)
         self.gripper = moveit_commander.MoveGroupCommander("gripper")
         self.srdf_name = srdf_name
-    
-    def set_pub(self, topic_name):
-        self.search_pub = rospy.Publisher(topic_name[0], String, queue_size=1)
-        self.adjustX_pub = rospy.Publisher(topic_name[1], Int32, queue_size=1)
-        self.adjustY_pub = rospy.Publisher(topic_name[2], Int32, queue_size=1)
-    
-    def set_sub(self, topic_name):
-        self.search_sub = rospy.Subscriber(topic_name[0], Bool, self.is_search)
-        self.adjustY_sub = rospy.Subscriber(topic_name[1], Int32, self.adjustX)
-        self.adjustY_sub = rospy.Subscriber(topic_name[2], Int32, self.adjustY)
 
     # def release_club_motion(self,<クライアントから送られるデータ名>):
 
@@ -57,61 +47,42 @@ class Motion_process:
         arm_goal_pose = self.arm.get_current_pose().pose
         self.arm.set_named_target(srdf_name)
         self.arm.go()
-        # print(arm_goal_pose)
         rospy.sleep(1.0)
-    
-    def is_search(self, data):
-        global isSearch
-        rospy.loginfo(f'result={data.data}')
-        isSearch = data.data
-
-    def adjustX(self, data):
-        global moveX
-        rospy.loginfo(data.data)
-        moveX = data.data
-    
-    def adjustY(self, data):
-        global moveY
-        rospy.loginfo('start adjustment of y')
-        moveY = data.data
 
     def search_target(self):
-        global isSearch, moveX, moveY
-        isSearch = False
         self.set_position('search_target')
-        
-        for deg in range(60, -90, -1):
-            # self.gripper.set_joint_value_target([0.34, 0.34])
-            # self.gripper.go()
-            self.search_pub.publish('search')
-            if isSearch:
+        for deg in range(-90, 60, 1):
+            search_res = srv_search_target(True)
+            if search_res.success:
                 rospy.loginfo('Find')
-                rospy.sleep(2.5)
+                rospy.sleep(1.0)
                 move = 0
-                moveX, moveY = 1, 1
-                while moveX:
-                    self.adjustX_pub.publish(377)
-                    move += 0.5*moveX
+                while True:
+                    moveX = srv_adjustx_target(377)
+                    rospy.loginfo(moveX)
+                    if moveX.int32Out == 0:
+                        break
+                    move += 0.5*moveX.int32Out
                     self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radian(deg)-radian(move)}) #根本を回転
                     self.arm.go()
                 rospy.sleep(1.0)
                 deg -= move
                 move = 0
-                while moveY:
-                    move += 0.5*moveY
-                    self.adjustY_pub.publish(227)
+                while True:
+                    moveY = srv_adjusty_target(227)
+                    rospy.loginfo(moveY)
+                    if not moveY.int32Out:
+                        break
+                    move += 0.5*moveY.int32Out
                     self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.75-radian(move)}) #根本を回転
                     self.arm.go()
                 rospy.sleep(1.0)
-                self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.75})
-                isSearch = False
             self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radian(deg)}) #根本を回転
             self.arm.go()
         self.arm.set_named_target("init")
         self.arm.go()
     
     def search_club(self):
-        global isSearch, moveX, moveY
         isSearch = False
         self.set_position('hold')
         self.gripper.go()
@@ -188,11 +159,10 @@ def main():
     rospy.init_node("motion_process", anonymous=1)
     target = Motion_process("target")
     club = Motion_process("club")
-    target.set_pub(target_pub_topic_name)
-    target.set_sub(target_sub_topic_name)
-    club.set_pub(club_pub_topic_name)
-    club.set_sub(club_sub_topic_name)
-    club.grip_club()
+    servers = ['search_club', 'adjustx_club', 'adjusty_club', 'search_target', 'adjustx_target', 'adjusty_target']
+    for server in servers:
+        rospy.wait_for_service(server)
+    # club.grip_club()
     target.search_target()
     # club.search_club()
     
@@ -200,12 +170,14 @@ def main():
         rospy.sleep(1.0)
 
 if __name__ == '__main__':
-    moveX, moveY  = 1, 1
-    target_sub_topic_name = ['search_target_report', 'adjustX_target_report', 'adjustY_target_report']
-    club_sub_topic_name = ['search_club_report', 'adjustX_club_report', 'adjustY_club_report']
-    target_pub_topic_name = ['search_target', 'adjustX_target', 'adjustY_target']
-    club_pub_topic_name = ['search_club', 'adjustX_club', 'adjustY_club']
+    srv_search_club = rospy.ServiceProxy('search_club', SetBool)
+    srv_adjustx_club = rospy.ServiceProxy('adjustx_club', SetInt32)
+    srv_adjusty_club = rospy.ServiceProxy('adjustxy_club', SetInt32)
+    srv_search_target = rospy.ServiceProxy('search_target', SetBool)
+    srv_adjustx_target = rospy.ServiceProxy('adjustx_target', SetInt32)
+    srv_adjusty_target = rospy.ServiceProxy('adjusty_target', SetInt32)
     try:
-        main()
+        if not rospy.is_shutdown():
+            main()
     except rospy.ROSInterruptException as e:
         rospy.logerr(e)
