@@ -154,14 +154,18 @@ class Motion_Process_Server(object):
         self.arm.go()
         self.gripper.set_joint_value_target([0.8, 0.8])
         self.gripper.go()
-        search_club.position.z = 0.0475
+        search_club.position.z = 0.065+0.02
         self.arm.set_pose_target(search_club)
         self.arm.go()
-        rospy.sleep(1.0)
+        rospy.sleep(0.5)
         self.gripper.set_joint_value_target([0.3, 0.3])
         self.gripper.go()
+        self.arm.set_named_target("stand_by")
+        self.arm.go()
+        rospy.sleep(0.5)
         self.arm.set_named_target("hold")
-        self.gripper.go()
+        self.arm.go()
+        rospy.sleep(0.5)
         # /テストコード(grip_club)
     # def search_target(self,<クライアントから送られるデータ名>):
     """
