@@ -28,7 +28,8 @@ def main():
     # ここで、各サーバを立ち上げ、及び開始
 
     print("server:motion_process Ready\n")
-    rospy.spin()  # 無限ループ 
+    server.search_club()
+    # rospy.spin()  # 無限ループ 
 
 
 class Preparation_motion:  # Motion_Process_Serverから呼び出される、基本動作の関数をまとめたクラス
@@ -117,8 +118,8 @@ class Motion_Process_Server(object):
                 ここで、印に当てるか外すかを決めてから、動作を行う
             動作の完了報告を返す
     """
-    # def search_club(self,<クライアントから送られるデータ名>):
-    """
+    def search_club(self):
+        """
         search_clubをactionとして提供
         while service:search_clubを使って、棒を探す(第一関節ｚ軸を一周する範囲を探す)
             if
@@ -130,7 +131,32 @@ class Motion_Process_Server(object):
         棒を掴む(test.py参照)
         Preparation_motion:hold
         完了報告をresult
-    """
+        """
+        # テストコード(grip_club)
+        self.arm.set_named_target("hold")
+        self.arm.go()
+        arm_goal_pose = self.arm.get_current_pose().pose
+        self.gripper.set_joint_value_target([0.9, 0.9])
+        self.gripper.go()
+        rospy.sleep(1.0)
+        target_pose = geometry_msgs.msg.Pose()
+        target_pose.position.x = arm_goal_pose.position.x
+        target_pose.position.y = 0.25
+        target_pose.position.z = 0.065+0.02
+        target_pose.orientation.x = arm_goal_pose.orientation.x
+        target_pose.orientation.y = arm_goal_pose.orientation.y
+        target_pose.orientation.z = arm_goal_pose.orientation.z
+        target_pose.orientation.w = arm_goal_pose.orientation.w
+        self.arm.set_pose_target( target_pose )
+        self.arm.go()
+        self.gripper.set_joint_value_target([0.3, 0.3])
+        self.gripper.go()
+        self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
+        self.arm.set_joint_value_target({"crane_x7_wrist_joint":-1.57})
+        self.arm.go()
+        self.arm.set_named_target("hold")
+        self.arm.go()
+        # /テストコード(grip_club)
     # def search_target(self,<クライアントから送られるデータ名>):
     """
         search_targetをactionとして提供
