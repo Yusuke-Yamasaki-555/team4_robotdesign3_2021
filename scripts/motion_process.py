@@ -105,8 +105,8 @@ class Motion_Process_Server(object):
         return resp
             
 
-    # def swing_club_motion(self,<クライアントから送られるデータ名>):
-    """
+    def swing_club_motion(self):
+        """
         この関数では、swing_club をする動作をActionとして提供する
         swing_set_club
             動作の速度＆加速度の比率を定義
@@ -117,7 +117,30 @@ class Motion_Process_Server(object):
             動作を行う(test.py参照)
                 ここで、印に当てるか外すかを決めてから、動作を行う
             動作の完了報告を返す
-    """
+        """
+        global vel, acc
+        vel = 0.05
+        acc = 0.15
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        print("swing_set_club")
+        self.arm.set_named_target("swing_set_club")
+        current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+        z_axis_1 = current_pose[0] - 0.873
+        self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+        self.arm.go()
+
+        vel = 0.05
+        acc = 0.15
+        self.arm.set_max_velocity_scaling_factor(vel)
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        print("swing_club")
+        self.arm.set_named_target("swing_club")
+        z_axis_1 = current_pose[0] + 0.873
+        self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+        self.arm.go()
     def search_club(self):
         """
         search_clubをactionとして提供
