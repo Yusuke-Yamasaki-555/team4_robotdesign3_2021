@@ -165,7 +165,7 @@ class Motion_Process_Server(object):
 
         search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
         search_club.position.x = 0
-        search_club.position.y = 0.27
+        search_club.position.y = 0.29
         search_club.position.z = 0.3
         qu1 = quaternion_from_euler(0, 3.14, 3.14)
         search_club.orientation.x = qu1[0]
@@ -182,7 +182,7 @@ class Motion_Process_Server(object):
         self.arm.set_pose_target(search_club)
         self.arm.go()
         rospy.sleep(0.5)
-        self.gripper.set_joint_value_target([0.3, 0.3])
+        self.gripper.set_joint_value_target([0.275, 0.275])
         self.gripper.go()
         # self.arm.set_named_target("stand_by")
         # self.arm.go()
