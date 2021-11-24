@@ -133,28 +133,20 @@ class Motion_Process_Server(object):
         完了報告をresult
         """
         # テストコード(grip_club)
-        self.arm.set_named_target("hold")
+        search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
+        search_club.position.x = 0
+        search_club.position.y = 0.29
+        search_club.position.z = 0.3
+        qu1 = quaternion_from_euler(0, 3.14, 3.14)
+        search_club.orientation.x = qu1[0]
+        search_club.orientation.y = qu1[1]
+        search_club.orientation.z = qu1[2]
+        search_club.orientation.w = qu1[3]
+        print("search_club")
+        self.arm.set_pose_target(search_club)
+        print(search_club)
         self.arm.go()
-        arm_goal_pose = self.arm.get_current_pose().pose
-        self.gripper.set_joint_value_target([0.9, 0.9])
-        self.gripper.go()
-        rospy.sleep(1.0)
-        target_pose = geometry_msgs.msg.Pose()
-        target_pose.position.x = arm_goal_pose.position.x
-        target_pose.position.y = 0.25
-        target_pose.position.z = 0.065+0.02
-        target_pose.orientation.x = arm_goal_pose.orientation.x
-        target_pose.orientation.y = arm_goal_pose.orientation.y
-        target_pose.orientation.z = arm_goal_pose.orientation.z
-        target_pose.orientation.w = arm_goal_pose.orientation.w
-        self.arm.set_pose_target( target_pose )
-        self.arm.go()
-        self.gripper.set_joint_value_target([0.3, 0.3])
-        self.gripper.go()
-        self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
-        self.arm.set_joint_value_target({"crane_x7_wrist_joint":-1.57})
-        self.arm.go()
-        self.arm.set_named_target("hold")
+        search_club.position.z = 0.0475
         self.arm.go()
         # /テストコード(grip_club)
     # def search_target(self,<クライアントから送られるデータ名>):
