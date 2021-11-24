@@ -132,8 +132,8 @@ class Motion_Process_Server(object):
         self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
         self.arm.go()
 
-        vel = 0.05
-        acc = 0.15
+        vel = 1.0
+        acc = 1.0
         self.arm.set_max_velocity_scaling_factor(vel)
         self.arm.set_max_acceleration_scaling_factor(acc)
 
@@ -184,8 +184,8 @@ class Motion_Process_Server(object):
         rospy.sleep(0.5)
         self.gripper.set_joint_value_target([0.3, 0.3])
         self.gripper.go()
-        self.arm.set_named_target("stand_by")
-        self.arm.go()
+        # self.arm.set_named_target("stand_by")
+        # self.arm.go()
         rospy.sleep(0.5)
         self.arm.set_named_target("hold")
         self.arm.go()
