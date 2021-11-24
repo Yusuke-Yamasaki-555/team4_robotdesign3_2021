@@ -28,8 +28,11 @@ def main():
     # ここで、各サーバを立ち上げ、及び開始
 
     print("server:motion_process Ready\n")
+    
+    # Test Code
     server.search_club()
     server.swing_club_motion()
+    # /Test Code
     # rospy.spin()  # 無限ループ 
 
 
