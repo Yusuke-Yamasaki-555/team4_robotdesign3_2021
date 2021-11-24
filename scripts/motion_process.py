@@ -29,6 +29,7 @@ def main():
 
     print("server:motion_process Ready\n")
     server.search_club()
+    server.swing_club_motion()
     # rospy.spin()  # 無限ループ 
 
 
