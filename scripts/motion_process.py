@@ -133,9 +133,15 @@ class Motion_Process_Server(object):
         完了報告をresult
         """
         # テストコード(grip_club)
+        self.arm.set_max_velocity_scaling_factor(0.5)
+        self.arm.set_max_acceleration_scaling_factor(0.35)
+
+        self.arm.set_named_target("init")
+        self.arm.go()
+
         search_club = geometry_msgs.msg.Pose() #  棒を探す姿勢の定義
         search_club.position.x = 0
-        search_club.position.y = 0.29
+        search_club.position.y = 0.27
         search_club.position.z = 0.3
         qu1 = quaternion_from_euler(0, 3.14, 3.14)
         search_club.orientation.x = qu1[0]
@@ -146,8 +152,16 @@ class Motion_Process_Server(object):
         self.arm.set_pose_target(search_club)
         print(search_club)
         self.arm.go()
+        self.gripper.set_joint_value_target([0.8, 0.8])
+        self.gripper.go()
         search_club.position.z = 0.0475
+        self.arm.set_pose_target(search_club)
         self.arm.go()
+        rospy.sleep(1.0)
+        self.gripper.set_joint_value_target([0.3, 0.3])
+        self.gripper.go()
+        self.arm.set_named_target("hold")
+        self.gripper.go()
         # /テストコード(grip_club)
     # def search_target(self,<クライアントから送られるデータ名>):
     """
