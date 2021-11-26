@@ -15,6 +15,8 @@ from team4_robotdesign3_2021.msg import ActSignalAction, ActSignalGoal, ActSigna
 # グローバル変数
 vel = 1.0  # set_max_velocity_scaling_factorの引数
 acc = 1.0  # set_max_acceleration_scaling_factorの引数
+
+# action_serverのインスタンスに各class内関数からアクセスできるようにするため、グローバル化をする
 swing_club = None
 
 def main():
