@@ -7,16 +7,19 @@ import geometry_msgs
 import rosnode
 from tf.transformations import quaternion_from_euler
 
-# import actionlib
-# import <サービスのメッセージファイル> 
+import actionlib
 from std_srvs.srv import SetBool, SetBoolResponse #  SetBoolは標準搭載のservice( 入力:bool data , 出力:bool success / string message ) release_club用
-# import <アクションのメッセージファイル>
+from team4_robotdesign3_2021.srv import SetInt32
+from team4_robotdesign3_2021.msg import ActSignalAction, ActSignalGoal, ActSignalFeedback, ActSignalResult
 
 # グローバル変数
 vel = 1.0  # set_max_velocity_scaling_factorの引数
 acc = 1.0  # set_max_acceleration_scaling_factorの引数
+swing_club = None
 
 def main():
+    global swing_club
+
     rospy.init_node("motion_process")
 
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
@@ -25,15 +28,17 @@ def main():
     server = Motion_Process_Server()  # Motino_Process_Serverのインスタンス化
 
     release_club = rospy.Service('release_club', SetBool, server.release_club_motion)
+    swing_club = actionlib.SimpleActionServer('swing_club', ActSignalAction, server.swing_club_motion, False)
+    swing_club.start()
     # ここで、各サーバを立ち上げ、及び開始
 
     print("server:motion_process Ready\n")
     
     # Test Code
-    server.search_club()
-    server.swing_club_motion()
+    # server.search_club()
+    # server.swing_club_motion()
     # /Test Code
-    # rospy.spin()  # 無限ループ 
+    rospy.spin()  # 無限ループ 
 
 
 class Preparation_motion:  # Motion_Process_Serverから呼び出される、基本動作の関数をまとめたクラス
@@ -55,7 +60,13 @@ class Preparation_motion:  # Motion_Process_Serverから呼び出される、基
 
     # def stand_by
 
-    # def hold
+    def hold(self):  # 
+        self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        print("==server:hold")
+        self.arm.set_named_target("hold") #  SRDFからholdのステータスを読み込み
+        self.arm.go()
 
 class Motion_Process_Server(object):
     preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
@@ -109,7 +120,7 @@ class Motion_Process_Server(object):
         return resp
             
 
-    def swing_club_motion(self):
+    def swing_club_motion(self,data):
         """
         この関数では、swing_club をする動作をActionとして提供する
         swing_set_club
@@ -122,29 +133,37 @@ class Motion_Process_Server(object):
                 ここで、印に当てるか外すかを決めてから、動作を行う
             動作の完了報告を返す
         """
-        global vel, acc
+        global vel, acc, swing_club
         vel = 0.05
         acc = 0.15
         self.arm.set_max_velocity_scaling_factor(vel)
         self.arm.set_max_acceleration_scaling_factor(acc)
 
-        print("swing_set_club")
-        self.arm.set_named_target("swing_set_club")
-        current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-        z_axis_1 = current_pose[0] - 0.873
-        self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-        self.arm.go()
+        result = ActSignalResult()
+        if data.BoolIn == True:
+            print(data.StrIn) # "server:Start swing_club"
+            print("==server:swing_set_club")
+            self.arm.set_named_target("swing_set_club")
+            current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+            z_axis_1 = current_pose[0] - 0.873
+            self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+            self.arm.go()
 
-        vel = 1.0
-        acc = 1.0
-        self.arm.set_max_velocity_scaling_factor(vel)
-        self.arm.set_max_acceleration_scaling_factor(acc)
+            vel = 1.0
+            acc = 1.0
+            self.arm.set_max_velocity_scaling_factor(vel)
+            self.arm.set_max_acceleration_scaling_factor(acc)
 
-        print("swing_club")
-        self.arm.set_named_target("swing_club")
-        z_axis_1 = current_pose[0] + 0.873
-        self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-        self.arm.go()
+            print("==server:swing_club")
+            self.arm.set_named_target("swing_club")
+            z_axis_1 = current_pose[0] + 0.873
+            self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
+            self.arm.go()
+
+        result.IntRes = "client:Finish swing_club"
+        result.BoolRes = True
+        swing_club.set_succeeded(result)
+            
     def search_club(self):
         """
         search_clubをactionとして提供
