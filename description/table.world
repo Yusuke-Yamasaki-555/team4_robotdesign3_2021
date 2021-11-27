@@ -18,22 +18,70 @@
       <!--pose>0.29 0 0 0 0 1.5708</pose>
     </model-->
 
-    <model name="can_id0">
+    <!--<model name="can_id1">
+      <include>
+        <uri>model://can_id1</uri>
+      </include>
+
+      <pose>0 -0.5 0 0 0 -1.57</pose>
+    </model>
+    
+    <model name="can_id2">
+      <include>
+        <uri>model://can_id2</uri>
+      </include>
+
+      <pose>0.354 -0.354 0 0 0 -0.78</pose>
+    </model>-->
+    
+    <!--<model name="can_id3">
+      <include>
+        <uri>model://can_id3</uri>
+      </include>
+
+      <pose>0.354 -0.354 0.3 0 0 -0.78</pose>
+    </model>
+    
+    <model name="stand">
+      <include>
+        <uri>model://stand</uri>
+      </include>
+
+      <pose>0.354 -0.354 0 0 0 -0.78</pose>
+    </model>-->
+    
+    <model name="can_id4">
       <include>
         <uri>model://can_id4</uri>
       </include>
 
       <pose>0.5 0 0.3 0 0 0</pose>
     </model>
-
-    <model name="stand">
+    
+    <model name="stand02">
       <include>
         <uri>model://stand</uri>
       </include>
 
       <pose>0.5 0 0 0 0 0</pose>
     </model>
+    
+    <!--<model name="dislike_id10">
+      <include>
+        <uri>model://dislike_id10</uri>
+      </include>
 
+      <pose>0.354 0.354 0.3 0 0 0.78</pose>
+    </model>
+    
+    <model name="stand01">
+      <include>
+        <uri>model://stand</uri>
+      </include>
+
+      <pose>0.354 0.354 0 0 0 0.78</pose>
+    </model>-->
+    
     <model name="club">
       <include>
         <uri>model://club</uri>
@@ -49,6 +97,20 @@
 
       <pose>0 0.15 0 0 0 0</pose>
     </model>
+    
+    <!--<light name='point_light_0' type='point'>
+      <pose frame=''>-0.5 0 1.0 0 0 0</pose>
+      <diffuse>0.4 0.4 0.4 1</diffuse>
+      <specular>0.02 0.02 0.02 1</specular>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>-->
 
     <model name="ground_plane">
       <include>
