@@ -12,7 +12,7 @@ from team4_robotdesign3_2021.srv import SetInt32, SetInt32Response
 class Image_process:
     def __init__(self, target_AR_id):
         self.target_AR_id = target_AR_id
-        self.eps = 3
+        self.eps = 5
         print(self.target_AR_id)
         self.rtn_img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.rtn_img)
 
@@ -38,15 +38,16 @@ class Image_process:
         try:
             corners, ids, _ = aruco.detectMarkers(self.gray, aruco_dict, parameters=parameters)
             id = ids[0] if ids else False
-            c = corners[0][0] if corners else False
+            c = corners[0][0] if corners else 0
         except:
             pass
         return id, c
  
     def search(self, data):
+        resp = SetBoolResponse()
         #ARマーカーがあるかどうか調べる
         rospy.loginfo(data.data)
-        resp = SetBoolResponse()
+        
         id, _= self.get_ar_info()
         if not id or id not in self.target_AR_id:
             resp.message = ''
@@ -59,8 +60,8 @@ class Image_process:
         return resp
         # return True(ある場合) or false(ない場合)
     def adjust_x(self, data):
-        rospy.loginfo(data.int32In)
         resp = SetInt32Response()
+        # rospy.loginfo(data.int32In)
         _, c = self.get_ar_info()
         current_x = c[:, 0].mean()
         goal_x = data.int32In
@@ -69,9 +70,9 @@ class Image_process:
         return resp
 
     def adjust_y(self, data):
-        _, c = self.get_ar_info()
-        rospy.loginfo(data.int32In)
         resp = SetInt32Response()
+        _, c = self.get_ar_info()
+        # rospy.loginfo(data.int32In)
         current_y = c[:, 1].mean()
         goal_y = data.int32In
         move = goal_y - current_y
