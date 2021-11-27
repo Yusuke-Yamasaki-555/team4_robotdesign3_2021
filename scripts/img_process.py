@@ -1,10 +1,11 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #画像の中心座標は(x, y) = 640, 480, 目標座標は(x, y) = 377, 227
 import rospy
 from sensor_msgs.msg import Image
 import cv2
 from cv2 import aruco
+import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
 from std_srvs.srv import SetBool, SetBoolResponse
 from team4_robotdesign3_2021.srv import SetInt32, SetInt32Response
@@ -38,7 +39,7 @@ class Image_process:
         try:
             corners, ids, _ = aruco.detectMarkers(self.gray, aruco_dict, parameters=parameters)
             id = ids[0] if ids else False
-            c = corners[0][0] if corners else 0
+            c = corners[0][0] if corners else np.array([[0, 0]])
         except:
             pass
         return id, c
@@ -63,7 +64,7 @@ class Image_process:
         resp = SetInt32Response()
         # rospy.loginfo(data.int32In)
         _, c = self.get_ar_info()
-        current_x = c[:, 0].mean()
+        current_x = int(c[:, 0].mean())
         goal_x = data.int32In
         move = goal_x - current_x
         resp.int32Out = 0 if abs(move) < self.eps else int(abs(move)/move)
@@ -73,7 +74,7 @@ class Image_process:
         resp = SetInt32Response()
         _, c = self.get_ar_info()
         # rospy.loginfo(data.int32In)
-        current_y = c[:, 1].mean()
+        current_y = int(c[:, 1].mean())
         goal_y = data.int32In
         move = goal_y - current_y
         resp.int32Out = 0 if abs(move) < self.eps else int(abs(move)/move)

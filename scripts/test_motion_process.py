@@ -3,11 +3,10 @@
 import rospy
 import moveit_commander
 import rosnode
-from math import pi, sin, cos, radians
+from math import sin, cos, radians
 from std_srvs.srv import SetBool
 from team4_robotdesign3_2021.srv import SetInt32
 from team4_robotdesign3_2021.msg import ActSignalActionGoal, ActSignalFeedback, ActSignalResult
-from tf.transformations import quaternion_from_euler
 import geometry_msgs.msg
 
 class ImageServer:
@@ -109,7 +108,7 @@ class Motion_process(ImageServer):
         self.grip_club(current_deg = current_deg)
     
     def grip_club(self, current_deg):
-        ABS_CLUB_POSITION = 0.23
+        ABS_CLUB_POSITION = 0.25
         CLUB_Z_POSITION = 0.065 + 0.02
         arm_goal_pose = self.arm.get_current_pose().pose
         self.gripper.set_joint_value_target([0.9, 0.9])
