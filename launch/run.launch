@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="use_effort_gripper" default="false" />
+  <arg name="use_gazebo" default="true" />
+
+  <include file="$(find team4_robotdesign3_2021)/launch/crane_x7_with_table.launch" />
+  <param name="robot_description"
+    command="$(find xacro)/xacro --inorder '$(find crane_x7_d435)/urdf/crane_x7_d435.xacro' use_effort_gripper:=$(arg use_effort_gripper) use_gazebo:=$(arg use_gazebo)"
+    />
+</launch>
