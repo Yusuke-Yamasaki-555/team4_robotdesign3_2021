@@ -12,22 +12,21 @@ from team4_robotdesign3_2021.srv import SetInt32, SetInt32Response
 class Image_process:
     def __init__(self, target_AR_id):
         self.target_AR_id = target_AR_id
-        self.origin = ''
-        self.eps = 10
+        self.eps = 3
         print(self.target_AR_id)
         self.rtn_img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.rtn_img)
 
     def rtn_img(self, data):
         bridge = CvBridge()
         try:
-            self.origin = bridge.imgmsg_to_cv2(data, 'passthrough')
-            self.bgr = cv2.cvtColor(self.origin, cv2.COLOR_BGR2RGB)
+            origin = bridge.imgmsg_to_cv2(data, 'passthrough')
+            self.bgr = cv2.cvtColor(origin, cv2.COLOR_BGR2RGB)
             self.gray = cv2.cvtColor(self.bgr, cv2.COLOR_RGB2GRAY)
-            cv2.drawMarker(self.origin, position=(377, 227), color=(0, 0, 255), markerType=cv2.MARKER_STAR, markerSize=10)
-            # height = int(self.origin.shape[0])
-            # width = int(self.origin.shape[1])
+            cv2.drawMarker(origin, position=(377, 227), color=(0, 0, 255), markerType=cv2.MARKER_STAR, markerSize=10)
+            # height = int(origin.shape[0])
+            # width = int(origin.shape[1])
             # resize_img = cv2.resize(self.bgr,(4*width/5, 4*height/5))
-            cv2.imshow('window', self.origin)
+            cv2.imshow('window', origin)
             cv2.waitKey(1)
         except CvBridgeError as e:
             rospy.logerr(e)
@@ -68,7 +67,6 @@ class Image_process:
         move = goal_x - current_x
         resp.int32Out = 0 if abs(move) < self.eps else int(abs(move)/move)
         return resp
-
 
     def adjust_y(self, data):
         _, c = self.get_ar_info()
