@@ -3,11 +3,10 @@
 import rospy
 import moveit_commander
 import rosnode
-from math import pi, sin, cos, radians
+from math import sin, cos, radians
 from std_srvs.srv import SetBool
 from team4_robotdesign3_2021.srv import SetInt32
 from team4_robotdesign3_2021.msg import ActSignalActionGoal, ActSignalFeedback, ActSignalResult
-from tf.transformations import quaternion_from_euler
 import geometry_msgs.msg
 
 class ImageServer:
@@ -55,7 +54,9 @@ class Motion_process(ImageServer):
 
     def search_target(self):
         self.set_position('search_target')
-        for deg in range(60, -90, -1):
+        for deg in range(-45, 45, 1):
+            self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
+            self.arm.go()
             search_res = self.img_srv.srv_search_target(True)
             if search_res.success:
                 rospy.loginfo('Find_t')
@@ -81,13 +82,10 @@ class Motion_process(ImageServer):
                     self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.75-radians(move)}) #根本を回転
                     self.arm.go()
                 rospy.sleep(1.0)
-            self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
-            self.arm.go()
-        self.arm.set_named_target("init")
-        self.arm.go()
+        self.set_position('init')
     
     def search_club(self):
-        self.set_position('hold')
+        self.set_position('search_club')
         for deg in range(0, 110, 1):
             self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
             self.arm.go()
@@ -110,7 +108,7 @@ class Motion_process(ImageServer):
         self.grip_club(current_deg = current_deg)
     
     def grip_club(self, current_deg):
-        ABS_CLUB_POSITION = 0.23
+        ABS_CLUB_POSITION = 0.25
         CLUB_Z_POSITION = 0.065 + 0.02
         arm_goal_pose = self.arm.get_current_pose().pose
         self.gripper.set_joint_value_target([0.9, 0.9])
@@ -139,7 +137,7 @@ def main():
     servers = ['search_club', 'adjustx_club', 'adjusty_club', 'search_target', 'adjustx_target', 'adjusty_target']
     for server in servers:
         rospy.wait_for_service(server)
-    club.search_club()
+    # club.search_club()
     target.search_target()
     while len([s for s in rosnode.get_node_names() if 'rviz' in s]) == 0:
         rospy.sleep(1.0)

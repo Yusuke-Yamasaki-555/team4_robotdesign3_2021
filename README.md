@@ -11,14 +11,14 @@ cit robot-design-3-2021 crane_x7
 
 また、このパッケージに実装されているモーションは realsense-D435 を用いた画像処理を含んでいます。そのため、以下のパッケージを追加でインストールする必要があります。
 
-　・rviz,gazeboにカメラのモデルと映像を適用(シュミレーション。実機関係なく)
+　・rviz,gazeboにカメラのモデルと映像を適用(シミュレーション。実機関係なく)
 　　Kuwamai様より
 　　　https://github.com/Kuwamai/crane_x7_d435
 
 　・（実機）
-　　（多分#ntelのやつ）
+　　（多分intelのやつ）
 
-実行する前に、crane_x7_d435/launch/bringup_sim.launch内でincludeされているlaunchファイルの参照先を、team4_robotdesign3_2021に書き換えてください。その後、以下のコマンドを実行してください。gazeboシュミレーションとRvizが立ち上がります。
+実行する前に、crane_x7_d435/launch/bringup_sim.launch内でincludeされているlaunchファイルの参照先を、team4_robotdesign3_2021に書き換えてください。その後、以下のコマンドを実行してください。gazeboシミュレーションとRvizが立ち上がります。
 
 業務連絡：
 　各ディレクトリのREADME.mdは、好きに書き換えてくれて構わない。共有メモの感覚で。
