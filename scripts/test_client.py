@@ -163,9 +163,10 @@ def main():
     swing_club.send_goal(goal, feedback_cb = feedback_swing_club)
     swing_club.wait_for_result()
 
-    if swing_club.get_result.BoolRes:
+    result = swing_club.get_result()
+    if result.BoolRes:
         print("client:Success swing_club")
-    elif not swing_club.get_result.BoolRes:
+    elif not result.BoolRes:
         print("client:Failure swing_club")
     # """
 
