@@ -2,7 +2,8 @@ bool BoolIn
 int32 Int32In
 string StrIn
 ---
-bool BoolFB
----
-int32 IntRes
+int32 Int32Res
 bool BoolRes
+---
+bool BoolFB
+int32 Int32FB
