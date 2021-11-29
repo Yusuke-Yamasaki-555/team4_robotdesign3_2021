@@ -142,6 +142,7 @@ class Motion_Process_Server(object):
         self.arm.set_max_acceleration_scaling_factor(acc)
 
         result = ActSignalResult()
+        feedback = ActSignalFeedback()
         if data.BoolIn == True:
             print(data.StrIn) # "server:Start swing_club"
             print("==server:swing_set_club")
@@ -149,7 +150,14 @@ class Motion_Process_Server(object):
             current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
             z_axis_1 = current_pose[0] - 0.873
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-            self.arm.go()
+            feedback.BoolFB = self.arm.go()
+
+            swing_club.publish_feedback(feedback)
+            rospy.sleep(1.0)
+            if swing_club.is_preempt_requested():
+                result.IntRes = "client:Failure swing_club"
+                result.BoolRes = False
+                swing_club.set_preempted(result)
 
             vel = 1.0
             acc = 1.0

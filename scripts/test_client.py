@@ -11,6 +11,14 @@ import geometry_msgs
 # /テストの為
 
 from std_srvs.srv import SetBool #  SetBoolは標準搭載のservice( 入力:bool data , 出力:bool success / string message )
+import actionlib
+from team4_robotdesign3_2021.msg import ActSignalAction, ActSignalResult, ActSignalFeedback, ActSignalGoal
+
+#===== action =====
+# """
+swing_club = actionlib.SimpleActionClient('swing_club', ActSignalAction)
+# """
+#===== /action =====
 
 def main():
     rospy.init_node("test_client")
@@ -35,6 +43,11 @@ def main():
     happy_end = rospy.ServiceProxy('happy_end', SetBool)
     """
 #===== /emotions =====
+#===== action =====
+    # """
+    swing_club.wait_for_server()
+    # """
+#===== /action =====
 
 #===== motion_process =====
     # """
@@ -128,7 +141,7 @@ def main():
         print(happy_end_res.message)
     # """
 #===== release_club =====
-    # """
+    """
     release_club_b = True
     release_club_res = release_club(release_club_b)
 
@@ -137,6 +150,27 @@ def main():
     elif not release_club_res.success:
         print(release_club_res.message)
     # """
+#===== swing_club =====
+    # """
+    goal = ActSignalGoal()
+    goal.BoolIn = True
+    goal.StrIn = "server:Start swing_club"
+
+    swing_club.send_goal(goal, feedback_cb = feedback_swing_club)
+    swing_club.wait_for_result()
+
+    if swing_club.get_result.BoolRes:
+        print(swing_club.get_result.IntRes)
+    elif not swing_club.get_result.BoolRes:
+        print(swing_club.get_result.IntRes)
+    # """
+
+
+def feedback_swing_club(feedback):
+    if feedback.BoolFB:
+        print("==client:Confirmed swing_set_club")
+    else:
+        swing_club.cancel_goal()
 
 
 if __name__ == '__main__':
