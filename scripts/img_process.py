@@ -83,16 +83,18 @@ class Image_process:
 def main():
     rospy.init_node('img_process', anonymous=1)
     rospy.loginfo('start')
-    while not rospy.is_shutdown():
-        rospy.spin()
-    target = Image_process(target_AR_id = [3, 4, 10])
+    target = Image_process(target_AR_id=[3, 4, 10])
     club = Image_process(target_AR_id=[6])
+    check = Image_process(target_AR_id=[3, 4, 10])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
     img_adjustx_club_server = rospy.Service('img_adjustx_club', SetInt32, club.adjust_x)
     img_adjusty_club_server = rospy.Service('img_adjusty_club', SetInt32, club.adjust_y)
     img_search_target_server = rospy.Service('img_search_target', SetBool, target.search)
     img_adjustx_target_server = rospy.Service('img_adjustx_target', SetInt32, target.adjust_x)
     img_adjusty_target_server = rospy.Service('img_adjusty_target', SetInt32, target.adjust_y)
+    while not rospy.is_shutdown():
+        rospy.spin()
+    # img_check_target_server = rospy.Service('img_check_target', SetBool, check.search)
 
 if __name__ == '__main__':
     try:
