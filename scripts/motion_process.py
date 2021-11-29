@@ -153,7 +153,7 @@ class Motion_Process_Server(object):
             self.arm.set_named_target("swing_set_club")
             # /test code
             current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-            z_axis_1 = current_pose[0] - 0.785 # deg45
+            z_axis_1 = current_pose[0] - 0.698 # deg40
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
             feedback.BoolFB = self.arm.go()
 
@@ -165,17 +165,19 @@ class Motion_Process_Server(object):
 
             vel = 1.0
             acc = 1.0
-            self.arm.set_max_velocity_scaling_factor(vel)
-            self.arm.set_max_acceleration_scaling_factor(acc)
+            # self.arm.set_max_velocity_scaling_factor(vel)
+            # self.arm.set_max_acceleration_scaling_factor(acc)
 
             print("==server:swing_club")
             self.arm.set_named_target("swing_club")
-            z_axis_1 = current_pose[0] + 0.524 # deg30
+            z_axis_1 = current_pose[0] + 0.611 # deg35
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
             self.arm.go()
 
         result.BoolRes = True
         swing_club.set_succeeded(result)
+
+        print("server:emotions Ready\n")
             
     def search_club(self):
         """
