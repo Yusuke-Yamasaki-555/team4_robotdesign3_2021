@@ -49,8 +49,9 @@ class Preparation_motion:  # Motion_Process_Serverから呼び出される、基
     Serverにはならない
     各関数の最後：return 動作結果
     """
-    arm = moveit_commander.MoveGroupCommander("arm")
-    gripper = moveit_commander.MoveGroupCommander("gripper")
+    def __init__(self):
+        self.arm = moveit_commander.MoveGroupCommander("arm")
+        self.gripper = moveit_commander.MoveGroupCommander("gripper")
 
     def init(self):  # 棒立ちの動作
         self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
@@ -71,10 +72,11 @@ class Preparation_motion:  # Motion_Process_Serverから呼び出される、基
         self.arm.go()
 
 class Motion_Process_Server(object):
-    preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
+    def __init__(self):
+        self.preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
 
-    arm = moveit_commander.MoveGroupCommander("arm")
-    gripper = moveit_commander.MoveGroupCommander("gripper")
+        self.arm = moveit_commander.MoveGroupCommander("arm")
+        self.gripper = moveit_commander.MoveGroupCommander("gripper")
     # __init__(self):
     """
         class Preparation_motionのインスタンス作成
