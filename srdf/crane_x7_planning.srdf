@@ -295,31 +295,31 @@
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
     <group_state name="swing_set_club" group="arm">
-        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.873" />
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="0.436" /><!-- deg25 -->
           <!--y軸第一関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" />
+        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" /><!-- deg0 -->
           <!--z軸第二関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.92" />
+        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.57" /><!-- deg-90 -->
           <!--y軸第二関節  deg:-161~2-->
-        <joint name="crane_x7_lower_arm_fixed_part_joint" value="0" />
+        <joint name="crane_x7_lower_arm_fixed_part_joint" value="0" /><!-- deg0 -->
           <!--z軸第三関節  deg:-159~87-->
-        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-1.22" />
+        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.262" /><!-- deg-15 -->
           <!--y軸第三関節  deg:-90~90-->
-        <joint name="crane_x7_wrist_joint" value="-1.57" />
+        <joint name="crane_x7_wrist_joint" value="-1.57" /><!-- deg-90 -->
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
     <group_state name="swing_club" group="arm">
-        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="-0.262" />
+        <joint name="crane_x7_shoulder_revolute_part_tilt_joint" value="-0.960" /><!-- deg-55 --><!-- 元deg-15 -->
           <!--y軸第一関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" />
+        <joint name="crane_x7_upper_arm_revolute_part_twist_joint" value="0" /><!-- deg0 --><!-- 元deg0 -->
           <!--z軸第二関節  deg:-90~90-->
-        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-1.57" />
+        <joint name="crane_x7_upper_arm_revolute_part_rotate_joint" value="-0.960" /><!-- deg-55 --><!-- 元deg-90 -->
           <!--y軸第二関節  deg:-161~2-->
-        <joint name="crane_x7_lower_arm_fixed_part_joint" value="0" />
+        <joint name="crane_x7_lower_arm_fixed_part_joint" value="0" /><!-- deg0 --><!-- 元deg0 -->
           <!--z軸第三関節  deg:-159~87-->
-        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.611" />
+        <joint name="crane_x7_lower_arm_revolute_part_joint" value="-0.960" /><!-- deg-55 --><!-- 元deg-35 -->
           <!--y軸第三関節  deg:-90~90-->
-        <joint name="crane_x7_wrist_joint" value="-1.57" />
+        <joint name="crane_x7_wrist_joint" value="-1.57" /><!-- deg-90 --><!-- 元deg-90 -->
           <!--z軸gripper回転  deg:-170~170-->
     </group_state>
     <group_state name="search_target" group="arm">
