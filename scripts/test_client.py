@@ -152,6 +152,10 @@ def main():
     # """
 #===== swing_club =====
     # """
+    # テスト用コード
+    arm.set_named_target("init")
+    arm.go()
+    # /テスト用コード
     goal = ActSignalGoal()
     goal.BoolIn = True
     goal.StrIn = "server:Start swing_club"
