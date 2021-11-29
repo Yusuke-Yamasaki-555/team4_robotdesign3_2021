@@ -1,30 +1,35 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+from re import search
 import rospy
+import actionlib
 import moveit_commander
 import rosnode
 from math import sin, cos, radians
 from std_srvs.srv import SetBool
 from team4_robotdesign3_2021.srv import SetInt32
-from team4_robotdesign3_2021.msg import ActSignalActionGoal, ActSignalFeedback, ActSignalResult
+from team4_robotdesign3_2021.msg import ActSignalGoal, ActSignalFeedback, ActSignalResult, ActSignalAction
 import geometry_msgs.msg
 
-class ImageServer:
+class ImageProcessServer:
     def __init__(self):
-        self.srv_search_club = rospy.ServiceProxy('search_club', SetBool)
-        self.srv_adjustx_club = rospy.ServiceProxy('adjustx_club', SetInt32)
-        self.srv_adjusty_club = rospy.ServiceProxy('adjustxy_club', SetInt32)
-        self.srv_search_target = rospy.ServiceProxy('search_target', SetBool)
-        self.srv_adjustx_target = rospy.ServiceProxy('adjustx_target', SetInt32)
-        self.srv_adjusty_target = rospy.ServiceProxy('adjusty_target', SetInt32)
+        self.srv_search_club = rospy.ServiceProxy('img_search_club', SetBool)
+        self.srv_adjustx_club = rospy.ServiceProxy('img_adjustx_club', SetInt32)
+        self.srv_adjusty_club = rospy.ServiceProxy('img_adjustxy_club', SetInt32)
+        self.srv_search_target = rospy.ServiceProxy('img_search_target', SetBool)
+        self.srv_adjustx_target = rospy.ServiceProxy('img_adjustx_target', SetInt32)
+        self.srv_adjusty_target = rospy.ServiceProxy('img_adjusty_target', SetInt32)
     
-class Motion_process(ImageServer):
+class Motion_process:
+    _feedback = ActSignalFeedback()
+    _result = ActSignalResult()
     def __init__(self):
         self.arm = moveit_commander.MoveGroupCommander("arm")
         self.arm.set_max_velocity_scaling_factor(0.1)
         self.arm.set_max_acceleration_scaling_factor(1.0)
         self.gripper = moveit_commander.MoveGroupCommander("gripper")
-        self.img_srv = ImageServer()
+        self.img_srv = ImageProcessServer()
+        
 
     # def release_club_motion(self,<クライアントから送られるデータ名>):
 
@@ -97,10 +102,10 @@ class Motion_process(ImageServer):
                 while True:
                     moveX = self.img_srv.srv_adjustx_club(377)
                     move += 0.5*moveX.int32Out
-                    self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)-radians(move)}) #根本を回転
+                    self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                     self.arm.go()
                     if moveX.int32Out == 0:
-                        current_deg = radians(deg)-radians(move)
+                        current_deg = radians(deg-move)
                         move = 0
                         break
                 break
@@ -116,7 +121,7 @@ class Motion_process(ImageServer):
         rospy.sleep(1.0)
         target_pose = geometry_msgs.msg.Pose()
         target_pose.position.x = ABS_CLUB_POSITION * cos(current_deg)
-        target_pose.position.y = ABS_CLUB_POSITION * sin(current_deg)#arm_goal_pose.position.y+0.23
+        target_pose.position.y = ABS_CLUB_POSITION * sin(current_deg)
         target_pose.position.z = CLUB_Z_POSITION
         target_pose.orientation.x = arm_goal_pose.orientation.x
         target_pose.orientation.y = arm_goal_pose.orientation.y
@@ -135,12 +140,15 @@ def main():
     target = Motion_process()
     club = Motion_process()
     servers = ['search_club', 'adjustx_club', 'adjusty_club', 'search_target', 'adjustx_target', 'adjusty_target']
-    for server in servers:
-        rospy.wait_for_service(server)
-    # club.search_club()
-    target.search_target()
     while len([s for s in rosnode.get_node_names() if 'rviz' in s]) == 0:
         rospy.sleep(1.0)
+    for server in servers:
+        rospy.wait_for_service(server)
+    search_target_action_server = actionlib.SimpleActionClient('search_target', ActSignalAction, )
+    search_club_action_server = actionlib.SimpleActionClient('search_club', ActSignalAction, )
+    # check_target_action_server = actionlib.SimpleActionClient('check_target', ActSignalAction, )
+    # club.search_club()
+    target.search_target()
 
 if __name__ == '__main__':
     try:

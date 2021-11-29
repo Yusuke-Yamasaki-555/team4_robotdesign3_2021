@@ -83,16 +83,16 @@ class Image_process:
 def main():
     rospy.init_node('img_process', anonymous=1)
     rospy.loginfo('start')
-    target = Image_process(target_AR_id = [3, 4, 10])
-    club = Image_process(target_AR_id=[6])
-    search_club_server = rospy.Service('search_club', SetBool, club.search)
-    adjustx_club_server = rospy.Service('adjustx_club', SetInt32, club.adjust_x)
-    adjusty_club_server = rospy.Service('adjusty_club', SetInt32, club.adjust_y)
-    search_target_server = rospy.Service('search_target', SetBool, target.search)
-    adjustx_target_server = rospy.Service('adjustx_target', SetInt32, target.adjust_x)
-    adjusty_target_server = rospy.Service('adjusty_target', SetInt32, target.adjust_y)
     while not rospy.is_shutdown():
         rospy.spin()
+    target = Image_process(target_AR_id = [3, 4, 10])
+    club = Image_process(target_AR_id=[6])
+    img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
+    img_adjustx_club_server = rospy.Service('img_adjustx_club', SetInt32, club.adjust_x)
+    img_adjusty_club_server = rospy.Service('img_adjusty_club', SetInt32, club.adjust_y)
+    img_search_target_server = rospy.Service('img_search_target', SetBool, target.search)
+    img_adjustx_target_server = rospy.Service('img_adjustx_target', SetInt32, target.adjust_x)
+    img_adjusty_target_server = rospy.Service('img_adjusty_target', SetInt32, target.adjust_y)
 
 if __name__ == '__main__':
     try:
