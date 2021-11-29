@@ -153,7 +153,7 @@ class Motion_Process_Server(object):
             self.arm.set_named_target("swing_set_club")
             # /test code
             current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-            z_axis_1 = current_pose[0] - 0.873 # deg50
+            z_axis_1 = current_pose[0] - 0.785 # deg45
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
             feedback.BoolFB = self.arm.go()
 
