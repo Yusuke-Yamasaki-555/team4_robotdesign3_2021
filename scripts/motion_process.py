@@ -120,7 +120,7 @@ class Motion_Process_Server(object):
                 resp.message = "client:Failure release_club_motion\n"
                 resp.success = False
         
-        print("server:emotions Ready\n")
+        print("server:motion_process Ready\n")
         return resp
             
 
@@ -148,9 +148,9 @@ class Motion_Process_Server(object):
         if data.BoolIn == True:
             print(data.StrIn) # "server:Start swing_club"
             print("==server:swing_set_club")
-            # self.arm.set_named_target("swing_set_club")
-            # test code
             self.arm.set_named_target("swing_set_club")
+            # test code
+            # self.arm.set_named_target("swing_club")
             # /test code
             current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
             z_axis_1 = current_pose[0] - 0.698 # deg40
@@ -165,8 +165,8 @@ class Motion_Process_Server(object):
 
             vel = 1.0
             acc = 1.0
-            # self.arm.set_max_velocity_scaling_factor(vel)
-            # self.arm.set_max_acceleration_scaling_factor(acc)
+            self.arm.set_max_velocity_scaling_factor(vel)
+            self.arm.set_max_acceleration_scaling_factor(acc)
 
             print("==server:swing_club")
             self.arm.set_named_target("swing_club")
@@ -177,7 +177,7 @@ class Motion_Process_Server(object):
         result.BoolRes = True
         swing_club.set_succeeded(result)
 
-        print("server:emotions Ready\n")
+        print("server:motion_process Ready\n")
             
     def search_club(self):
         """
@@ -194,6 +194,7 @@ class Motion_Process_Server(object):
         完了報告をresult
         """
         # テストコード(grip_club)
+        """
         self.arm.set_max_velocity_scaling_factor(0.5)
         self.arm.set_max_acceleration_scaling_factor(0.35)
 
@@ -227,7 +228,9 @@ class Motion_Process_Server(object):
         self.arm.set_named_target("hold")
         self.arm.go()
         rospy.sleep(0.5)
+        """
         # /テストコード(grip_club)
+        
     # def search_target(self,<クライアントから送られるデータ名>):
     """
         search_targetをactionとして提供
