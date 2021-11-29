@@ -188,8 +188,8 @@ def main():
         rospy.wait_for_service(server)
     
     # check_target_action_server = actionlib.SimpleActionClient('check_target', ActSignalAction, check.check_target, False)
-    # club.search_club()
-    target.search_target()
+    club.search_club()
+    # target.search_target()
 
 if __name__ == '__main__':
     try:
