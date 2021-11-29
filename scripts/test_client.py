@@ -160,9 +160,9 @@ def main():
     swing_club.wait_for_result()
 
     if swing_club.get_result.BoolRes:
-        print(swing_club.get_result.IntRes)
+        print("client:Success swing_club")
     elif not swing_club.get_result.BoolRes:
-        print(swing_club.get_result.IntRes)
+        print("client:Failure swing_club")
     # """
 
 

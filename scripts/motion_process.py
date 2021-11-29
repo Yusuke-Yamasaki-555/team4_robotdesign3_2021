@@ -157,7 +157,6 @@ class Motion_Process_Server(object):
             swing_club.publish_feedback(feedback)
             rospy.sleep(1.0)
             if swing_club.is_preempt_requested():
-                result.IntRes = "client:Failure swing_club"
                 result.BoolRes = False
                 swing_club.set_preempted(result)
 
@@ -172,7 +171,6 @@ class Motion_Process_Server(object):
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
             self.arm.go()
 
-        result.IntRes = "client:Finish swing_club"
         result.BoolRes = True
         swing_club.set_succeeded(result)
             
