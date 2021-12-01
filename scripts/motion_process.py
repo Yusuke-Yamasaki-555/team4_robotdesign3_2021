@@ -156,6 +156,7 @@ class Motion_Process_Server(object):
             z_axis_1 = current_pose[0] - 0.698 # deg40
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
             feedback.BoolFB = self.arm.go()
+            feedback.Int32FB = 0
 
             swing_club.publish_feedback(feedback)
             rospy.sleep(1.0)
@@ -175,6 +176,7 @@ class Motion_Process_Server(object):
             self.arm.go()
 
         result.BoolRes = True
+        result.Int32Res = 0
         swing_club.set_succeeded(result)
 
         print("server:motion_process Ready\n")
