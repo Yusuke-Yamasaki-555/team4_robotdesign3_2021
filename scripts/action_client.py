@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 from math import trunc
-
-from cv2 import findEssentialMat
 import rospy
 from rospy.exceptions import ROSInterruptException
 from std_srvs.srv import SetBool #  SetBoolは標準搭載のservice( 入力:bool data , 出力:bool success / string message )

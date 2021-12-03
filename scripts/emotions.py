@@ -42,8 +42,9 @@ def main():  # このnodeの玄関
     rospy.spin()  # 無限ループ
 
 class Preparation_motion:  # Emotions_Serverから呼び出される、基本動作の関数をまとめたクラス
-    arm = moveit_commander.MoveGroupCommander("arm")
-    gripper = moveit_commander.MoveGroupCommander("gripper")
+    def __init__(self):
+        self.arm = moveit_commander.MoveGroupCommander("arm")
+        self.gripper = moveit_commander.MoveGroupCommander("gripper")
 
     def init(self):  # 棒立ちの動作
         self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
@@ -71,10 +72,11 @@ class Preparation_motion:  # Emotions_Serverから呼び出される、基本動
 
 
 class Emotions_Server: 
-    preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
+    def __init__(self):
+        self.preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
 
-    arm = moveit_commander.MoveGroupCommander("arm")
-    gripper = moveit_commander.MoveGroupCommander("gripper")
+        self.arm = moveit_commander.MoveGroupCommander("arm")
+        self.gripper = moveit_commander.MoveGroupCommander("gripper")
 
     def bow_motion(self, data):  # お辞儀をする動作（data:clientからの入力データ）
         # グローバル変数のvelとaccの値を、お辞儀用の値にする
