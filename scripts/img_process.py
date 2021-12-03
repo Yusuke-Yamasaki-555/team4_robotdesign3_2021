@@ -14,6 +14,7 @@ class Image_process:
     def __init__(self, target_AR_id):
         self.target_AR_id = target_AR_id
         self.eps = 5
+        self.pre_c = []
         print(self.target_AR_id)
         self.rtn_img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.rtn_img)
 
@@ -39,7 +40,8 @@ class Image_process:
         try:
             corners, ids, _ = aruco.detectMarkers(self.gray, aruco_dict, parameters=parameters)
             id = ids[0] if ids else False
-            c = corners[0][0] if corners else np.array([[0, 0]])
+            c = corners[0][0] if corners else self.pre_c
+            self.pre_c = c
         except:
             pass
         return id, c
@@ -47,7 +49,7 @@ class Image_process:
     def search(self, data):
         resp = SetBoolResponse()
         #ARマーカーがあるかどうか調べる
-        rospy.loginfo(data.data)
+        # rospy.loginfo(data.data)
         
         id, _= self.get_ar_info()
         if not id or id not in self.target_AR_id:
@@ -56,8 +58,9 @@ class Image_process:
         else:
             self.target_AR_id.remove(id)
             rospy.loginfo(id)
-            resp.message = str(id)
-            resp.success = True
+            resp.message = f'end, {id}' if len(self.target_AR_id) == 0 else f'not, {id}'
+            print(f'len={resp.message}')
+            resp.success = True 
         return resp
         # return True(ある場合) or false(ない場合)
     def adjust_x(self, data):
@@ -83,7 +86,7 @@ class Image_process:
 def main():
     rospy.init_node('img_process', anonymous=1)
     rospy.loginfo('start')
-    target = Image_process(target_AR_id=[3, 4, 10])
+    target = Image_process(target_AR_id=[4, 10])
     club = Image_process(target_AR_id=[6])
     check = Image_process(target_AR_id=[3, 4, 10])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)

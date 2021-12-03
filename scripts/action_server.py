@@ -14,7 +14,7 @@ def cb(goal):
         feedback = ActSignalFeedback()
         sum = 0
         for i in range(0, 100, 1):
-            feedback.BoolFB = True
+            feedback.BoolFB = False
             sum += i
             feedback.Int32FB = i
             if feedback.Int32FB % 10 == 0:
