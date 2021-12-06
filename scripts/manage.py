@@ -55,53 +55,53 @@ def main():
     happy_end
     bow
     """
-    global search_club, search_target, swing_club, check_target 
+    global search_club, search_target, swing_club, check_target, arm, gripper
 
     rospy.init_node("manage")
-    # arm = moveit_commander.MoveGroupCommander("arm")
-    # gripper = moveit_commander.MoveGroupCommander("gripper")
+    arm = moveit_commander.MoveGroupCommander("arm")
+    gripper = moveit_commander.MoveGroupCommander("gripper")
 
     while len([s for s in rosnode.get_node_names() if "rviz" in s]) == 0:
         rospy.loginfo("Waiting rviz...")
         rospy.sleep(1.0)
     rospy.loginfo("Started rviz")
 #===== emotions =====
-    """
+    # """
     bow = rospy.ServiceProxy('bow', SetBool)
     release_club = rospy.ServiceProxy('release_club', SetBool)
     happy_end = rospy.ServiceProxy('happy_end', SetBool)
-    """
+    # """
 #===== /emotions =====
 #===== action =====
-    """
+    # """
     search_club = actionlib.SimpleActionClient('search_club', ActSignalAction)
     search_target = actionlib.SimpleActionClient('search_target', ActSignalAction)
     swing_club = actionlib.SimpleActionClient('swing_club', ActSignalAction)
-    check_target = actionlib.SimpleActionClient('check_target', ActSignalAction)
+    # check_target = actionlib.SimpleActionClient('check_target', ActSignalAction) 未完成
     # """
 #===== /action =====
 #===== waiting_server =====
-    """ manageで使うserver
+    # """ manageで使うserver
     
     search_club.wait_for_server()
     search_target.wait_for_server()
     swing_club.wait_for_server()
-    check_target.wait_for_server()
+    # check_target.wait_for_server() 未完成
 
     rospy.wait_for_service("bow")
     rospy.wait_for_service("release_club")
     rospy.wait_for_service("happy_end")
     # """
-    """ manage以外で使うserver
-    　　(server待ちで一連動作を止めたくない。manageで全serverの開始を待つ)
-    　　(各呼び出し元nodeでも一応待っても良いかも)
+    #""" manage以外で使うserver
+    #　　(server待ちで一連動作を止めたくない。manageで全serverの開始を待つ)
+    #　　(各呼び出し元nodeでも一応待っても良いかも)
 
     # node:emotions
     rospy.wait_for_service("tilt_neck")
     rospy.wait_for_service("dislike")
     rospy.wait_for_service("happy_club")
 
-    # node:img_process(adjust系の意義はどうなのか？)
+    # node:img_process
     rospy.wait_for_service("img_search_club")
     rospy.wait_for_service("img_adjustx_club")
     rospy.wait_for_service("img_adjusty_club")
@@ -132,14 +132,30 @@ def main():
     happy_end
     bow
     # """
+    # test code
+    try:
+        goal = set_goal(True, 123, "abc")
+        if goal.BoolIn:
+            print(goal.Int32In)
+            print(goal.StrIn)
+        print("True")
+    except:
+        print("False")
+    # /test code
 #===== /main_process =====
-
-
+#===== set_goal =====
+def set_goal(bool, int, str):
+    goal = ActSignalGoal()
+    goal.BoolIn = bool
+    goal.Int32In = int
+    goal.StrIn = str
+    return goal
+#===== /set_goal =====
 #===== feedback群 ===== ココはclassにしても良いかも
-"""
-def feedback_search_club(feedback):
+# """
+# def feedback_search_club(feedback):
 
-def feedback_search_target(feedback):
+# def feedback_search_target(feedback):
 
 def feedback_swing_club(feedback):
     if feedback.BoolFB:
@@ -147,7 +163,7 @@ def feedback_swing_club(feedback):
     else:
         swing_club.cancel_goal()
 
-def feedback_check_target(feedback):
+# def feedback_check_target(feedback):
 
 # """
 #===== /feedback群 =====
@@ -157,5 +173,5 @@ if __name__ == '__main__': # ここも、ちょっちイジっても良い鴨。
     try:
         if not rospy.is_shutdown():
             main()
-    except rospy.ROSInterruptException:
-        pass
+    except rospy.ROSInterruptException as e:
+        rospy.logerr(e)
