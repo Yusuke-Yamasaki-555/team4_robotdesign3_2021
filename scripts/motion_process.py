@@ -192,8 +192,10 @@ class Motion_Process_Server(object):
             swing_club.publish_feedback(feedback)
             rospy.sleep(1.0)
             if swing_club.is_preempt_requested():
+                self.preparation.init()
                 result.BoolRes = False
                 swing_club.set_preempted(result)
+                return
 
             vel = 1.0
             acc = 1.0
