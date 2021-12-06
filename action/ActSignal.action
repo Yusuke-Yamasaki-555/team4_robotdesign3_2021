@@ -4,6 +4,7 @@ string StrIn
 ---
 int32 Int32Res
 bool BoolRes
+string StrRes
 ---
 bool BoolFB
 int32 Int32FB
