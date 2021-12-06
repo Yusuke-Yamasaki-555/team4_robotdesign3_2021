@@ -48,7 +48,7 @@ def main():
 
     print("server:motion_process Ready\n")
     
-    # Test Code
+    """# Test Code
     goal = ActSignalGoal
     goal.BoolIn = True
     goal.Int32In = 0
@@ -56,7 +56,7 @@ def main():
     server.search_club(goal)
     server.search_target(goal)
     server.swing_club_motion(goal)
-    # /Test Code
+    """# /Test Code
     rospy.spin()  # 無限ループ 
 
 

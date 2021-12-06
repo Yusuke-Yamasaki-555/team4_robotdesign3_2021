@@ -81,8 +81,8 @@ def main():
     # """
 #===== /action =====
 #===== waiting_server =====
+    rospy.loginfo("Wait all server...")
     # """ manageで使うserver
-    
     search_club.wait_for_server()
     search_target.wait_for_server()
     swing_club.wait_for_server()
@@ -110,6 +110,7 @@ def main():
     rospy.wait_for_service("img_adjusty_target")
     # rospy.wait_for_service("<check_target系>")
     # """
+    rospy.loginfo("Start all server")
 #===== waiting_server =====
 #===== main_process =====
     """ ここで、動作の順にaction & serviceを呼び出して処理をする
@@ -132,7 +133,32 @@ def main():
     happy_end
     bow
     # """
-    # test code
+    # お辞儀
+    bow_b = True
+    print("go bow")
+    bow_res = bow(bow_b)
+    check_service(bow_res)
+
+    # 棒を離す
+    release_club_b = True
+    print("go release_club")
+    release_club_res = release_club(release_club_b)
+    check_service(release_club_res)
+
+    # 最後の喜び表現
+    happy_end_b = True
+    print("go happy_end")
+    happy_end_res = happy_end(happy_end_b)
+    check_service(happy_end_res)
+
+    # お辞儀
+    bow_b = True
+    print("go bow")
+    bow_res = bow(bow_b)
+    check_service(bow_res)
+
+    print("all finish")
+    """# test code
     try:
         goal = set_goal(True, 123, "abc")
         if goal.BoolIn:
@@ -141,8 +167,15 @@ def main():
         print("True")
     except:
         print("False")
-    # /test code
+    """# /test code
 #===== /main_process =====
+#===== check_service =====
+def check_service(srv_res):
+    if srv_res.success:
+        print(srv_res.message)
+    elif not srv_res.success:
+        print(srv_res.message)
+#===== /check_service =====
 #===== set_goal =====
 def set_goal(bool, int, str):
     goal = ActSignalGoal()
