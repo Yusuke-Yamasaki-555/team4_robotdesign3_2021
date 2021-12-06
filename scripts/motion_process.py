@@ -6,6 +6,8 @@ import moveit_commander
 import geometry_msgs
 import rosnode
 from math import sin, cos, radians
+import random
+
 
 import actionlib
 from std_srvs.srv import SetBool, SetBoolResponse #  SetBoolは標準搭載のservice( 入力:bool data , 出力:bool success / string message ) release_club用
@@ -47,9 +49,13 @@ def main():
     print("server:motion_process Ready\n")
     
     # Test Code
-    # server.search_club()
-    # server.search_target()
-    # server.swing_club_motion()
+    goal = ActSignalGoal
+    goal.BoolIn = True
+    goal.Int32In = 0
+    goal.StrIn = "a"
+    server.search_club(goal)
+    server.search_target(goal)
+    server.swing_club_motion(goal)
     # /Test Code
     rospy.spin()  # 無限ループ 
 
@@ -199,8 +205,15 @@ class Motion_Process_Server(object):
             self.arm.set_max_acceleration_scaling_factor(acc)
 
             print("==server:swing_club")
+            rand = random.randint(0, 10)
+            # test_code
+            rand = 10
+            # /test_code
             self.arm.set_named_target("swing_club")
-            z_axis_1 = current_pose[0] + 0.611 # deg35
+            if rand <= 7: # 成功パターン
+                z_axis_1 = current_pose[0] + 0.611 # deg35
+            else: # 失敗パターン
+                z_axis_1 = current_pose[0] - 0.262 # deg15              
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
             self.arm.go()
 
