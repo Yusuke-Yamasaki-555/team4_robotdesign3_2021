@@ -16,13 +16,8 @@ from team4_robotdesign3_2021.msg import ActSignalAction, ActSignalGoal, ActSigna
 vel = 1.0  # set_max_velocity_scaling_factorの引数
 acc = 1.0  # set_max_acceleration_scaling_factorの引数
 
-# action_serverのインスタンスに各class内関数からアクセスできるようにするため、グローバル化をする
-swing_club = None
-search_club_server = None
-search_target_server = None
-
 def main():
-    global search_club_server, search_target_server, swing_club
+    global search_club_server, search_target_server, swing_club # actionのインスタンスをグローバル化
 
     rospy.init_node("motion_process")
 
@@ -53,6 +48,7 @@ def main():
     
     # Test Code
     # server.search_club()
+    # server.search_target()
     # server.swing_club_motion()
     # /Test Code
     rospy.spin()  # 無限ループ 
@@ -155,7 +151,7 @@ class Motion_Process_Server(object):
         return resp
             
 
-    def swing_club_motion(self,data):
+    def swing_club_motion(self,goal):
         """
         この関数では、swing_club をする動作をActionとして提供する
         swing_set_club
@@ -176,8 +172,8 @@ class Motion_Process_Server(object):
 
         result = ActSignalResult()
         feedback = ActSignalFeedback()
-        if data.BoolIn == True:
-            print(data.StrIn) # "server:Start swing_club"
+        if goal.BoolIn == True:
+            print(goal.StrIn) # "server:Start swing_club"
             print("==server:swing_set_club")
             self.arm.set_named_target("swing_set_club")
             # test code
