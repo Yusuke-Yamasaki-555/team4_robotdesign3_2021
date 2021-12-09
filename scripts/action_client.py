@@ -40,6 +40,18 @@ def search_target(start_deg):
     print(end_deg, finish, swing)
     return end_deg, finish, swing
 
+def check_target(start_deg):
+    goal = ActSignalGoal()
+    goal.Int32In = start_deg
+    goal.BoolIn = True
+    search_target_srv.send_goal(goal, feedback_cb=search_fb)
+    search_target_srv.wait_for_result()
+    result = search_target_srv.get_result()
+    end = result.Int32Res
+    all_end = result.BoolRes
+    print(end, all_end, result.StrRes)
+    return end, all_end
+
 def test():
     pass
     # client = actionlib.SimpleActionClient('action_server', ActSignalAction)
@@ -69,7 +81,7 @@ def main():
     #         break
     #     start_deg = end_deg
     
-    start_deg = 0
+    # start_deg = 0
     while True:
         end_deg, finish, swing = search_target(start_deg=start_deg)
         if swing:
