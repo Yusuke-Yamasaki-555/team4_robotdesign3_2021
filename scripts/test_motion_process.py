@@ -13,11 +13,12 @@ import geometry_msgs.msg
 class ImageProcessServer:
     def __init__(self):
         self.srv_search_club = rospy.ServiceProxy('img_search_club', SetBool)
-        self.srv_adjustx_club = rospy.ServiceProxy('img_adjustx_club', SetInt32)
-        self.srv_adjusty_club = rospy.ServiceProxy('img_adjustxy_club', SetInt32)
         self.srv_search_target = rospy.ServiceProxy('img_search_target', SetBool)
-        self.srv_adjustx_target = rospy.ServiceProxy('img_adjustx_target', SetInt32)
-        self.srv_adjusty_target = rospy.ServiceProxy('img_adjusty_target', SetInt32)
+        self.srv_adjusty = rospy.ServiceProxy('img_adjusty', SetInt32)
+        self.srv_adjustx = rospy.ServiceProxy('img_adjustx', SetInt32)
+        # self.srv_remove_club = rospy.ServiceProxy('remove_club_id', SetInt32)
+        # self.srv_remove_target = rospy.ServiceProxy('remove_target_id', SetInt32)
+        print('finished setting server')
     
 class Motion_process:
     def __init__(self):
@@ -85,15 +86,14 @@ class Motion_process:
                 
                 if search_res.success:
                     search_res_msg = search_res.message.split(', ')
-                    search_finish, AR_id = search_res_msg[0], search_res_msg[1]
-                    print(f'ARid={search_res_msg[1]}')
+                    search_finish, AR_id = search_res_msg[0], int(search_res_msg[1])
                     result.BoolRes = True if search_finish == 'end' else False
-                    result.StrRes = 'not' if AR_id == '[10]' else 'swing'
+                    result.StrRes = 'not' if AR_id == 10 else 'swing'
                     rospy.loginfo(f'Find_t, res={result.StrRes}')
                     rospy.sleep(1.0)
                     move = 0
                     while True:
-                        moveX = self.img_srv.srv_adjustx_target(377)
+                        moveX = self.img_srv.srv_adjustx(377)
                         rospy.loginfo(moveX)
                         if moveX.int32Out == 0:
                             current_deg = int(deg-move)
@@ -105,7 +105,7 @@ class Motion_process:
                     rospy.sleep(1.0)
 
                     while True:
-                        moveY = self.img_srv.srv_adjusty_target(227)
+                        moveY = self.img_srv.srv_adjusty(227)
                         rospy.loginfo(moveY)
                         if not moveY.int32Out:
                             move = 0
@@ -113,6 +113,7 @@ class Motion_process:
                         move += 0.5*moveY.int32Out
                         self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)}) #根本を回転
                         self.arm.go()
+                    # self.img_srv.srv_remove_target()
                     rospy.sleep(1.0)
                     break
                 deg += 1
@@ -153,7 +154,7 @@ class Motion_process:
                     rospy.loginfo('Find_c')
                     move = 0
                     while True:
-                        moveX = self.img_srv.srv_adjustx_club(377)
+                        moveX = self.img_srv.srv_adjustx(377)
                         move += 0.5*moveX.int32Out
                         self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                         self.arm.go()
@@ -163,6 +164,7 @@ class Motion_process:
                             break
                     self.grip_club(current_deg = current_deg)
                     rospy.loginfo("grip")
+
                     break
                 deg += 1
             result.Int32Res = sum_deg
@@ -231,7 +233,7 @@ def main():
     rospy.init_node("motion_process", anonymous=1)
     target = Motion_process()
     club = Motion_process()
-    wait_servers = ['img_search_club', 'img_adjustx_club', 'img_adjusty_club', 'img_search_target', 'img_adjustx_target', 'img_adjusty_target', 'tilt_neck']
+    wait_servers = ['img_search_club', 'img_search_target', 'img_adjustx', 'img_adjusty', 'tilt_neck', ]
     while len([s for s in rosnode.get_node_names() if 'rviz' in s]) == 0:
         rospy.sleep(1.0)
     for server in wait_servers:
@@ -241,9 +243,7 @@ def main():
     # check_target_server = actionlib.SimpleActionServer('check_target', ActSignalAction, check_target, False)
     search_club_server.start()
     search_target_server.start()
-    # check_target_action_server = actionlib.SimpleActionClient('check_target', ActSignalAction, check.check_target, False)
-    # club.search_club()
-    # target.search_target()
+    print('finished setting')
 
 if __name__ == '__main__':
     try:

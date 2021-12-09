@@ -25,9 +25,6 @@ class Image_process:
             self.bgr = cv2.cvtColor(origin, cv2.COLOR_BGR2RGB)
             self.gray = cv2.cvtColor(self.bgr, cv2.COLOR_RGB2GRAY)
             cv2.drawMarker(origin, position=(377, 227), color=(0, 0, 255), markerType=cv2.MARKER_STAR, markerSize=10)
-            # height = int(origin.shape[0])
-            # width = int(origin.shape[1])
-            # resize_img = cv2.resize(self.bgr,(4*width/5, 4*height/5))
             cv2.imshow('window', origin)
             cv2.waitKey(1)
         except CvBridgeError as e:
@@ -45,23 +42,32 @@ class Image_process:
         except:
             pass
         return id, c
- 
+
     def search(self, data):
         resp = SetBoolResponse()
         #ARマーカーがあるかどうか調べる
-        # rospy.loginfo(data.data)
-        
         id, _= self.get_ar_info()
         if not id or id not in self.target_AR_id:
             resp.message = ''
             resp.success = False
         else:
-            self.target_AR_id.remove(id)
             rospy.loginfo(id)
-            resp.message = f'end, {id}' if len(self.target_AR_id) == 0 else f'not, {id}'
+            self.target_AR_id.remove(id)
+            str_id  = str(id)
+            str_id = str_id.strip('[]')
+            print(f'idididid = {str_id}')
+            resp.message = f'end, {str_id}' if len(self.target_AR_id) == 0 else f'not, {str_id}'
             print(f'len={resp.message}')
             resp.success = True 
         return resp
+    
+    # def remove_id(self, data):
+    #     resp = SetInt32Response()
+    #     self.target_AR_id.remove(data.Int32In)
+    #     print(self.target_AR_id)
+    #     resp.int32Out = data.Int32In
+    #     return resp
+
         # return True(ある場合) or false(ない場合)
     def adjust_x(self, data):
         resp = SetInt32Response()
@@ -86,15 +92,17 @@ class Image_process:
 def main():
     rospy.init_node('img_process', anonymous=1)
     rospy.loginfo('start')
+    adjust = Image_process(target_AR_id=[3, 4, 6, 10])
     target = Image_process(target_AR_id=[4, 10])
     club = Image_process(target_AR_id=[6])
     check = Image_process(target_AR_id=[3, 4, 10])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
-    img_adjustx_club_server = rospy.Service('img_adjustx_club', SetInt32, club.adjust_x)
-    img_adjusty_club_server = rospy.Service('img_adjusty_club', SetInt32, club.adjust_y)
     img_search_target_server = rospy.Service('img_search_target', SetBool, target.search)
-    img_adjustx_target_server = rospy.Service('img_adjustx_target', SetInt32, target.adjust_x)
-    img_adjusty_target_server = rospy.Service('img_adjusty_target', SetInt32, target.adjust_y)
+    # img_remove_club_id = rospy.Service('remove_club_id', SetInt32, club.remove_id)
+    # img_remove_target_id = rospy.Service('remove_target_id', SetInt32, target.remove_id)
+    img_adjustx_server = rospy.Service('img_adjustx', SetInt32, adjust.adjust_x)
+    img_adjusty_server = rospy.Service('img_adjusty', SetInt32, adjust.adjust_y)
+    print('finished setting')
     while not rospy.is_shutdown():
         rospy.spin()
     # img_check_target_server = rospy.Service('img_check_target', SetBool, check.search)
