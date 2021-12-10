@@ -52,21 +52,21 @@ class Image_process:
             resp.success = False
         else:
             rospy.loginfo(id)
-            self.target_AR_id.remove(id)
+            # self.target_AR_id.remove(id)
             str_id  = str(id)
             str_id = str_id.strip('[]')
             print(f'idididid = {str_id}')
-            resp.message = f'end, {str_id}' if len(self.target_AR_id) == 0 else f'not, {str_id}'
+            resp.message = f'end, {str_id}' if len(self.target_AR_id) == 1 else f'not, {str_id}'
             print(f'len={resp.message}')
             resp.success = True 
         return resp
     
-    # def remove_id(self, data):
-    #     resp = SetInt32Response()
-    #     self.target_AR_id.remove(data.Int32In)
-    #     print(self.target_AR_id)
-    #     resp.int32Out = data.Int32In
-    #     return resp
+    def remove_id(self, data):
+        resp = SetInt32Response()
+        self.target_AR_id.remove(data.int32In)
+        print(f'remain id = {self.target_AR_id}')
+        resp.int32Out = data.int32In
+        return resp
 
         # return True(ある場合) or false(ない場合)
     def adjust_x(self, data):
@@ -98,14 +98,15 @@ def main():
     check = Image_process(target_AR_id=[3, 4, 10])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
     img_search_target_server = rospy.Service('img_search_target', SetBool, target.search)
-    # img_remove_club_id = rospy.Service('remove_club_id', SetInt32, club.remove_id)
-    # img_remove_target_id = rospy.Service('remove_target_id', SetInt32, target.remove_id)
+    img_remove_club_id = rospy.Service('remove_club', SetInt32, club.remove_id)
+    img_remove_target_id = rospy.Service('remove_target', SetInt32, target.remove_id)
     img_adjustx_server = rospy.Service('img_adjustx', SetInt32, adjust.adjust_x)
     img_adjusty_server = rospy.Service('img_adjusty', SetInt32, adjust.adjust_y)
+    # img_check_target_server = rospy.Service('img_check_target', SetBool, check.search)
+
     print('finished setting')
     while not rospy.is_shutdown():
         rospy.spin()
-    # img_check_target_server = rospy.Service('img_check_target', SetBool, check.search)
 
 if __name__ == '__main__':
     try:

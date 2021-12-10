@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
+from cv2 import RECURS_FILTER
 import rospy
 import actionlib
 import moveit_commander
@@ -16,20 +17,21 @@ class ImageProcessServer:
         self.srv_search_target = rospy.ServiceProxy('img_search_target', SetBool)
         self.srv_adjusty = rospy.ServiceProxy('img_adjusty', SetInt32)
         self.srv_adjustx = rospy.ServiceProxy('img_adjustx', SetInt32)
-        # self.srv_remove_club = rospy.ServiceProxy('remove_club_id', SetInt32)
-        # self.srv_remove_target = rospy.ServiceProxy('remove_target_id', SetInt32)
-        print('finished setting server')
+        self.srv_remove_club = rospy.ServiceProxy('remove_club', SetInt32)
+        self.srv_remove_target = rospy.ServiceProxy('remove_target', SetInt32)
+        # self.srv_check_target = rospy.ServiceProxy('img_check_target', SetBool)
+        print('finished setting image server')
     
 class Motion_process:
     def __init__(self):
         self.arm = moveit_commander.MoveGroupCommander("arm")
-        self.arm.set_max_velocity_scaling_factor(0.1)
+        self.arm.set_max_velocity_scaling_factor(0.5)
         self.arm.set_max_acceleration_scaling_factor(1.0)
         self.gripper = moveit_commander.MoveGroupCommander("gripper")
         self.img_srv = ImageProcessServer()
         self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
-        # self.search_target_action_server = actionlib.SimpleActionServer('search_target', ActSignalAction, self.search_target, False)
-        
+        self.delta_deg = 5
+        self.AR_id = 0
 
     # def release_club_motion(self,<クライアントから送られるデータ名>):
 
@@ -58,6 +60,7 @@ class Motion_process:
         rospy.sleep(1.0)
 
     def search_target(self, goal):
+        global target_id
         feedback = ActSignalFeedback()
         result = ActSignalResult()
         if goal.BoolIn:
@@ -69,8 +72,8 @@ class Motion_process:
             while True:
                 self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                 self.arm.go()
-                sum_deg += 1
-                emotion = self.tilt(True) if sum_deg % 45 == 0 else self.tilt(False)
+                sum_deg += self.delta_deg
+                emotion = self.tilt(True) if sum_deg % 180 == 0 else self.tilt(False)
                 print(emotion.success, emotion.message)
                 search_res = self.img_srv.srv_search_target(True)
                 feedback.BoolFB = search_res.success
@@ -86,9 +89,9 @@ class Motion_process:
                 
                 if search_res.success:
                     search_res_msg = search_res.message.split(', ')
-                    search_finish, AR_id = search_res_msg[0], int(search_res_msg[1])
+                    search_finish, target_id = search_res_msg[0], int(search_res_msg[1])
                     result.BoolRes = True if search_finish == 'end' else False
-                    result.StrRes = 'not' if AR_id == 10 else 'swing'
+                    result.StrRes = 'not' if target_id == 10 else 'swing'
                     rospy.loginfo(f'Find_t, res={result.StrRes}')
                     rospy.sleep(1.0)
                     move = 0
@@ -113,10 +116,10 @@ class Motion_process:
                         move += 0.5*moveY.int32Out
                         self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)}) #根本を回転
                         self.arm.go()
-                    # self.img_srv.srv_remove_target()
+                    
                     rospy.sleep(1.0)
                     break
-                deg += 1
+                deg += self.delta_deg
             print('finish process')
             result.Int32Res = current_deg
             search_target_server.set_succeeded(result=result)
@@ -134,8 +137,8 @@ class Motion_process:
             while True:
                 self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                 self.arm.go()
-                sum_deg += 1
-                emotion = self.tilt(True) if sum_deg % 45 == 0 else self.tilt(False)
+                sum_deg += self.delta_deg
+                emotion = self.tilt(True) if sum_deg % 180 == 0 else self.tilt(False)
                 print(emotion.success, emotion.message)
                 search_res = self.img_srv.srv_search_club(True)
                 feedback.BoolFB = search_res.success
@@ -148,6 +151,8 @@ class Motion_process:
                     search_club_server.set_preempted(result)
 
                 if search_res.success:
+                    search_res_msg = search_res.message.split(', ')
+                    self.AR_id = int(search_res_msg[1])
                     result.StrRes = 'find'
                     result.BoolRes = True
                     print(f'deg = {deg}')
@@ -164,9 +169,10 @@ class Motion_process:
                             break
                     self.grip_club(current_deg = current_deg)
                     rospy.loginfo("grip")
-
+                    remove = self.img_srv.srv_remove_club(self.AR_id)
+                    print(f'removed id = {remove}')
                     break
-                deg += 1
+                deg += self.delta_deg
             result.Int32Res = sum_deg
             search_club_server.set_succeeded(result=result)
     
@@ -174,8 +180,8 @@ class Motion_process:
         ABS_CLUB_POSITION = 0.25
         CLUB_Z_POSITION = 0.065 + 0.02
         arm_goal_pose = self.arm.get_current_pose().pose
-        self.gripper.set_joint_value_target([0.9, 0.9])
-        self.gripper.go()
+        # self.gripper.set_joint_value_target([0.9, 0.9])
+        # self.gripper.go()
         rospy.sleep(1.0)
         target_pose = geometry_msgs.msg.Pose()
         target_pose.position.x = ABS_CLUB_POSITION * cos(current_deg)
@@ -187,62 +193,57 @@ class Motion_process:
         target_pose.orientation.w = arm_goal_pose.orientation.w
         self.arm.set_pose_target( target_pose )
         self.arm.go()
-        self.gripper.set_joint_value_target([0.3, 0.3])
-        self.gripper.go()
+        # self.gripper.set_joint_value_target([0.3, 0.3])
+        # self.gripper.go()
         self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
         self.arm.set_joint_value_target({"crane_x7_wrist_joint":-1.57})
         self.arm.go()
     
-    def check_target(self):
+    def check_target(self, goal):
         self.set_position('search_target')
         feedback = ActSignalFeedback()
         result = ActSignalResult()
-        for deg in range(-90, 90, 1):
-            self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
-            self.arm.go()
-            search_res = self.img_srv.srv_search_target(True)
-            feedback.BoolFB = search_res
-            feedback.Int32FB = deg
-            if search_res.success:
-                rospy.loginfo('Find_t')
-                rospy.sleep(1.0)
-                move = 0
-                while True:
-                    moveX = self.img_srv.srv_adjustx_target(377)
-                    rospy.loginfo(moveX)
-                    if moveX.int32Out == 0:
-                        move = 0
-                        break
-                    move += 0.5*moveX.int32Out
-                    self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)-radians(move)}) #根本を回転
-                    self.arm.go()
-                rospy.sleep(1.0)
-                while True:
-                    moveY = self.img_srv.srv_adjusty_target(227)
-                    rospy.loginfo(moveY)
-                    if not moveY.int32Out:
-                        move = 0
-                        break
-                    move += 0.5*moveY.int32Out
-                    self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.75-radians(move)}) #根本を回転
-                    self.arm.go()
-                rospy.sleep(1.0)
+        self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(goal.Int32In)}) #根本を回転
+        self.arm.go()
+        search_res = self.img_srv.srv_search_target(True)
+        search_res_msg = search_res.message.split(', ')
+        judge = search_res_msg[0]
+        all_end = True if judge == 'end' else False
+        result.BoolRes = all_end
+        feedback.BoolFB = search_res
+        feedback.Int32FB = goal.Int32In
+        print(f'self.AR_id = {target_id}')
+        if search_res.success and target_id != 10:
+            rospy.loginfo('remain')
+            result.Int32Res = 0
+            result.StrRes = 'remain'
+            rospy.sleep(1.0)
+        
+        else:
+            rospy.loginfo('completed')
+            remove = self.img_srv.srv_remove_target(target_id)
+            print(f'remove id = {remove}')
+            result.Int32Res = 1
+            result.StrRes = 'completed'
+        check_target_server.set_succeeded(result=result)
 
 def main():
-    global search_club_server, search_target_server
+    global search_club_server, search_target_server, check_target_server
     rospy.init_node("motion_process", anonymous=1)
     target = Motion_process()
     club = Motion_process()
-    wait_servers = ['img_search_club', 'img_search_target', 'img_adjustx', 'img_adjusty', 'tilt_neck', ]
+    check = Motion_process()
+    wait_servers = ['img_search_club', 'img_search_target', 'img_adjustx', 'img_adjusty', 'tilt_neck', 'remove_club', 'remove_target',]
     while len([s for s in rosnode.get_node_names() if 'rviz' in s]) == 0:
         rospy.sleep(1.0)
     for server in wait_servers:
         rospy.wait_for_service(server)
     search_club_server = actionlib.SimpleActionServer('search_club', ActSignalAction, club.search_club, False)
     search_target_server = actionlib.SimpleActionServer('search_target', ActSignalAction, target.search_target, False)
-    # check_target_server = actionlib.SimpleActionServer('check_target', ActSignalAction, check_target, False)
+    check_target_server = actionlib.SimpleActionServer('check_target', ActSignalAction, check.check_target, False)
     search_club_server.start()
     search_target_server.start()
+    check_target_server.start()
     print('finished setting')
 
 if __name__ == '__main__':
