@@ -5,7 +5,6 @@ import rospy
 from sensor_msgs.msg import Image
 import cv2
 from cv2 import aruco
-import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
 from std_srvs.srv import SetBool, SetBoolResponse
 from team4_robotdesign3_2021.srv import SetInt32, SetInt32Response
@@ -95,15 +94,12 @@ def main():
     adjust = Image_process(target_AR_id=[3, 4, 6, 10])
     target = Image_process(target_AR_id=[4, 10])
     club = Image_process(target_AR_id=[6])
-    check = Image_process(target_AR_id=[3, 4, 10])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
     img_search_target_server = rospy.Service('img_search_target', SetBool, target.search)
     img_remove_club_id = rospy.Service('remove_club', SetInt32, club.remove_id)
     img_remove_target_id = rospy.Service('remove_target', SetInt32, target.remove_id)
     img_adjustx_server = rospy.Service('img_adjustx', SetInt32, adjust.adjust_x)
     img_adjusty_server = rospy.Service('img_adjusty', SetInt32, adjust.adjust_y)
-    # img_check_target_server = rospy.Service('img_check_target', SetBool, check.search)
-
     print('finished setting')
     while not rospy.is_shutdown():
         rospy.spin()
