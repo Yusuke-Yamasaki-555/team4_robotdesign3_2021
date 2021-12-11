@@ -83,34 +83,34 @@ def main():
     check_target_srv.wait_for_server()
     swing_srv.wait_for_server()
     print('finished waiting server')
-    # swing_srv.wait_for_server()
-    # start_deg = 0
-    # while True:
-    #     end_deg, finish = search_club(start_deg)
-    #     if finish:
-    #         break
-    #     start_deg = end_deg
-    
-    start_deg = 0
-    end = False
-    all_end = False
+    swing_srv.wait_for_server()
+    start_deg = 90
     while True:
-        while True:
-            end_deg, finish, swing = search_target(start_deg=start_deg)
-            if swing:
-                print('swing')
-                emotion = tilt(True)
-                #swing server
-                #check target server
-            else:
-                emotion = dislike(True)
-                print('dislike')
-            end, all_end = check_target(check_deg=end_deg)
-            if end:
-                break
-            start_deg = end_deg
-        if all_end:
+        end_deg, finish = search_club(start_deg)
+        if finish:
             break
+        start_deg = end_deg
+    
+    # start_deg = 0
+    # end = False
+    # all_end = False
+    # while True:
+    #     while True:
+    #         end_deg, finish, swing = search_target(start_deg=start_deg)
+    #         if swing:
+    #             print('swing')
+    #             emotion = tilt(True)
+    #             #swing server
+    #             #check target server
+    #         else:
+    #             emotion = dislike(True)
+    #             print('dislike')
+    #         end, all_end = check_target(check_deg=end_deg)
+    #         if end:
+    #             break
+    #         start_deg = end_deg
+    #     if all_end:
+    #         break
 
 if __name__ == "__main__":
     try:
