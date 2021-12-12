@@ -38,7 +38,7 @@ def search_target(start_deg):
     print(result.StrRes)
     swing = True if result.StrRes == 'swing' else False
     print(end_deg, finish, swing)
-    return end_deg, finish, swing
+    return end_deg, swing
 
 def check_target(check_deg):
     goal = ActSignalGoal()
@@ -67,11 +67,10 @@ def swing_club():
 def main():
     rospy.init_node('action_client')
     global search_club_srv, search_target_srv, check_target_srv, swing_srv
-    wait_srvs = ['tilt_neck', 'dislike', 'release_club']
+    wait_srvs = ['dislike', 'release_club']
     for srv in wait_srvs:
         rospy.wait_for_service(srv)
     print('finished emotions server')
-    tilt = rospy.ServiceProxy('tilt_neck', SetBool)
     dislike = rospy.ServiceProxy('dislike', SetBool)
     release = rospy.ServiceProxy('release_club', SetBool)
     search_club_srv = actionlib.SimpleActionClient('search_club', ActSignalAction)
@@ -84,33 +83,32 @@ def main():
     swing_srv.wait_for_server()
     print('finished waiting server')
     swing_srv.wait_for_server()
-    start_deg = 90
+    start_deg = 45
     while True:
         end_deg, finish = search_club(start_deg)
         if finish:
             break
         start_deg = end_deg
     
-    # start_deg = 0
-    # end = False
-    # all_end = False
-    # while True:
-    #     while True:
-    #         end_deg, finish, swing = search_target(start_deg=start_deg)
-    #         if swing:
-    #             print('swing')
-    #             emotion = tilt(True)
-    #             #swing server
-    #             #check target server
-    #         else:
-    #             emotion = dislike(True)
-    #             print('dislike')
-    #         end, all_end = check_target(check_deg=end_deg)
-    #         if end:
-    #             break
-    #         start_deg = end_deg
-    #     if all_end:
-    #         break
+    start_deg = -90
+    end = False
+    all_end = False
+    while True:
+        while True:
+            end_deg, swing = search_target(start_deg=start_deg)
+            if swing:
+                print('swing')
+                value, judge = swing_club()
+            else:
+                emotion = dislike(True)
+                print('dislike')
+            end, all_end = check_target(check_deg=end_deg)
+            if end:
+                break
+            start_deg = end_deg
+        if all_end:
+            break
+    motion = release(True)
 
 if __name__ == "__main__":
     try:

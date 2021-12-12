@@ -11,6 +11,34 @@ from team4_robotdesign3_2021.msg import ActSignalFeedback, ActSignalResult, ActS
 import geometry_msgs.msg
 import random
 
+class Preparation_motion:  # Motion_Process_Serverから呼び出される、基本動作の関数をまとめたクラス
+    """
+    このクラスでは、init , stand_by , hold をそれぞれ関数として持ち、class Motion_Process_Serverに提供する
+    Serverにはならない
+    各関数の最後：return 動作結果
+    """
+    def __init__(self):
+        self.arm = moveit_commander.MoveGroupCommander("arm")
+        self.gripper = moveit_commander.MoveGroupCommander("gripper")
+
+    def init(self):  # 棒立ちの動作
+        self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        print("==server:init")
+        self.arm.set_named_target("init") #  SRDFからinitのステータスを読み込み
+        self.arm.go()
+
+    # def stand_by
+
+    def hold(self):  # 
+        self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
+        self.arm.set_max_acceleration_scaling_factor(acc)
+
+        print("==server:hold")
+        self.arm.set_named_target("hold") #  SRDFからholdのステータスを読み込み
+        self.arm.go()
+
 class ImageProcessServer:
     def __init__(self):
         self.srv_search_club = rospy.ServiceProxy('img_search_club', SetBool)
@@ -24,6 +52,7 @@ class ImageProcessServer:
     
 class Motion_process:
     def __init__(self):
+        self.preparation = Preparation_motion()
         self.arm = moveit_commander.MoveGroupCommander("arm")
         self.gripper = moveit_commander.MoveGroupCommander("gripper")
         self.img_srv = ImageProcessServer()
@@ -126,7 +155,7 @@ class Motion_process:
             print("==server:swing_club")
             rand = random.randint(0, 10)
             # test_code
-            rand = 10
+            # rand = 10
             # /test_code
             self.arm.set_named_target("swing_club")
             if rand <= 7: # 成功パターン
