@@ -7,9 +7,9 @@ import actionlib
 from team4_robotdesign3_2021.msg import ActSignalAction, ActSignalGoal
 
 def search_fb(feedback):
-    print(feedback.Int32FB, feedback.BoolFB)
-    # if feedback.Int32FB%45 == 0:
-    # search_club_srv.cancel_goal()
+#     print(feedback.Int32FB, feedback.BoolFB)
+    if feedback.Int32FB%180 == 0:
+        search_club_srv.cancel_goal()
 
 def search_club(start_deg):
     goal = ActSignalGoal()
@@ -22,9 +22,6 @@ def search_club(start_deg):
     finish = result.BoolRes
     print(result.Int32Res, result.BoolRes)
     return end_deg, finish
-
-# def search_target_fb(feedback):
-#     print(feedback.Int32FB, feedback.BoolFB)
 
 def search_target(start_deg):
     goal = ActSignalGoal()
