@@ -1,18 +1,15 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 import rospy
-import moveit_commander
-import geometry_msgs
-import rosnode
-from math import sin, cos, radians
-import random
-
-
 import actionlib
-from std_srvs.srv import SetBool, SetBoolResponse #  SetBoolは標準搭載のservice( 入力:bool data , 出力:bool success / string message ) release_club用
+import moveit_commander
+import rosnode
+from math import radians
+from std_srvs.srv import SetBool, SetBoolResponse
 from team4_robotdesign3_2021.srv import SetInt32
 from team4_robotdesign3_2021.msg import ActSignalAction, ActSignalGoal, ActSignalFeedback, ActSignalResult
+import geometry_msgs.msg
+import random
 
 # グローバル変数
 vel = 1.0  # set_max_velocity_scaling_factorの引数
@@ -30,11 +27,11 @@ def main():
 
     # img_processのサーバを待つ
     rospy.wait_for_service("img_search_club")
-    rospy.wait_for_service("img_adjustx_club")
-    rospy.wait_for_service("img_adjusty_club")
+    rospy.wait_for_service("img_adjustx")
+    rospy.wait_for_service("img_adjusty")
     rospy.wait_for_service("img_search_target")
-    rospy.wait_for_service("img_adjustx_target")
-    rospy.wait_for_service("img_adjusty_target")
+    rospy.wait_for_service("remove_target")
+    rospy.wait_for_service("remove_club")
     
     # ここで、各サーバを立ち上げ、及び開始
     release_club = rospy.Service('release_club', SetBool, server.release_club_motion)
@@ -59,8 +56,7 @@ def main():
     server.search_target(goal)
     server.swing_club_motion(goal)
     """# /Test Code
-    rospy.spin()  # 無限ループ 
-
+    rospy.spin()  # 無限ループ
 
 class Preparation_motion:  # Motion_Process_Serverから呼び出される、基本動作の関数をまとめたクラス
     """
@@ -101,21 +97,16 @@ class ImageProcessServer:
 
 class Motion_Process_Server(object):
     def __init__(self):
-        self.preparation = Preparation_motion()  # このクラス内で使えるように、Preparation_motionをインスタンス化
-        self.img_srv = ImageProcessServer()
-        self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
+        self.preparation = Preparation_motion()
         self.arm = moveit_commander.MoveGroupCommander("arm")
         self.gripper = moveit_commander.MoveGroupCommander("gripper")
-    # __init__(self):
-    """
-        class Preparation_motionのインスタンス作成
-        各Action_Serverの立ち上げ＆start
-    """
-    def set_position(self, srdf_name):
-        print("set")
-        self.arm.set_named_target(srdf_name)
-        self.arm.go()
-        rospy.sleep(1.0)
+        self.img_srv = ImageProcessServer()
+        self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
+        self.delta_deg = 5
+        self.AR_id = 0
+        self.goalx_coord = 377
+        self.t_goaly_coord = 227
+        self.c_goaly_coord = 160 #simulator: 160, actual machine: 
 
     def release_club_motion(self,data):
         """
@@ -157,7 +148,7 @@ class Motion_Process_Server(object):
         
         print("server:motion_process Ready\n")
         return resp
-            
+
 
     def swing_club_motion(self,goal):
         """
@@ -209,7 +200,7 @@ class Motion_Process_Server(object):
             print("==server:swing_club")
             rand = random.randint(0, 10)
             # test_code
-            rand = 10
+            # rand = 10
             # /test_code
             self.arm.set_named_target("swing_club")
             if rand <= 7: # 成功パターン
@@ -224,6 +215,81 @@ class Motion_Process_Server(object):
         swing_club.set_succeeded(result)
 
         print("server:motion_process Ready\n")
+    def set_position(self, srdf_name):
+        print("set")
+        self.arm.set_named_target(srdf_name)
+        self.arm.go()
+        rospy.sleep(1.0)
+
+    def search_target(self, goal):
+        if goal.BoolIn:
+            global target_id
+            self.arm.set_max_velocity_scaling_factor(0.5)
+            self.arm.set_max_acceleration_scaling_factor(1.0)
+            feedback = ActSignalFeedback()
+            result = ActSignalResult()
+            if goal.BoolIn:
+                print('called')
+                sum_deg = 0
+                current_deg = 0
+                deg = goal.Int32In
+                self.set_position('search_target')
+                while True:
+                    self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
+                    self.arm.go()
+                    sum_deg += self.delta_deg
+                    emotion = self.tilt(True) if sum_deg % 180 == 0 else self.tilt(False)
+                    print(emotion.success, emotion.message)
+                    search_res = self.img_srv.srv_search_target(True)
+                    feedback.BoolFB = search_res.success
+                    feedback.Int32FB = sum_deg
+                    search_target_server.publish_feedback(feedback)
+                    if search_target_server.is_preempt_requested():
+                        print('preempt')
+                        emotion = self.tilt(True)
+                        result.Int32Res = sum_deg
+                        result.BoolRes = False
+                        result.StrRes = 'not'
+                        search_target_server.set_preempted(result)
+                        return None
+                    
+                    if search_res.success:
+                        search_res_msg = search_res.message.split(', ')
+                        search_finish, target_id = search_res_msg[0], int(search_res_msg[1])
+                        result.BoolRes = True if search_finish == 'end' else False
+                        result.StrRes = 'not' if target_id == 10 else 'swing'
+                        rospy.loginfo(f'Find_t, res={result.StrRes}')
+                        rospy.sleep(1.0)
+                        move = 0
+                        while True:
+                            moveX = self.img_srv.srv_adjustx(self.goalx_coord)
+                            rospy.loginfo(moveX)
+                            if moveX.int32Out == 0:
+                                current_deg = int(deg-move)
+                                move = 0
+                                break
+                            move += 0.5*moveX.int32Out
+                            self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
+                            self.arm.go()
+                        rospy.sleep(1.0)
+
+                        while True:
+                            moveY = self.img_srv.srv_adjusty(self.t_goaly_coord)
+                            rospy.loginfo(moveY)
+                            if not moveY.int32Out:
+                                move = 0
+                                break
+                            move += 0.5*moveY.int32Out
+                            self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)}) #根本を回転
+                            self.arm.go()
+                        
+                        rospy.sleep(1.0)
+                        break
+                    deg += self.delta_deg
+                print('finish process')
+                result.Int32Res = current_deg
+                search_target_server.set_succeeded(result=result)
+                print('sent result')
             
     def search_target(self, goal):
         if goal.BoolIn:
@@ -419,6 +485,7 @@ class Motion_Process_Server(object):
                 result.Int32Res = 1
                 result.StrRes = 'completed'
             check_target_server.set_succeeded(result=result)
+            
 
 if __name__ == '__main__':
     try:

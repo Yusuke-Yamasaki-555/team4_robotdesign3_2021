@@ -92,7 +92,7 @@ def main():
     gripper.go()
     # """
 #===== search_target =====
-    """
+    #"""
     gripper.set_joint_value_target([0.5, 0.5])
     gripper.go()
 
@@ -134,7 +134,7 @@ def main():
     arm.go()
     # """
 #===== dislike =====(search_targetとセット)
-    """
+    #"""
     gripper.set_joint_value_target([1.0, 1.0])
     gripper.go()
 

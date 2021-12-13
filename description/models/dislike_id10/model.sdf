@@ -4,14 +4,14 @@
   <pose>0 0 0 0 0 3.14</pose>
     <link name="link">
       <inertial>
-        <mass>0.02</mass>
+        <mass>0.015</mass>
         <inertia>
-          <ixx>0.081</ixx>
+          <ixx>1.646e-5</ixx>
           <ixy>0.0</ixy>
           <ixz>0.0</ixz>
-          <iyy>0.081</iyy>
+          <iyy>1.646e-5</iyy>
           <iyz>0.0</iyz>
-          <izz>0.081</izz>
+          <izz>7.922e-6</izz>
         </inertia>
       </inertial>
       <collision name="collision">
