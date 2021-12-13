@@ -32,3 +32,6 @@ https://docs.google.com/presentation/d/1tpdYi2m5gKSQwnyu7kb8FYfR5NCdw_Xt4EQMoiLc
 
 中間審査スライド：
 https://docs.google.com/presentation/d/tpdYi2m5gKSQwnyu7kb8FYfR5NCdw_Xt4EQMoiLcIX8/edit#slide=id.p
+
+最終発表:
+https://docs.google.com/presentation/d/1eVwGgFK2r9LaZaNM0u-iIabtcsC3H8CrL7PBDZYyyzY/edit?usp=sharing
