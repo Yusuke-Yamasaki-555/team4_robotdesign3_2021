@@ -65,6 +65,7 @@ def main():
         rospy.loginfo("Waiting rviz...")
         rospy.sleep(1.0)
     rospy.loginfo("Started rviz")
+
 #===== emotions =====
     # """
     bow = rospy.ServiceProxy('bow', SetBool)
@@ -72,30 +73,30 @@ def main():
     happy_end = rospy.ServiceProxy('happy_end', SetBool)
     # """
 #===== /emotions =====
+
 #===== action =====
     # """
     search_club = actionlib.SimpleActionClient('search_club', ActSignalAction)
     search_target = actionlib.SimpleActionClient('search_target', ActSignalAction)
     swing_club = actionlib.SimpleActionClient('swing_club', ActSignalAction)
-    # check_target = actionlib.SimpleActionClient('check_target', ActSignalAction) 未完成
+    check_target = actionlib.SimpleActionClient('check_target', ActSignalAction)
     # """
 #===== /action =====
+
 #===== waiting_server =====
     rospy.loginfo("Wait all server...")
     # """ manageで使うserver
     search_club.wait_for_server()
     search_target.wait_for_server()
     swing_club.wait_for_server()
-    # check_target.wait_for_server() 未完成
+    check_target.wait_for_server()
 
     rospy.wait_for_service("bow")
     rospy.wait_for_service("release_club")
     rospy.wait_for_service("happy_end")
     # """
-    #""" manage以外で使うserver
-    #　　(server待ちで一連動作を止めたくない。manageで全serverの開始を待つ)
-    #　　(各呼び出し元nodeでも一応待っても良いかも)
 
+    #""" manage以外で使うserver
     # node:emotions
     rospy.wait_for_service("tilt_neck")
     rospy.wait_for_service("dislike")
@@ -103,15 +104,15 @@ def main():
 
     # node:img_process
     rospy.wait_for_service("img_search_club")
-    rospy.wait_for_service("img_adjustx_club")
-    rospy.wait_for_service("img_adjusty_club")
     rospy.wait_for_service("img_search_target")
-    rospy.wait_for_service("img_adjustx_target")
-    rospy.wait_for_service("img_adjusty_target")
-    # rospy.wait_for_service("<check_target系>")
+    rospy.wait_for_service("img_adjustx")
+    rospy.wait_for_service("img_adjusty")
+    rospy.wait_for_service("remove_club")
+    rospy.wait_for_service("remove_target")
     # """
     rospy.loginfo("Start all server")
 #===== waiting_server =====
+
 #===== main_process =====
     """ ここで、動作の順にaction & serviceを呼び出して処理をする
     bow
@@ -134,41 +135,95 @@ def main():
     bow
     # """
     # お辞儀
+    # """
     bow_b = True
     print("go bow")
     bow_res = bow(bow_b)
     check_service(bow_res)
+    # """
 
+    # 棒を探す(search_club)
+    # """
+    goal = set_goal(True, 0, "server:Start search_club")
+    search_club.send_goal(goal, feedback_cb=feedback_search_club)
+    search_club.wait_for_result()
+    result = search_club.get_result()
+    if result.BoolRes:
+        print("client:Success swing_club")
+    elif not result.BoolRes:
+        print("client:Failure swing_club")
+    # """
+
+    while True:
+        while True:
+        # 印を探す
+            # """
+            goal = set_goal(True, 0, "server:Start search_target")
+            search_target.send_goal(goal, feedback_cb=feedback_search_target)
+            search_target.wait_for_result()
+            result = search_target.get_result()
+            if result.BoolRes:
+                print("client:Success search_target")
+            elif not result.BoolRes:
+                print("client:Failure search_target")
+            # """
+
+            # 印を打つ
+            # """
+            goal = set_goal(result.BoolRes, 0, "server:Start swing_club")
+            swing_club.send_goal(goal, feedback_cb=feedback_swing_club)
+            swing_club.wait_for_result()
+            result = swing_club.get_result()
+            if result.BoolRes:
+                print("client:Success swing_club")
+            elif not result.BoolRes:
+                print("client:Failure swing_club")
+            # """
+
+            # 印を確認する
+            # """
+            goal = set_goal(result.BoolRes, 0, "server:Start check_target")
+            check_target.send_goal(goal, feedback_cb=feedback_check_target)
+            check_target.wait_for_result()
+            result = check_target.get_result()
+            # """
+            # """
+            if result.Int32Res == 1:
+                print("client:Success check_target")
+                break
+            else:
+                print("client:Failure check_target")
+            # """
+        if result.BoolRes:
+            break
+        
     # 棒を離す
+    # """
     release_club_b = True
     print("go release_club")
     release_club_res = release_club(release_club_b)
     check_service(release_club_res)
+    # """
 
     # 最後の喜び表現
+    # """
     happy_end_b = True
     print("go happy_end")
     happy_end_res = happy_end(happy_end_b)
     check_service(happy_end_res)
+    # """
 
     # お辞儀
+    # """
     bow_b = True
     print("go bow")
     bow_res = bow(bow_b)
     check_service(bow_res)
+    # """
 
     print("all finish")
-    """# test code
-    try:
-        goal = set_goal(True, 123, "abc")
-        if goal.BoolIn:
-            print(goal.Int32In)
-            print(goal.StrIn)
-        print("True")
-    except:
-        print("False")
-    """# /test code
 #===== /main_process =====
+
 #===== check_service =====
 def check_service(srv_res):
     if srv_res.success:
@@ -176,6 +231,7 @@ def check_service(srv_res):
     elif not srv_res.success:
         print(srv_res.message)
 #===== /check_service =====
+
 #===== set_goal =====
 def set_goal(bool, int, str):
     goal = ActSignalGoal()
@@ -184,11 +240,24 @@ def set_goal(bool, int, str):
     goal.StrIn = str
     return goal
 #===== /set_goal =====
-#===== feedback群 ===== ココはclassにしても良いかも
-# """
-# def feedback_search_club(feedback):
 
-# def feedback_search_target(feedback):
+#===== feedback群 =====
+# """
+def feedback_search_club(feedback):
+    if feedback.BoolFB:
+        print("==client:Confirmed search_club")
+    else:
+        if feedback.Int32FB == 180:
+            search_club.cancel_goal()
+
+def feedback_search_target(feedback):
+    if feedback.BoolFB:
+        print("==client:Confirmed serach_target")
+        if feedback.Int32FB == 0: # sample(嫌なやつを見つけた時)
+            search_target.cancel_goal()
+    else:
+        if feedback.Int32FB == 180:
+            search_target.cancel_goal()
 
 def feedback_swing_club(feedback):
     if feedback.BoolFB:
@@ -196,8 +265,11 @@ def feedback_swing_club(feedback):
     else:
         swing_club.cancel_goal()
 
-# def feedback_check_target(feedback):
-
+def feedback_check_target(feedback):
+    if feedback.BoolFB:
+        print("==client:Confirmed check_target")
+    else:
+        check_target.cancel_goal()
 # """
 #===== /feedback群 =====
 

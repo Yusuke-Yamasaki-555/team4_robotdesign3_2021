@@ -193,8 +193,8 @@ class Motion_process:
                     self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                     self.arm.go()
                     sum_deg += self.delta_deg
-#                   emotion = self.tilt(True) if sum_deg % 180 == 0 else self.tilt(False)
-#                   print(emotion.success, emotion.message)
+                    emotion = self.tilt(True) if sum_deg % 180 == 0 else self.tilt(False)
+                    print(emotion.success, emotion.message)
                     search_res = self.img_srv.srv_search_target(True)
                     feedback.BoolFB = search_res.success
                     feedback.Int32FB = sum_deg
