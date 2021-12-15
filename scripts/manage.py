@@ -195,7 +195,7 @@ def main():
                 print("client:Failure check_target")
             # """
         if result.BoolRes:
-                break
+            break
         
     # 棒を離す
     # """
@@ -211,15 +211,15 @@ def main():
     print("go happy_end")
     happy_end_res = happy_end(happy_end_b)
     check_service(happy_end_res)
-    # # """
+    # """
 
-    # # お辞儀
-    # # """
+    # お辞儀
+    # """
     bow_b = True
     print("go bow")
     bow_res = bow(bow_b)
     check_service(bow_res)
-    # # """
+    # """
 
     print("all finish")
 #===== /main_process =====
@@ -253,7 +253,7 @@ def feedback_search_club(feedback):
 def feedback_search_target(feedback):
     if feedback.BoolFB:
         print("==client:Confirmed serach_target")
-        if feedback.Int32FB == 90: # sample(嫌なやつを見つけた時)
+        if feedback.Int32FB == 0: # sample(嫌なやつを見つけた時)
             search_target.cancel_goal()
     else:
         if feedback.Int32FB == 180:
