@@ -12,7 +12,7 @@ from team4_robotdesign3_2021.srv import SetInt32, SetInt32Response
 class Image_process:
     def __init__(self, target_AR_id):
         self.target_AR_id = target_AR_id
-        self.eps = 5
+        self.eps = 8
         self.pre_c = []
         print(self.target_AR_id)
         self.rtn_img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.rtn_img)
@@ -66,6 +66,14 @@ class Image_process:
         print(f'remain id = {self.target_AR_id}')
         resp.int32Out = data.int32In
         return resp
+    
+    def check_remain_id(self, data):
+        if data.data:
+            resp = SetBoolResponse()
+            print(f'remain = {len(self.target_AR_id)}')
+            resp.success = True if len(self.target_AR_id) != 0 else False
+            resp.message = 'remain id'
+            return resp
 
         # return True(ある場合) or false(ない場合)
     def adjust_x(self, data):
@@ -92,7 +100,7 @@ def main():
     rospy.init_node('img_process', anonymous=1)
     rospy.loginfo('start')
     adjust = Image_process(target_AR_id=[3, 4, 6, 10])
-    target = Image_process(target_AR_id=[3, 4, 10])
+    target = Image_process(target_AR_id=[3])
     club = Image_process(target_AR_id=[6])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
     img_search_target_server = rospy.Service('img_search_target', SetBool, target.search)
@@ -100,6 +108,7 @@ def main():
     img_remove_target_id = rospy.Service('remove_target', SetInt32, target.remove_id)
     img_adjustx_server = rospy.Service('img_adjustx', SetInt32, adjust.adjust_x)
     img_adjusty_server = rospy.Service('img_adjusty', SetInt32, adjust.adjust_y)
+    check_remain_target = rospy.Service('remain_target', SetBool, target.check_remain_id)
     print('finished setting')
     while not rospy.is_shutdown():
         rospy.spin()

@@ -47,7 +47,6 @@ class ImageProcessServer:
         self.srv_adjustx = rospy.ServiceProxy('img_adjustx', SetInt32)
         self.srv_remove_club = rospy.ServiceProxy('remove_club', SetInt32)
         self.srv_remove_target = rospy.ServiceProxy('remove_target', SetInt32)
-        # self.srv_check_target = rospy.ServiceProxy('img_check_target', SetBool)
         print('finished setting image server')
     
 class Motion_process:
@@ -57,11 +56,12 @@ class Motion_process:
         self.gripper = moveit_commander.MoveGroupCommander("gripper")
         self.img_srv = ImageProcessServer()
         self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
+        self.happy_club = rospy.ServiceProxy('happy_club', SetBool)
         self.delta_deg = 5
         self.AR_id = 0
         self.goalx_coord = 377
         self.t_goaly_coord = 227
-        self.c_goaly_coord = 160 #simulator: 160, actual machine: 
+        self.c_goaly_coord = 160 #simulator: 160, actual machine:
 
     def release_club_motion(self,data):
         """
@@ -164,7 +164,10 @@ class Motion_process:
                 z_axis_1 = current_pose[0] - 0.262 # deg15              
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
             self.arm.go()
-
+            self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
+            self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint": radians(-90)})
+            self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": radians(0)})
+            self.arm.go()
         result.BoolRes = True
         result.Int32Res = 0
         swing_club.set_succeeded(result)
@@ -193,8 +196,6 @@ class Motion_process:
                     self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                     self.arm.go()
                     sum_deg += self.delta_deg
-                    emotion = self.tilt(True) if sum_deg % 180 == 0 else self.tilt(False)
-                    print(emotion.success, emotion.message)
                     search_res = self.img_srv.srv_search_target(True)
                     feedback.BoolFB = search_res.success
                     feedback.Int32FB = sum_deg
@@ -202,7 +203,7 @@ class Motion_process:
                     if search_target_server.is_preempt_requested():
                         print('preempt')
                         emotion = self.tilt(True)
-                        result.Int32Res = sum_deg
+                        result.Int32Res = deg
                         result.BoolRes = False
                         result.StrRes = 'not'
                         search_target_server.set_preempted(result)
@@ -212,7 +213,7 @@ class Motion_process:
                         search_res_msg = search_res.message.split(', ')
                         search_finish, target_id = search_res_msg[0], int(search_res_msg[1])
                         result.BoolRes = True if search_finish == 'end' else False
-                        result.StrRes = 'not' if target_id == 10 else 'swing'
+                        result.StrRes = 'dislike' if target_id == 10 else 'swing'
                         rospy.loginfo(f'Find_t, res={result.StrRes}')
                         rospy.sleep(1.0)
                         move = 0
@@ -235,7 +236,7 @@ class Motion_process:
                                 move = 0
                                 break
                             move += 0.5*moveY.int32Out
-                            self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)}) #根本を回転
+                            self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)})
                             self.arm.go()
                         
                         rospy.sleep(1.0)
@@ -255,20 +256,18 @@ class Motion_process:
             print('called')
             self.set_position('search_club')
             sum_deg = 0
-            current_deg = 0
             deg = goal.Int32In
             while True:
                 self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                 self.arm.go()
                 sum_deg += self.delta_deg
-                emotion = self.tilt(True) if sum_deg % 180 == 0 else self.tilt(False)
-                print(emotion.success, emotion.message)
                 search_res = self.img_srv.srv_search_club(True)
                 feedback.BoolFB = search_res.success
                 feedback.Int32FB = sum_deg
                 search_club_server.publish_feedback(feedback)
                 if search_club_server.is_preempt_requested():
-                    result.Int32Res = sum_deg
+                    emotion = self.tilt(True)
+                    result.Int32Res = deg
                     result.BoolRes = False
                     result.StrRes = 'not'
                     search_club_server.set_preempted(result)
@@ -298,10 +297,10 @@ class Motion_process:
                         self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": radians(-move)})
                         self.arm.go()
                         if moveY.int32Out == 0:
-                            # current_deg = radians(deg-move)
                             move = 0
                             break
-                    self.grip_club(current_deg = current_deg)
+                    emotion = self.happy_club(True)
+                    self.grip_club(current_deg=current_deg)
                     rospy.loginfo("grip")
                     remove = self.img_srv.srv_remove_club(self.AR_id)
                     print(f'removed id = {remove}')
@@ -311,15 +310,14 @@ class Motion_process:
             search_club_server.set_succeeded(result=result)
     
     def grip_club(self, current_deg):
-        ABS_CLUB_POSITION = 0.25
         CLUB_Z_POSITION = 0.065 + 0.02
         arm_goal_pose = self.arm.get_current_pose().pose
         self.gripper.set_joint_value_target([0.9, 0.9])
         self.gripper.go()
         rospy.sleep(1.0)
         target_pose = geometry_msgs.msg.Pose()
-        target_pose.position.x = arm_goal_pose.position.x #* cos(current_deg)
-        target_pose.position.y = arm_goal_pose.position.y# * sin(current_deg)
+        target_pose.position.x = arm_goal_pose.position.x + cos(current_deg)
+        target_pose.position.y = arm_goal_pose.position.y + sin(current_deg)
         target_pose.position.z = CLUB_Z_POSITION
         target_pose.orientation.x = arm_goal_pose.orientation.x
         target_pose.orientation.y = arm_goal_pose.orientation.y
@@ -327,7 +325,7 @@ class Motion_process:
         target_pose.orientation.w = arm_goal_pose.orientation.w
         self.arm.set_pose_target( target_pose )
         self.arm.go()
-        self.gripper.set_joint_value_target([0.3, 0.3])
+        self.gripper.set_joint_value_target([0.2, 0.2])
         self.gripper.go()
         self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
         self.arm.set_joint_value_target({"crane_x7_wrist_joint":-1.57})
@@ -358,11 +356,19 @@ class Motion_process:
             
             else:
                 rospy.loginfo('completed')
-                remove = self.img_srv.srv_remove_target(target_id)
-                print(f'remove id = {remove}')
                 result.Int32Res = 1
                 result.StrRes = 'completed'
             check_target_server.set_succeeded(result=result)
+    
+    def remove_target(self, data):
+        if data.data:
+            resp = SetBoolResponse()
+            print(f'I will remove {target_id}')
+            remove = self.img_srv.srv_remove_target(target_id)
+            print(f'remove={target_id}')
+            resp.message = 'removed'
+            resp.success = True
+            return resp
 
 def main():
     global search_club_server, search_target_server, check_target_server, swing_club
@@ -371,7 +377,7 @@ def main():
     target = Motion_process()
     club = Motion_process()
     check = Motion_process()
-    wait_servers = ['img_search_club', 'img_search_target', 'img_adjustx', 'img_adjusty', 'tilt_neck', 'remove_club', 'remove_target',]
+    wait_servers = ['img_search_club', 'img_search_target', 'img_adjustx', 'img_adjusty', 'tilt_neck', 'remove_club', 'remove_target', ]
     while len([s for s in rosnode.get_node_names() if 'rviz' in s]) == 0:
         rospy.sleep(1.0)
     for server in wait_servers:
@@ -381,6 +387,7 @@ def main():
     search_target_server = actionlib.SimpleActionServer('search_target', ActSignalAction, motion_server.search_target, False)
     check_target_server = actionlib.SimpleActionServer('check_target', ActSignalAction, motion_server.check_target, False)
     swing_club = actionlib.SimpleActionServer('swing_club', ActSignalAction, motion_server.swing_club_motion, False)
+    remove_target = rospy.Service('remove_target_id', SetBool, motion_server.remove_target)
     search_club_server.start()
     search_target_server.start()
     check_target_server.start()
