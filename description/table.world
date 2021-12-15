@@ -87,7 +87,7 @@
         <uri>model://club</uri>
       </include>
 
-      <pose>0 0.1825 0 -1.57 0 0</pose>
+      <pose>0 0.1925 0 -1.57 0 0</pose>
     </model>
 
     <model name="club_ARmarker">
