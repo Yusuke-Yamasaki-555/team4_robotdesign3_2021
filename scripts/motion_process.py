@@ -237,6 +237,7 @@ class Motion_process:
                                 break
                             move += 0.5*moveY.int32Out
                             self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)})
+                            self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": 0.175-radians(move)})
                             self.arm.go()
                         
                         rospy.sleep(1.0)
@@ -293,8 +294,8 @@ class Motion_process:
                     while True:
                         moveY = self.img_srv.srv_adjusty(self.c_goaly_coord)
                         move -= 0.5*moveY.int32Out
-                        self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint": radians(-(90-move))})
-                        self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": radians(-move)})
+                        self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint": -1.88+radians(move)})
+                        self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": 0.26-radians(move)})
                         self.arm.go()
                         if moveY.int32Out == 0:
                             move = 0

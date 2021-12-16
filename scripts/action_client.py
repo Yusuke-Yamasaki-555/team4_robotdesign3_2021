@@ -59,7 +59,7 @@ def check_target(check_deg):
     end = True if result.Int32Res == 1 else False
     all_end = result.BoolRes
     print(end, all_end, result.StrRes)
-    return end, all_end
+    return end
 
 def swing_club():
     goal = ActSignalGoal()
@@ -96,15 +96,15 @@ def main():
     swing_srv.wait_for_server()
     print('finished waiting server')
     print('start')
-    motion = bow(True)
-    start_deg = 45
-    while True:
-        end_deg, finish = search_club(start_deg)
-        if finish:
-            break
-        start_deg = end_deg
+    # motion = bow(True)
+    # start_deg = 45
+    # while True:
+    #     end_deg, finish = search_club(start_deg)
+    #     if finish:
+    #         break
+    #     start_deg = end_deg
     
-    start_deg = -45
+    start_deg = -90
     end = False
     all_end = False
     while True:
@@ -130,7 +130,7 @@ def main():
         if not remain.success:
             print('search target finished')
             break
-    motion = release(True)
+    # motion = release(True)
     # emotion = happy_end(True)
 
 if __name__ == "__main__":
