@@ -353,11 +353,11 @@ class Motion_process:
             check_target_server.publish_feedback(feedback)
             rospy.sleep(0.1)
             print(f'self.AR_id = {target_id}')
-            if search_club_server.is_preempt_requested():
+            if check_target_server.is_preempt_requested():
                 emotion = self.tilt(True)
                 result.BoolRes = False
                 result.StrRes = 'not'
-                search_club_server.set_preempted(result)
+                check_target_server.set_preempted(result)
                 return None
             if search_res.success and target_id != 10:
                 rospy.loginfo('remain')
