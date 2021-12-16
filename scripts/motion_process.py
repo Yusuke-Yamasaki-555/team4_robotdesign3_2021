@@ -22,6 +22,8 @@ class Preparation_motion:  # Motion_Process_Serverから呼び出される、基
         self.gripper = moveit_commander.MoveGroupCommander("gripper")
 
     def init(self):  # 棒立ちの動作
+        vel = 0.5
+        acc = 0.5
         self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
         self.arm.set_max_acceleration_scaling_factor(acc)
 
@@ -29,9 +31,19 @@ class Preparation_motion:  # Motion_Process_Serverから呼び出される、基
         self.arm.set_named_target("init") #  SRDFからinitのステータスを読み込み
         self.arm.go()
 
-    # def stand_by
+    def stand_by(self):
+        vel = 0.5
+        acc = 0.5
+        self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
+        self.arm.set_max_acceleration_scaling_factor(acc)
 
-    def hold(self):  # 
+        print("==server:stand_by")
+        self.arm.set_named_target("stand_by") #  SRDFからholdのステータスを読み込み
+        self.arm.go()
+
+    def hold(self):
+        vel = 0.5
+        acc = 0.5
         self.arm.set_max_velocity_scaling_factor(vel) #  グローバルに設定されたfactorで動作
         self.arm.set_max_acceleration_scaling_factor(acc)
 
@@ -57,7 +69,7 @@ class Motion_process:
         self.img_srv = ImageProcessServer()
         self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
         self.happy_club = rospy.ServiceProxy('happy_club', SetBool)
-        self.delta_deg = 3
+        self.delta_deg = 5
         self.AR_id = 0
         self.goalx_coord = 377
         self.t_goaly_coord = 227
@@ -183,7 +195,7 @@ class Motion_process:
         if goal.BoolIn:
             global target_id
             self.arm.set_max_velocity_scaling_factor(0.5)
-            self.arm.set_max_acceleration_scaling_factor(1.0)
+            self.arm.set_max_acceleration_scaling_factor(0.5)
             feedback = ActSignalFeedback()
             result = ActSignalResult()
             if goal.BoolIn:
@@ -254,7 +266,7 @@ class Motion_process:
     def search_club(self, goal):
         if goal.BoolIn:
             self.arm.set_max_velocity_scaling_factor(0.5)
-            self.arm.set_max_acceleration_scaling_factor(1.0)
+            self.arm.set_max_acceleration_scaling_factor(0.5)
             feedback = ActSignalFeedback()
             result = ActSignalResult()
             print('called')
@@ -290,7 +302,7 @@ class Motion_process:
                         move += moveX.int32Out
                         self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                         self.arm.go()
-                        rospy.sleep(0.1)
+                        # rospy.sleep(0.1)
                         if moveX.int32Out == 0:
                             current_deg = radians(deg-move)
                             move = 0
@@ -307,6 +319,10 @@ class Motion_process:
                     emotion = self.happy_club(True)
                     self.grip_club(current_deg=current_deg)
                     rospy.loginfo("grip")
+                    self.preparation.stand_by()
+                    rospy.loginfo("stand_by")
+                    self.preparation.hold()
+                    rospy.loginfo("hold")
                     remove = self.img_srv.srv_remove_club(self.AR_id)
                     print(f'removed id = {remove}')
                     break
@@ -330,7 +346,7 @@ class Motion_process:
         target_pose.orientation.w = arm_goal_pose.orientation.w
         self.arm.set_pose_target( target_pose )
         self.arm.go()
-        self.gripper.set_joint_value_target([0.2, 0.2])
+        self.gripper.set_joint_value_target([0.3, 0.3])
         self.gripper.go()
         self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
         self.arm.set_joint_value_target({"crane_x7_wrist_joint":-1.57})

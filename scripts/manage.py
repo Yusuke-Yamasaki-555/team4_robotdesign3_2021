@@ -133,7 +133,7 @@ def main():
 
     # # 棒を探す(search_club)
     # # """
-    goal = set_goal(True, -110, "server:Start search_club")
+    goal = set_goal(True, 45, "server:Start search_club")
     search_club.send_goal(goal, feedback_cb=feedback_search_club)
     search_club.wait_for_result()
     result = search_club.get_result()
