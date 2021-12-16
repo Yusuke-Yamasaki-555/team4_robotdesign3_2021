@@ -235,7 +235,7 @@ class Motion_process:
                             if not moveY.int32Out:
                                 move = 0
                                 break
-                            move += moveY.int32Out
+                            move += 0.4*moveY.int32Out
                             self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)})
                             self.arm.go()
                             
@@ -343,12 +343,13 @@ class Motion_process:
             result = ActSignalResult()
             self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(goal.Int32In)}) #根本を回転
             self.arm.go()
+            rospy.sleep(2)
             search_res = self.img_srv.srv_search_target(True)
             search_res_msg = search_res.message.split(', ')
             judge = search_res_msg[0]
             # all_end = 1 if judge == 'end' else 0
             # result.Int32Res = all_end
-            feedback.BoolFB = search_res
+            feedback.BoolFB = search_res.success
             feedback.Int32FB = goal.Int32In
             check_target_server.publish_feedback(feedback)
             rospy.sleep(0.1)

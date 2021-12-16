@@ -124,25 +124,25 @@ def main():
     bow
     # """
     # お辞儀
-    # """
-    bow_b = True
-    print("go bow")
-    bow_res = bow(bow_b)
-    check_service(bow_res)
-    # """
+    # # """
+    # bow_b = True
+    # print("go bow")
+    # bow_res = bow(bow_b)
+    # check_service(bow_res)
+    # # """
 
-    # 棒を探す(search_club)
+    # # 棒を探す(search_club)
+    # # """
+    # goal = set_goal(True, -110, "server:Start search_club")
+    # search_club.send_goal(goal, feedback_cb=feedback_search_club)
+    # search_club.wait_for_result()
+    # result = search_club.get_result()
+    # if result.BoolRes:
+    #     print("client:Success swing_club")
+    # elif not result.BoolRes:
+    #     print("client:Failure swing_club")
     # """
-    goal = set_goal(True, -110, "server:Start search_club")
-    search_club.send_goal(goal, feedback_cb=feedback_search_club)
-    search_club.wait_for_result()
-    result = search_club.get_result()
-    if result.BoolRes:
-        print("client:Success swing_club")
-    elif not result.BoolRes:
-        print("client:Failure swing_club")
-    # """
-    start_deg = -110
+    start_deg = -90
     while True:
         while True:
         # 印を探す
@@ -169,7 +169,7 @@ def main():
                 elif not result.BoolRes:
                     print("client:Failure swing_club")
                 # 印を確認する
-                goal = set_goal(result.BoolRes, 0, "server:Start check_target")
+                goal = set_goal(result.BoolRes, start_deg, "server:Start check_target")
                 check_target.send_goal(goal, feedback_cb=feedback_check_target)
                 check_target.wait_for_result()
                 result = check_target.get_result()
@@ -201,10 +201,10 @@ def main():
 
     # # 最後の喜び表現
     # # """
-    happy_end_b = True
-    print("go happy_end")
-    happy_end_res = happy_end(happy_end_b)
-    check_service(happy_end_res)
+    # happy_end_b = True
+    # print("go happy_end")
+    # happy_end_res = happy_end(happy_end_b)
+    # check_service(happy_end_res)
     # # """
 
     # # お辞儀
