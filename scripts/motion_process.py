@@ -326,7 +326,7 @@ class Motion_process:
         target_pose.orientation.w = arm_goal_pose.orientation.w
         self.arm.set_pose_target( target_pose )
         self.arm.go()
-        self.gripper.set_joint_value_target([0.2, 0.2])
+        self.gripper.set_joint_value_target([0.3, 0.3])
         self.gripper.go()
         self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
         self.arm.set_joint_value_target({"crane_x7_wrist_joint":-1.57})

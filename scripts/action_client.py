@@ -97,16 +97,14 @@ def main():
     print('finished waiting server')
     print('start')
     # motion = bow(True)
-    # start_deg = 45
-    # while True:
-    #     end_deg, finish = search_club(start_deg)
-    #     if finish:
-    #         break
-    #     start_deg = end_deg
+    start_deg = 45
+    while True:
+        end_deg, finish = search_club(start_deg)
+        if finish:
+            break
+        start_deg = end_deg
     
-    start_deg = -90
-    end = False
-    all_end = False
+    start_deg = 0
     while True:
         while True:
             end_deg, motion = search_target(start_deg=start_deg)
@@ -114,7 +112,7 @@ def main():
             if motion == 'swing':
                 print('swing')
                 judge = swing_club()
-                end, all_end = check_target(check_deg=start_deg)
+                end = check_target(check_deg=start_deg)
                 if end:
                     remove = remove_target(True)
                     break
