@@ -45,7 +45,7 @@ class Image_process:
     def search(self, data):
         resp = SetBoolResponse()
         #ARマーカーがあるかどうか調べる
-        id, _= self.get_ar_info()
+        id, self.pre_c= self.get_ar_info()
         if not id or id not in self.target_AR_id:
             resp.message = ''
             resp.success = False
@@ -100,7 +100,7 @@ def main():
     rospy.init_node('img_process', anonymous=1)
     rospy.loginfo('start')
     adjust = Image_process(target_AR_id=[3, 4, 6, 10])
-    target = Image_process(target_AR_id=[3])
+    target = Image_process(target_AR_id=[3, 10])
     club = Image_process(target_AR_id=[6])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
     img_search_target_server = rospy.Service('img_search_target', SetBool, target.search)

@@ -125,22 +125,22 @@ def main():
     # """
     # お辞儀
     # # """
-    # bow_b = True
-    # print("go bow")
-    # bow_res = bow(bow_b)
-    # check_service(bow_res)
+    bow_b = True
+    print("go bow")
+    bow_res = bow(bow_b)
+    check_service(bow_res)
     # # """
 
     # # 棒を探す(search_club)
     # # """
-    # goal = set_goal(True, -110, "server:Start search_club")
-    # search_club.send_goal(goal, feedback_cb=feedback_search_club)
-    # search_club.wait_for_result()
-    # result = search_club.get_result()
-    # if result.BoolRes:
-    #     print("client:Success swing_club")
-    # elif not result.BoolRes:
-    #     print("client:Failure swing_club")
+    goal = set_goal(True, -110, "server:Start search_club")
+    search_club.send_goal(goal, feedback_cb=feedback_search_club)
+    search_club.wait_for_result()
+    result = search_club.get_result()
+    if result.BoolRes:
+        print("client:Success swing_club")
+    elif not result.BoolRes:
+        print("client:Failure swing_club")
     # """
     start_deg = -90
     while True:
@@ -201,10 +201,10 @@ def main():
 
     # # 最後の喜び表現
     # # """
-    # happy_end_b = True
-    # print("go happy_end")
-    # happy_end_res = happy_end(happy_end_b)
-    # check_service(happy_end_res)
+    happy_end_b = True
+    print("go happy_end")
+    happy_end_res = happy_end(happy_end_b)
+    check_service(happy_end_res)
     # # """
 
     # # お辞儀
@@ -260,7 +260,7 @@ def feedback_swing_club(feedback):
         swing_club.cancel_goal()
 
 def feedback_check_target(feedback):
-    if feedback.BoolFB:
+    if not feedback.BoolFB:
         print("==client:Confirmed check_target")
     else:
         check_target.cancel_goal()

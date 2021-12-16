@@ -195,6 +195,7 @@ class Motion_process:
                 while True:
                     self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                     self.arm.go()
+                    rospy.sleep(0.1)
                     sum_deg += self.delta_deg
                     search_res = self.img_srv.srv_search_target(True)
                     feedback.BoolFB = search_res.success
@@ -215,7 +216,7 @@ class Motion_process:
                         result.BoolRes = True if search_finish == 'end' else False
                         result.StrRes = 'dislike' if target_id == 10 else 'swing'
                         rospy.loginfo(f'Find_t, res={result.StrRes}')
-                        rospy.sleep(1.0)
+                        rospy.sleep(0.1)
                         move = 0
                         while True:
                             moveX = self.img_srv.srv_adjustx(self.goalx_coord)
@@ -289,6 +290,7 @@ class Motion_process:
                         move += moveX.int32Out
                         self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                         self.arm.go()
+                        rospy.sleep(0.1)
                         if moveX.int32Out == 0:
                             current_deg = radians(deg-move)
                             move = 0
