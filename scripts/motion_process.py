@@ -57,7 +57,7 @@ class Motion_process:
         self.img_srv = ImageProcessServer()
         self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
         self.happy_club = rospy.ServiceProxy('happy_club', SetBool)
-        self.delta_deg = 5
+        self.delta_deg = 3
         self.AR_id = 0
         self.goalx_coord = 377
         self.t_goaly_coord = 227
@@ -235,8 +235,10 @@ class Motion_process:
                             if not moveY.int32Out:
                                 move = 0
                                 break
-                            move += 0.5*moveY.int32Out
+                            move += moveY.int32Out
                             self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)})
+                            self.arm.go()
+                            
                             self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": 0.175-radians(move)})
                             self.arm.go()
                         
@@ -284,7 +286,7 @@ class Motion_process:
                     move = 0
                     while True:
                         moveX = self.img_srv.srv_adjustx(self.goalx_coord)
-                        move += 0.5*moveX.int32Out
+                        move += moveX.int32Out
                         self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                         self.arm.go()
                         if moveX.int32Out == 0:
@@ -301,7 +303,7 @@ class Motion_process:
                             move = 0
                             break
                     emotion = self.happy_club(True)
-                    self.grip_club()
+                    self.grip_club(current_deg=current_deg)
                     rospy.loginfo("grip")
                     remove = self.img_srv.srv_remove_club(self.AR_id)
                     print(f'removed id = {remove}')
@@ -310,15 +312,15 @@ class Motion_process:
             result.Int32Res = sum_deg
             search_club_server.set_succeeded(result=result)
     
-    def grip_club(self):
+    def grip_club(self, current_deg):
         CLUB_Z_POSITION = 0.065 + 0.02
         arm_goal_pose = self.arm.get_current_pose().pose
         self.gripper.set_joint_value_target([0.9, 0.9])
         self.gripper.go()
         rospy.sleep(1.0)
         target_pose = geometry_msgs.msg.Pose()
-        target_pose.position.x = arm_goal_pose.position.x #* cos(current_deg)
-        target_pose.position.y = arm_goal_pose.position.y# * sin(current_deg)
+        target_pose.position.x = arm_goal_pose.position.x + 0.005* cos(current_deg)
+        target_pose.position.y = arm_goal_pose.position.y + 0.005 * sin(current_deg)
         target_pose.position.z = CLUB_Z_POSITION
         target_pose.orientation.x = arm_goal_pose.orientation.x
         target_pose.orientation.y = arm_goal_pose.orientation.y
@@ -326,7 +328,7 @@ class Motion_process:
         target_pose.orientation.w = arm_goal_pose.orientation.w
         self.arm.set_pose_target( target_pose )
         self.arm.go()
-        self.gripper.set_joint_value_target([0.3, 0.3])
+        self.gripper.set_joint_value_target([0.2, 0.2])
         self.gripper.go()
         self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
         self.arm.set_joint_value_target({"crane_x7_wrist_joint":-1.57})
@@ -344,20 +346,28 @@ class Motion_process:
             search_res = self.img_srv.srv_search_target(True)
             search_res_msg = search_res.message.split(', ')
             judge = search_res_msg[0]
-            all_end = True if judge == 'end' else False
-            result.BoolRes = all_end
+            # all_end = 1 if judge == 'end' else 0
+            # result.Int32Res = all_end
             feedback.BoolFB = search_res
             feedback.Int32FB = goal.Int32In
+            check_target_server.publish_feedback(feedback)
+            rospy.sleep(0.1)
             print(f'self.AR_id = {target_id}')
+            if search_club_server.is_preempt_requested():
+                emotion = self.tilt(True)
+                result.BoolRes = False
+                result.StrRes = 'not'
+                search_club_server.set_preempted(result)
+                return None
             if search_res.success and target_id != 10:
                 rospy.loginfo('remain')
-                result.Int32Res = 0
+                result.BoolRes = False
                 result.StrRes = 'remain'
                 rospy.sleep(1.0)
             
             else:
                 rospy.loginfo('completed')
-                result.Int32Res = 1
+                result.BoolRes = True
                 result.StrRes = 'completed'
             check_target_server.set_succeeded(result=result)
     

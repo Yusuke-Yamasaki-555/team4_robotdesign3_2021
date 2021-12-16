@@ -70,7 +70,10 @@ def main():
     # """
     bow = rospy.ServiceProxy('bow', SetBool)
     release_club = rospy.ServiceProxy('release_club', SetBool)
+    dislike = rospy.ServiceProxy('dislike', SetBool)
     happy_end = rospy.ServiceProxy('happy_end', SetBool)
+    remove_target = rospy.ServiceProxy('remove_target_id', SetBool)
+    remain_target = rospy.ServiceProxy('remain_target', SetBool)
     # """
 #===== /emotions =====
 
@@ -80,6 +83,7 @@ def main():
     search_target = actionlib.SimpleActionClient('search_target', ActSignalAction)
     swing_club = actionlib.SimpleActionClient('swing_club', ActSignalAction)
     check_target = actionlib.SimpleActionClient('check_target', ActSignalAction)
+    
     # """
 #===== /action =====
 
@@ -91,25 +95,10 @@ def main():
     swing_club.wait_for_server()
     check_target.wait_for_server()
 
-    rospy.wait_for_service("bow")
-    rospy.wait_for_service("release_club")
-    rospy.wait_for_service("happy_end")
     # """
-
-    #""" manage以外で使うserver
-    # node:emotions
-    rospy.wait_for_service("tilt_neck")
-    rospy.wait_for_service("dislike")
-    rospy.wait_for_service("happy_club")
-
-    # node:img_process
-    rospy.wait_for_service("img_search_club")
-    rospy.wait_for_service("img_search_target")
-    rospy.wait_for_service("img_adjustx")
-    rospy.wait_for_service("img_adjusty")
-    rospy.wait_for_service("remove_club")
-    rospy.wait_for_service("remove_target")
-    # """
+    wait_srvs = ['dislike', 'release_club', 'remove_target_id', 'remain_target', 'bow', 'happy_end']
+    for srv in wait_srvs:
+        rospy.wait_for_service(srv)
     rospy.loginfo("Start all server")
 #===== waiting_server =====
 
@@ -144,7 +133,7 @@ def main():
 
     # 棒を探す(search_club)
     # """
-    goal = set_goal(True, 0, "server:Start search_club")
+    goal = set_goal(True, -110, "server:Start search_club")
     search_club.send_goal(goal, feedback_cb=feedback_search_club)
     search_club.wait_for_result()
     result = search_club.get_result()
@@ -153,48 +142,53 @@ def main():
     elif not result.BoolRes:
         print("client:Failure swing_club")
     # """
-
+    start_deg = -110
     while True:
         while True:
         # 印を探す
             # """
-            goal = set_goal(True, 0, "server:Start search_target")
+            goal = set_goal(True, start_deg, "server:Start search_target")
             search_target.send_goal(goal, feedback_cb=feedback_search_target)
             search_target.wait_for_result()
             result = search_target.get_result()
+            start_deg = result.Int32Res
+            motion = result.StrRes
+            print(motion)
             if result.BoolRes:
                 print("client:Success search_target")
             elif not result.BoolRes:
                 print("client:Failure search_target")
-            # """
+            # 印のIDから動作判断
+            if motion == 'swing':
+                goal = set_goal(True, 0, 'swing_club')
+                swing_club.send_goal(goal, feedback_cb=feedback_swing_club)
+                swing_club.wait_for_result()
+                result = swing_club.get_result()
+                if result.BoolRes:
+                    print("client:Success swing_club")
+                elif not result.BoolRes:
+                    print("client:Failure swing_club")
+                # 印を確認する
+                goal = set_goal(result.BoolRes, 0, "server:Start check_target")
+                check_target.send_goal(goal, feedback_cb=feedback_check_target)
+                check_target.wait_for_result()
+                result = check_target.get_result()
+                if result.BoolRes:
+                    remove = remove_target(True)
+                    break
+                
 
-            # 印を打つ
-            # """
-            goal = set_goal(result.BoolRes, 0, "server:Start swing_club")
-            swing_club.send_goal(goal, feedback_cb=feedback_swing_club)
-            swing_club.wait_for_result()
-            result = swing_club.get_result()
-            if result.BoolRes:
-                print("client:Success swing_club")
-            elif not result.BoolRes:
-                print("client:Failure swing_club")
-            # """
-
-            # 印を確認する
-            # """
-            goal = set_goal(result.BoolRes, 0, "server:Start check_target")
-            check_target.send_goal(goal, feedback_cb=feedback_check_target)
-            check_target.wait_for_result()
-            result = check_target.get_result()
-            # """
-            # """
-            if result.Int32Res == 1:
-                print("client:Success check_target")
+            elif motion == 'dislike':
+                emotion = dislike(True)
+                remove = remove_target(True)
                 break
+
             else:
-                print("client:Failure check_target")
-            # """
-        if result.BoolRes:
+                print('not')
+                break
+        remain = remain_target(True)
+        if not remain.success:
+            print('search target finish')
             break
         
     # 棒を離す
@@ -203,18 +197,18 @@ def main():
     print("go release_club")
     release_club_res = release_club(release_club_b)
     check_service(release_club_res)
-    # """
+    # # """
 
-    # 最後の喜び表現
-    # """
+    # # 最後の喜び表現
+    # # """
     happy_end_b = True
     print("go happy_end")
     happy_end_res = happy_end(happy_end_b)
     check_service(happy_end_res)
-    # """
+    # # """
 
-    # お辞儀
-    # """
+    # # お辞儀
+    # # """
     bow_b = True
     print("go bow")
     bow_res = bow(bow_b)
