@@ -16,25 +16,28 @@ class Image_process:
         self.pre_c = []
         print(self.target_AR_id)
         self.rtn_img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.rtn_img)
-
+        self.aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_50)
+        self.parameters =  aruco.DetectorParameters_create()
     #画像を取得
     def rtn_img(self, data):
         bridge = CvBridge()
+        origin = bridge.imgmsg_to_cv2(data, 'passthrough')
         try:
-            origin = bridge.imgmsg_to_cv2(data, 'passthrough')
             self.bgr = cv2.cvtColor(origin, cv2.COLOR_BGR2RGB)
             self.gray = cv2.cvtColor(self.bgr, cv2.COLOR_RGB2GRAY)
+            corners, ids, _ = aruco.detectMarkers(self.gray, self.aruco_dict, parameters=self.parameters)
+            origin = aruco.drawDetectedMarkers(origin.copy(), corners, ids)
             cv2.drawMarker(origin, position=(377, 227), color=(0, 0, 255), markerType=cv2.MARKER_STAR, markerSize=10)
+            cv2.imshow('window', origin)
         except CvBridgeError as e:
-            rospy.logerr(e)
+            cv2.imshow('window', origin)
+        cv2.waitKey(1)
     
     #ARマーカーの情報を返す
     def get_ar_info(self):
         # ARマーカー検知
-        aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_50)
-        parameters =  aruco.DetectorParameters_create()
         try:
-            corners, ids, _ = aruco.detectMarkers(self.gray, aruco_dict, parameters=parameters)
+            corners, ids, _ = aruco.detectMarkers(self.gray, self.aruco_dict, parameters=self.parameters)
             id = ids[0] if ids else False
             c = corners[0][0] if corners else self.pre_c
             self.pre_c = c
@@ -115,6 +118,7 @@ def main():
 
 if __name__ == '__main__':
     try:
-        main()
+        if not rospy.is_shutdown():
+            main()
     except rospy.ROSInterruptException as e:
         rospy.logerr(e)
