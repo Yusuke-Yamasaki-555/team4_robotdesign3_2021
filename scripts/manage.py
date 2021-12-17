@@ -97,6 +97,7 @@ def main():
 
     # """
     wait_srvs = ['dislike', 'release_club', 'remove_target_id', 'remain_target', 'bow', 'happy_end']
+    position = [-30, 30]
     for srv in wait_srvs:
         rospy.wait_for_service(srv)
     rospy.loginfo("Start all server")
@@ -125,24 +126,27 @@ def main():
     # """
     # お辞儀
     # # """
-    bow_b = True
-    print("go bow")
-    bow_res = bow(bow_b)
-    check_service(bow_res)
+    # bow_b = True
+    # print("go bow")
+    # bow_res = bow(bow_b)
+    # check_service(bow_res)
     # # """
 
     # # 棒を探す(search_club)
     # # """
-    goal = set_goal(True, 45, "server:Start search_club")
-    search_club.send_goal(goal, feedback_cb=feedback_search_club)
-    search_club.wait_for_result()
-    result = search_club.get_result()
-    if result.BoolRes:
-        print("client:Success swing_club")
-    elif not result.BoolRes:
-        print("client:Failure swing_club")
+    # start_deg = 45
+    # goal = set_goal(True, start_deg, "server:Start search_club")
+    # search_club.send_goal(goal, feedback_cb=feedback_search_club)
+    # search_club.wait_for_result()
+    # result = search_club.get_result()
+    # if result.BoolRes:
+    #     print("client:Success swing_club")
+    # elif not result.BoolRes:
+    #     print("client:Failure swing_club")
     # """
-    start_deg = -90
+    all_end = False
+    # num = 0
+    # start_deg = position[0]
     while True:
         while True:
         # 印を探す
@@ -151,6 +155,10 @@ def main():
             search_target.send_goal(goal, feedback_cb=feedback_search_target)
             search_target.wait_for_result()
             result = search_target.get_result()
+            preempt = result.BoolRes
+            if preempt:
+                all_end = True
+                break
             start_deg = result.Int32Res
             motion = result.StrRes
             print(motion)
@@ -174,20 +182,24 @@ def main():
                 check_target.wait_for_result()
                 result = check_target.get_result()
                 if result.BoolRes:
+                    # num += 1
+                    # start_deg = position[num]
                     remove = remove_target(True)
                     break
                 
 
             elif motion == 'dislike':
                 emotion = dislike(True)
+                # start_deg = position[num]
                 remove = remove_target(True)
+                # num += 1
                 break
 
             else:
                 print('not')
                 break
         remain = remain_target(True)
-        if not remain.success:
+        if not remain.success or all_end:
             print('search target finish')
             break
         

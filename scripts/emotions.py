@@ -134,7 +134,9 @@ class Emotions_Server:
 
                 print("==server:tilt_neck")
                 self.arm.set_named_target("tilt_neck")
+                self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":0}) #根本を回転
                 self.arm.go()
+                
                 rospy.sleep(0.3)
 
                 print("==server:rev_tilt_neck")

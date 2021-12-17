@@ -69,7 +69,7 @@ class Motion_process:
         self.img_srv = ImageProcessServer()
         self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
         self.happy_club = rospy.ServiceProxy('happy_club', SetBool)
-        self.delta_deg = 5
+        self.delta_deg = 40
         self.AR_id = 0
         self.goalx_coord = 377
         self.t_goaly_coord = 227
@@ -207,6 +207,8 @@ class Motion_process:
                 while True:
                     self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                     self.arm.go()
+                    self.gripper.set_joint_value_target([0.15, 0.15])
+                    self.gripper.go()
                     rospy.sleep(0.1)
                     sum_deg += self.delta_deg
                     search_res = self.img_srv.srv_search_target(True)
@@ -215,17 +217,18 @@ class Motion_process:
                     search_target_server.publish_feedback(feedback)
                     if search_target_server.is_preempt_requested():
                         print('preempt')
+                        rospy.sleep(0.5)
                         emotion = self.tilt(True)
                         result.Int32Res = deg
-                        result.BoolRes = False
+                        result.BoolRes = True #中止のときTrue
                         result.StrRes = 'not'
                         search_target_server.set_preempted(result)
                         return None
                     
                     if search_res.success:
                         search_res_msg = search_res.message.split(', ')
-                        search_finish, target_id = search_res_msg[0], int(search_res_msg[1])
-                        result.BoolRes = True if search_finish == 'end' else False
+                        _, target_id = search_res_msg[0], int(search_res_msg[1])
+                        result.BoolRes = False
                         result.StrRes = 'dislike' if target_id == 10 else 'swing'
                         rospy.loginfo(f'Find_t, res={result.StrRes}')
                         rospy.sleep(0.1)
@@ -240,7 +243,6 @@ class Motion_process:
                             move += 0.5*moveX.int32Out
                             self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                             self.arm.go()
-                        rospy.sleep(1.0)
 
                         while True:
                             moveY = self.img_srv.srv_adjusty(self.t_goaly_coord)
@@ -249,13 +251,12 @@ class Motion_process:
                                 move = 0
                                 break
                             move += 0.4*moveY.int32Out
-                            self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.66-radians(move)})
+                            self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.88-radians(move)})
                             self.arm.go()
                             
-                            self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": 0.175-radians(move)})
+                            self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": 0.43-radians(move)})
                             self.arm.go()
                         
-                        rospy.sleep(1.0)
                         break
                     deg += self.delta_deg
                 print('finish process')
