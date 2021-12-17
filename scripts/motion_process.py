@@ -8,6 +8,7 @@ from math import sin, cos, radians
 from std_srvs.srv import SetBool, SetBoolResponse
 from team4_robotdesign3_2021.srv import SetInt32
 from team4_robotdesign3_2021.msg import ActSignalFeedback, ActSignalResult, ActSignalAction
+from tf.transformations import quaternion_from_euler
 import geometry_msgs.msg
 import random
 
@@ -74,6 +75,8 @@ class Motion_process:
         self.goalx_coord = 377
         self.t_goaly_coord = 227
         self.c_goaly_coord = 160 #simulator: 160, actual machine:
+        self.result = ActSignalResult()
+        self.feedback = ActSignalFeedback()
 
     def release_club_motion(self,data):
         """
@@ -82,7 +85,6 @@ class Motion_process:
         動作を行う(test.py参照)
         動作の完了報告を返す
         """
-        global vel, acc
         vel = 0.5
         acc = 0.35
 
@@ -130,14 +132,12 @@ class Motion_process:
                 ここで、印に当てるか外すかを決めてから、動作を行う
             動作の完了報告を返す
         """
-        global vel, acc
         vel = 0.05
         acc = 0.15
         self.arm.set_max_velocity_scaling_factor(vel)
         self.arm.set_max_acceleration_scaling_factor(acc)
 
-        result = ActSignalResult()
-        feedback = ActSignalFeedback()
+        
         if goal.BoolIn == True:
             print(goal.StrIn) # "server:Start swing_club"
             print("==server:swing_set_club")
@@ -148,15 +148,15 @@ class Motion_process:
             current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
             z_axis_1 = current_pose[0] - 0.698 # deg40
             self.arm.set_joint_value_target("crane_x7_shoulder_fixed_part_pan_joint",z_axis_1) #  現在の第一関節z軸+-deg34        
-            feedback.BoolFB = self.arm.go()
-            feedback.Int32FB = 0
+            self.feedback.BoolFB = self.arm.go()
+            self.feedback.Int32FB = 0
 
-            swing_club.publish_feedback(feedback)
+            swing_club.publish_feedback(self.feedback)
             rospy.sleep(1.0)
             if swing_club.is_preempt_requested():
                 self.preparation.init()
-                result.BoolRes = False
-                swing_club.set_preempted(result)
+                self.result.BoolRes = False
+                swing_club.set_preempted(self.result)
                 return
 
             vel = 1.0
@@ -183,9 +183,9 @@ class Motion_process:
             self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint": radians(-90)})
             self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": radians(0)})
             self.arm.go()
-        result.BoolRes = True
-        result.Int32Res = 0
-        swing_club.set_succeeded(result)
+        self.result.BoolRes = True
+        self.result.Int32Res = 0
+        swing_club.set_succeeded(self.result)
 
         print("server:motion_process Ready\n")
     def set_position(self, srdf_name):
@@ -199,8 +199,6 @@ class Motion_process:
             global target_id
             self.arm.set_max_velocity_scaling_factor(0.5)
             self.arm.set_max_acceleration_scaling_factor(0.5)
-            feedback = ActSignalFeedback()
-            result = ActSignalResult()
             if goal.BoolIn:
                 print('called')
                 sum_deg = 0
@@ -213,25 +211,25 @@ class Motion_process:
                     rospy.sleep(0.1)
                     sum_deg += self.delta_deg
                     search_res = self.img_srv.srv_search_target(True)
-                    feedback.BoolFB = search_res.success
-                    feedback.Int32FB = sum_deg
-                    search_target_server.publish_feedback(feedback)
+                    self.feedback.BoolFB = search_res.success
+                    self.feedback.Int32FB = sum_deg
+                    search_target_server.publish_feedback(self.feedback)
                     if search_target_server.is_preempt_requested():
                         print('preempt')
                         rospy.sleep(0.5)
                         emotion = self.tilt(True)
-                        result.Int32Res = deg
-                        result.BoolRes = True #中止のときTrue
-                        result.StrRes = 'not'
-                        search_target_server.set_preempted(result)
+                        self.result.Int32Res = deg
+                        self.result.BoolRes = True #中止のときTrue
+                        self.result.StrRes = 'not'
+                        search_target_server.set_preempted(self.result)
                         return None
                     
                     if search_res.success:
                         search_res_msg = search_res.message.split(', ')
                         _, target_id = search_res_msg[0], int(search_res_msg[1])
-                        result.BoolRes = False
-                        result.StrRes = 'dislike' if target_id == 10 else 'swing'
-                        rospy.loginfo(f'Find_t, res={result.StrRes}')
+                        self.result.BoolRes = False
+                        self.result.StrRes = 'dislike' if target_id == 10 else 'swing'
+                        rospy.loginfo(f'Find_t, res={self.result.StrRes}')
                         rospy.sleep(0.1)
                         move = 0
                         while True:
@@ -258,16 +256,14 @@ class Motion_process:
                         break
                     deg += self.delta_deg
                 print('finish process')
-                result.Int32Res = current_deg
-                search_target_server.set_succeeded(result=result)
+                self.result.Int32Res = current_deg
+                search_target_server.set_succeeded(result=self.result)
                 print('sent result')
             
     def search_club(self, goal):
         if goal.BoolIn:
             self.arm.set_max_velocity_scaling_factor(0.5)
             self.arm.set_max_acceleration_scaling_factor(0.5)
-            feedback = ActSignalFeedback()
-            result = ActSignalResult()
             print('called')
             self.set_position('search_club')
             sum_deg = 0
@@ -277,22 +273,22 @@ class Motion_process:
                 self.arm.go()
                 sum_deg += self.delta_deg
                 search_res = self.img_srv.srv_search_club(True)
-                feedback.BoolFB = search_res.success
-                feedback.Int32FB = sum_deg
-                search_club_server.publish_feedback(feedback)
+                self.feedback.BoolFB = search_res.success
+                self.feedback.Int32FB = sum_deg
+                search_club_server.publish_feedback(self.feedback)
                 if search_club_server.is_preempt_requested():
                     emotion = self.tilt(True)
-                    result.Int32Res = deg
-                    result.BoolRes = False
-                    result.StrRes = 'not'
-                    search_club_server.set_preempted(result)
+                    self.result.Int32Res = deg
+                    self.result.BoolRes = False
+                    self.result.StrRes = 'not'
+                    search_club_server.set_preempted(self.result)
                     return None
 
                 if search_res.success:
                     search_res_msg = search_res.message.split(', ')
                     self.AR_id = int(search_res_msg[1])
-                    result.StrRes = 'find'
-                    result.BoolRes = True
+                    self.result.StrRes = 'find'
+                    self.result.BoolRes = True
                     print(f'deg = {deg}')
                     rospy.loginfo('Find_c')
                     move = 0
@@ -322,11 +318,11 @@ class Motion_process:
                     self.preparation.hold()
                     rospy.loginfo("hold")
                     remove = self.img_srv.srv_remove_club(self.AR_id)
-                    print(f'removed id = {remove}')
+                    print(f'removed id = {remove.int32Out}')
                     break
                 deg += self.delta_deg
-            result.Int32Res = sum_deg
-            search_club_server.set_succeeded(result=result)
+            self.result.Int32Res = sum_deg
+            search_club_server.set_succeeded(result=self.result)
     
     def grip_club(self, current_deg):
         CLUB_Z_POSITION = 0.065 + 0.02
@@ -338,13 +334,18 @@ class Motion_process:
         target_pose.position.x = arm_goal_pose.position.x + 0.005 * cos(current_deg)
         target_pose.position.y = arm_goal_pose.position.y + 0.005 * sin(current_deg)
         target_pose.position.z = CLUB_Z_POSITION
-        target_pose.orientation.x = arm_goal_pose.orientation.x
-        target_pose.orientation.y = arm_goal_pose.orientation.y
-        target_pose.orientation.z = arm_goal_pose.orientation.z
-        target_pose.orientation.w = arm_goal_pose.orientation.w
-        self.arm.set_pose_target( target_pose )
+        q = quaternion_from_euler(-3.14, 0.0, 0.0) #下向き
+        # target_pose.orientation.x = arm_goal_pose.orientation.x
+        # target_pose.orientation.y = arm_goal_pose.orientation.y
+        # target_pose.orientation.z = arm_goal_pose.orientation.z
+        # target_pose.orientation.w = arm_goal_pose.orientation.w
+        target_pose.orientation.x = q[0]
+        target_pose.orientation.y = q[1]
+        target_pose.orientation.z = q[2]
+        target_pose.orientation.w = q[3]
+        self.arm.set_pose_target(target_pose)
         self.arm.go()
-        self.gripper.set_joint_value_target([0.3, 0.3])
+        self.gripper.set_joint_value_target([0.2, 0.2])
         self.gripper.go()
         self.arm.set_joint_value_target({"crane_x7_lower_arm_revolute_part_joint":0})
         self.arm.set_joint_value_target({"crane_x7_wrist_joint":-1.57})
@@ -353,47 +354,42 @@ class Motion_process:
     def check_target(self, goal):
         if goal.BoolIn:
             self.arm.set_max_velocity_scaling_factor(0.5)
-            self.arm.set_max_acceleration_scaling_factor(1.0)
+            self.arm.set_max_acceleration_scaling_factor(0.5)
             self.set_position('search_target')
-            feedback = ActSignalFeedback()
-            result = ActSignalResult()
             self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(goal.Int32In)}) #根本を回転
             self.arm.go()
             rospy.sleep(2)
             search_res = self.img_srv.srv_search_target(True)
             search_res_msg = search_res.message.split(', ')
             judge = search_res_msg[0]
-            # all_end = 1 if judge == 'end' else 0
-            # result.Int32Res = all_end
-            feedback.BoolFB = search_res.success
-            feedback.Int32FB = goal.Int32In
-            check_target_server.publish_feedback(feedback)
+            self.feedback.BoolFB = search_res.success
+            self.feedback.Int32FB = goal.Int32In
+            check_target_server.publish_feedback(self.feedback)
             rospy.sleep(0.1)
             print(f'self.AR_id = {target_id}')
+            #倒せていない場合は中断
             if check_target_server.is_preempt_requested():
                 emotion = self.tilt(True)
-                result.BoolRes = False
-                result.StrRes = 'not'
-                check_target_server.set_preempted(result)
+                self.result.BoolRes = False
+                self.result.StrRes = 'not'
+                check_target_server.set_preempted(self.result)
                 return None
+            #
             if search_res.success and target_id != 10:
                 rospy.loginfo('remain')
-                result.BoolRes = False
-                result.StrRes = 'remain'
-                rospy.sleep(1.0)
-            
+                self.result.BoolRes = False
+                self.result.StrRes = 'remain'
             else:
                 rospy.loginfo('completed')
-                result.BoolRes = True
-                result.StrRes = 'completed'
-            check_target_server.set_succeeded(result=result)
+                self.result.BoolRes = True
+                self.result.StrRes = 'completed'
+            check_target_server.set_succeeded(result=self.result)
     
     def remove_target(self, data):
         if data.data:
             resp = SetBoolResponse()
-            print(f'I will remove {target_id}')
             remove = self.img_srv.srv_remove_target(target_id)
-            print(f'remove={target_id}')
+            print(f'removed ID: {target_id}')
             resp.message = 'removed'
             resp.success = True
             return resp
@@ -402,25 +398,22 @@ def main():
     global search_club_server, search_target_server, check_target_server, swing_club
     rospy.init_node("motion_process", anonymous=1)
     motion_server = Motion_process()
-    target = Motion_process()
-    club = Motion_process()
-    check = Motion_process()
-    wait_servers = ['img_search_club', 'img_search_target', 'img_adjustx', 'img_adjusty', 'tilt_neck', 'remove_club', 'remove_target', ]
-    while len([s for s in rosnode.get_node_names() if 'rviz' in s]) == 0:
-        rospy.sleep(1.0)
+    wait_servers = ['img_search_club', 'img_search_target', 'img_adjustx', 'img_adjusty', 'tilt_neck', 'remove_club', 'remove_target']
     for server in wait_servers:
         rospy.wait_for_service(server)
     release_club = rospy.Service('release_club', SetBool, motion_server.release_club_motion)
+    remove_target = rospy.Service('remove_target_id', SetBool, motion_server.remove_target)
     search_club_server = actionlib.SimpleActionServer('search_club', ActSignalAction, motion_server.search_club, False)
     search_target_server = actionlib.SimpleActionServer('search_target', ActSignalAction, motion_server.search_target, False)
     check_target_server = actionlib.SimpleActionServer('check_target', ActSignalAction, motion_server.check_target, False)
     swing_club = actionlib.SimpleActionServer('swing_club', ActSignalAction, motion_server.swing_club_motion, False)
-    remove_target = rospy.Service('remove_target_id', SetBool, motion_server.remove_target)
     search_club_server.start()
     search_target_server.start()
     check_target_server.start()
     swing_club.start()
     print('finished server setting')
+    while len([s for s in rosnode.get_node_names() if 'rviz' in s]) == 0:
+        rospy.sleep(1.0)
 
 if __name__ == '__main__':
     try:
