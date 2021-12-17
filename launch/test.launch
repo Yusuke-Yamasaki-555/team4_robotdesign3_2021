@@ -1,5 +1,4 @@
 <launch>
-    <!-- <node name="action_client" pkg="team4_robotdesign3_2021" type="action_client.py" required="true" output="screen" /> -->
     <node name="manage" pkg="team4_robotdesign3_2021" type="manage.py" required="true" output="screen" />
     <node name="img_process" pkg="team4_robotdesign3_2021" type="img_process.py" required="true" output="screen" />
     <node name="emotions" pkg="team4_robotdesign3_2021" type="emotions.py" required="true" output="screen" />

@@ -17,6 +17,7 @@ class Image_process:
         print(self.target_AR_id)
         self.rtn_img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.rtn_img)
 
+    #画像を取得
     def rtn_img(self, data):
         bridge = CvBridge()
         try:
@@ -26,7 +27,8 @@ class Image_process:
             cv2.drawMarker(origin, position=(377, 227), color=(0, 0, 255), markerType=cv2.MARKER_STAR, markerSize=10)
         except CvBridgeError as e:
             rospy.logerr(e)
-        
+    
+    #ARマーカーの情報を返す
     def get_ar_info(self):
         # ARマーカー検知
         aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_50)
@@ -40,9 +42,9 @@ class Image_process:
             pass
         return id, c
 
+    #ARマーカーがあるかどうか調べる
     def search(self, data):
         resp = SetBoolResponse()
-        #ARマーカーがあるかどうか調べる
         id, self.pre_c= self.get_ar_info()
         if not id or id not in self.target_AR_id:
             resp.message = ''
@@ -57,6 +59,7 @@ class Image_process:
             resp.success = True 
         return resp
     
+    #ARマーカーのidを削除する
     def remove_id(self, data):
         resp = SetInt32Response()
         self.target_AR_id.remove(data.int32In)
@@ -64,6 +67,7 @@ class Image_process:
         resp.int32Out = data.int32In
         return resp
     
+    #ARマーカーがまだ残っているか返す
     def check_remain_id(self, data):
         if data.data:
             resp = SetBoolResponse()
@@ -72,7 +76,7 @@ class Image_process:
             resp.message = 'remain id'
             return resp
 
-        # return True(ある場合) or false(ない場合)
+    #カメラ画像内のx方向での移動方向を返す
     def adjust_x(self, data):
         resp = SetInt32Response()
         _, c = self.get_ar_info()
@@ -82,6 +86,7 @@ class Image_process:
         resp.int32Out = 0 if abs(move) < self.eps else int(abs(move)/move)
         return resp
 
+    #カメラ画像内のy方向での移動方向を返す
     def adjust_y(self, data):
         resp = SetInt32Response()
         _, c = self.get_ar_info()
@@ -94,7 +99,7 @@ class Image_process:
 def main():
     rospy.init_node('img_process', anonymous=1)
     rospy.loginfo('start')
-    adjust = Image_process(target_AR_id=[3, 4, 6, 10])
+    adjust = Image_process(target_AR_id=[3, 6, 10])
     target = Image_process(target_AR_id=[3, 10])
     club = Image_process(target_AR_id=[6])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
@@ -104,7 +109,7 @@ def main():
     img_adjustx_server = rospy.Service('img_adjustx', SetInt32, adjust.adjust_x)
     img_adjusty_server = rospy.Service('img_adjusty', SetInt32, adjust.adjust_y)
     check_remain_target = rospy.Service('remain_target', SetBool, target.check_remain_id)
-    print('finished setting')
+    print('finished img_process-server setting')
     while not rospy.is_shutdown():
         rospy.spin()
 
