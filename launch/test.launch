@@ -4,5 +4,5 @@
     <node name="img_process" pkg="team4_robotdesign3_2021" type="img_process.py" required="true" output="screen" />
     <node name="emotions" pkg="team4_robotdesign3_2021" type="emotions.py" required="true" output="screen" />
     <node name="motion_process" pkg="team4_robotdesign3_2021" type="motion_process.py" required="true" output="screen" />
-    <!-- <node name="ARtest" pkg="team4_robotdesign3_2021" type="ARtest.py" required="true" output="screen" /> -->
+    <node name="ARtest" pkg="team4_robotdesign3_2021" type="ARtest.py" required="true" output="screen" />
 </launch>

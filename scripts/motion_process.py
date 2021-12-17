@@ -69,7 +69,7 @@ class Motion_process:
         self.img_srv = ImageProcessServer()
         self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
         self.happy_club = rospy.ServiceProxy('happy_club', SetBool)
-        self.delta_deg = 40
+        self.delta_deg = 35
         self.AR_id = 0
         self.goalx_coord = 377
         self.t_goaly_coord = 227
@@ -165,9 +165,12 @@ class Motion_process:
             self.arm.set_max_acceleration_scaling_factor(acc)
 
             print("==server:swing_club")
-            rand = random.randint(0, 10)
+            # rand = random.randint(0, 10)
             # test_code
-            # rand = 10
+            if goal.Int32In == 0:
+                rand = 10
+            else:
+                rand = 0
             # /test_code
             self.arm.set_named_target("swing_club")
             if rand <= 7: # 成功パターン
@@ -203,12 +206,11 @@ class Motion_process:
                 sum_deg = 0
                 current_deg = 0
                 deg = goal.Int32In
+                
                 self.set_position('search_target')
                 while True:
                     self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                     self.arm.go()
-                    self.gripper.set_joint_value_target([0.15, 0.15])
-                    self.gripper.go()
                     rospy.sleep(0.1)
                     sum_deg += self.delta_deg
                     search_res = self.img_srv.srv_search_target(True)
@@ -240,7 +242,7 @@ class Motion_process:
                                 current_deg = int(deg-move)
                                 move = 0
                                 break
-                            move += 0.5*moveX.int32Out
+                            move += 2*moveX.int32Out
                             self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                             self.arm.go()
 
@@ -250,7 +252,7 @@ class Motion_process:
                             if not moveY.int32Out:
                                 move = 0
                                 break
-                            move += 0.4*moveY.int32Out
+                            move += 2*moveY.int32Out
                             self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.88-radians(move)})
                             self.arm.go()
                             
@@ -300,7 +302,7 @@ class Motion_process:
                     move = 0
                     while True:
                         moveX = self.img_srv.srv_adjustx(self.goalx_coord)
-                        move += moveX.int32Out
+                        move += moveX.int32Out*2
                         self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                         self.arm.go()
                         # rospy.sleep(0.1)
@@ -310,7 +312,7 @@ class Motion_process:
                             break
                     while True:
                         moveY = self.img_srv.srv_adjusty(self.c_goaly_coord)
-                        move -= 0.5*moveY.int32Out
+                        move -= moveY.int32Out*2
                         self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint": -1.88+radians(move)})
                         self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": 0.26-radians(move)})
                         self.arm.go()

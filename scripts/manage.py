@@ -97,7 +97,6 @@ def main():
 
     # """
     wait_srvs = ['dislike', 'release_club', 'remove_target_id', 'remain_target', 'bow', 'happy_end']
-    position = [-30, 30]
     for srv in wait_srvs:
         rospy.wait_for_service(srv)
     rospy.loginfo("Start all server")
@@ -126,27 +125,28 @@ def main():
     # """
     # お辞儀
     # # """
-    # bow_b = True
-    # print("go bow")
-    # bow_res = bow(bow_b)
-    # check_service(bow_res)
-    # # """
+    bow_b = True
+    print("go bow")
+    bow_res = bow(bow_b)
+    check_service(bow_res)
+    # # # """
 
-    # # 棒を探す(search_club)
-    # # """
-    # start_deg = 45
-    # goal = set_goal(True, start_deg, "server:Start search_club")
-    # search_club.send_goal(goal, feedback_cb=feedback_search_club)
-    # search_club.wait_for_result()
-    # result = search_club.get_result()
-    # if result.BoolRes:
-    #     print("client:Success swing_club")
-    # elif not result.BoolRes:
-    #     print("client:Failure swing_club")
+    # # # 棒を探す(search_club)
+    # # # """
+    start_deg = 85
+    goal = set_goal(True, start_deg, "server:Start search_club")
+    search_club.send_goal(goal, feedback_cb=feedback_search_club)
+    search_club.wait_for_result()
+    result = search_club.get_result()
+    if result.BoolRes:
+        print("client:Success swing_club")
+    elif not result.BoolRes:
+        print("client:Failure swing_club")
     # """
+
+    start_deg = -30
     all_end = False
-    # num = 0
-    # start_deg = position[0]
+    i = 0
     while True:
         while True:
         # 印を探す
@@ -168,7 +168,7 @@ def main():
                 print("client:Failure search_target")
             # 印のIDから動作判断
             if motion == 'swing':
-                goal = set_goal(True, 0, 'swing_club')
+                goal = set_goal(True, i, 'swing_club')
                 swing_club.send_goal(goal, feedback_cb=feedback_swing_club)
                 swing_club.wait_for_result()
                 result = swing_club.get_result()
@@ -176,23 +176,20 @@ def main():
                     print("client:Success swing_club")
                 elif not result.BoolRes:
                     print("client:Failure swing_club")
+                i = 1
                 # 印を確認する
                 goal = set_goal(result.BoolRes, start_deg, "server:Start check_target")
                 check_target.send_goal(goal, feedback_cb=feedback_check_target)
                 check_target.wait_for_result()
                 result = check_target.get_result()
                 if result.BoolRes:
-                    # num += 1
-                    # start_deg = position[num]
                     remove = remove_target(True)
                     break
                 
 
             elif motion == 'dislike':
                 emotion = dislike(True)
-                # start_deg = position[num]
                 remove = remove_target(True)
-                # num += 1
                 break
 
             else:

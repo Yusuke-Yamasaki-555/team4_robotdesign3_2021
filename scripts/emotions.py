@@ -180,11 +180,13 @@ class Emotions_Server:
                 print("server:Start dislike")
                 self.preparation.emotions_stand_by() #  class:Preparation_motion内のemotions_stand_by関数を実行
                 rospy.sleep(0.5)
-                
+                self.gripper.set_joint_value_target([0.2, 0.2])
+                self.gripper.go()
                 print("==server:dislike_1")
                 self.arm.set_named_target("dislike_1")
                 current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-                
+                self.gripper.set_joint_value_target([0.2, 0.2])
+                self.gripper.go()
                 # ここのif文は関数にするべき
                 if current_pose[0] >= 0.01:
                     z_axis_1 = current_pose[0] - 0.559
@@ -198,7 +200,8 @@ class Emotions_Server:
                 print("==server:dislike_2")
                 self.arm.set_named_target("dislike_2")
                 current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
-
+                self.gripper.set_joint_value_target([0.2, 0.2])
+                self.gripper.go()
                 # ここのif文は関数にするべき
                 if flag:
                     z_axis_1 = current_pose[0] - 0.559
@@ -210,6 +213,8 @@ class Emotions_Server:
                 print("==server:dislike_3")
                 self.arm.set_named_target("dislike_3")
                 current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+                self.gripper.set_joint_value_target([0.2, 0.2])
+                self.gripper.go()
                     
                 # ここのif文は関数にするべき
                 if flag:
@@ -222,6 +227,8 @@ class Emotions_Server:
                 print("==server:dislike_4")
                 self.arm.set_named_target("dislike_4")
                 current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+                self.gripper.set_joint_value_target([0.2, 0.2])
+                self.gripper.go()
 
                 # ここのif文は関数にするべき
                 if flag:
@@ -234,6 +241,8 @@ class Emotions_Server:
                 print("==server:dislike_5")
                 self.arm.set_named_target("dislike_5")
                 current_pose = self.arm.get_current_joint_values() #  現在の各関節の角度の値をリストで取得
+                self.gripper.set_joint_value_target([0.2, 0.2])
+                self.gripper.go()
 
                 # ここのif文は関数にするべき
                 if flag:
@@ -352,25 +361,25 @@ class Emotions_Server:
                 self.arm.set_named_target("happy_end_init")
                 self.arm.go()
 
-                print("==server:happy_end_3")
-                self.arm.set_named_target("happy_end_3")
-                self.arm.go()
+                # print("==server:happy_end_3")
+                # self.arm.set_named_target("happy_end_3")
+                # self.arm.go()
 
-                print("==server:happy_end_init")
-                self.arm.set_named_target("happy_end_init")
-                self.arm.go()
+                # print("==server:happy_end_init")
+                # self.arm.set_named_target("happy_end_init")
+                # self.arm.go()
 
-                print("==server:happy_end_-rotate")
-                self.arm.set_named_target("happy_end_-rotate")
-                self.arm.go()
+                # print("==server:happy_end_-rotate")
+                # self.arm.set_named_target("happy_end_-rotate")
+                # self.arm.go()
 
-                print("==server:happy_end_+rotate")
-                self.arm.set_named_target("happy_end_+rotate")
-                self.arm.go()
+                # print("==server:happy_end_+rotate")
+                # self.arm.set_named_target("happy_end_+rotate")
+                # self.arm.go()
 
-                print("==server:happy_end_init")
-                self.arm.set_named_target("happy_end_init")
-                self.arm.go()
+                # print("==server:happy_end_init")
+                # self.arm.set_named_target("happy_end_init")
+                # self.arm.go()
 
                 print("==server:Close gripper")
                 self.gripper.set_joint_value_target([0.015, 0.015])

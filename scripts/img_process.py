@@ -12,7 +12,7 @@ from team4_robotdesign3_2021.srv import SetInt32, SetInt32Response
 class Image_process:
     def __init__(self, target_AR_id):
         self.target_AR_id = target_AR_id
-        self.eps = 8
+        self.eps = 15
         self.pre_c = []
         print(self.target_AR_id)
         self.rtn_img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.rtn_img)
@@ -24,8 +24,6 @@ class Image_process:
             self.bgr = cv2.cvtColor(origin, cv2.COLOR_BGR2RGB)
             self.gray = cv2.cvtColor(self.bgr, cv2.COLOR_RGB2GRAY)
             cv2.drawMarker(origin, position=(377, 227), color=(0, 0, 255), markerType=cv2.MARKER_STAR, markerSize=10)
-            cv2.imshow('window', origin)
-            cv2.waitKey(1)
         except CvBridgeError as e:
             rospy.logerr(e)
         
@@ -51,7 +49,6 @@ class Image_process:
             resp.success = False
         else:
             rospy.loginfo(id)
-            # self.target_AR_id.remove(id)
             str_id  = str(id)
             str_id = str_id.strip('[]')
             print(f'idididid = {str_id}')
@@ -78,7 +75,6 @@ class Image_process:
         # return True(ある場合) or false(ない場合)
     def adjust_x(self, data):
         resp = SetInt32Response()
-        # rospy.loginfo(data.int32In)
         _, c = self.get_ar_info()
         current_x = int(c[:, 0].mean())
         goal_x = data.int32In
@@ -89,7 +85,6 @@ class Image_process:
     def adjust_y(self, data):
         resp = SetInt32Response()
         _, c = self.get_ar_info()
-        # rospy.loginfo(data.int32In)
         current_y = int(c[:, 1].mean())
         goal_y = data.int32In
         move = goal_y - current_y
