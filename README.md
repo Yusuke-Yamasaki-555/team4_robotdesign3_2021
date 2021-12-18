@@ -1,7 +1,8 @@
 # Team4_RobotDesign3_2021
 cit robot-design-3-2021 crane_x7
 ---
-#　このパッケージについて
+# このパッケージについて
+
 このパッケージは、rt-net様より販売されているcrane_x7を制御するものです。オリジナルのパッケージは[こちら](https://github.com/rt-net/crane_x7_ros)です。
 ---
 # 実行環境
