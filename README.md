@@ -1,7 +1,19 @@
 # Team4_RobotDesign3_2021
 cit robot-design-3-2021 crane_x7
+---
+# このパッケージについて
+- このパッケージは、rt-net様より販売されているcrane_x7を制御するものです。オリジナルのパッケージは[こちら](https://github.com/rt-net/crane_x7_ros)です。
+---
+# 実行環境
+- ROS Noetic
+- Ubuntu 20.04.3 LTS
+- ROS Distribution: Noetic Ninjemys 1.15.7
+- Rviz 
+- Gazebo 
+- MoveIt
 
-　このパッケージはROSとRvizを用いて、rt-net様より販売されているcrane_x7を制御するものです。
+#　セットアップ
+1. 
 以下のコマンドを実行して、~/catkin_ws/src/ 上にこのパッケージをインストールしてください。
 
 (ビルドする件)
