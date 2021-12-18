@@ -259,7 +259,7 @@ def feedback_search_target(feedback):
         if feedback.Int32FB > 0: # sample(嫌なやつを見つけた時)
             search_target.cancel_goal()
     else:
-        if feedback.Int32FB >= 80:
+        if feedback.Int32FB >= 100:
             search_target.cancel_goal()
 
 def feedback_swing_club(feedback):

@@ -12,6 +12,8 @@ from tf.transformations import quaternion_from_euler
 import geometry_msgs.msg
 import random
 
+sum_deg = 0
+
 class Preparation_motion:  # Motion_Process_Serverから呼び出される、基本動作の関数をまとめたクラス
     """
     このクラスでは、init , stand_by , hold をそれぞれ関数として持ち、class Motion_Process_Serverに提供する
@@ -70,7 +72,7 @@ class Motion_process:
         self.img_srv = ImageProcessServer()
         self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
         self.happy_club = rospy.ServiceProxy('happy_club', SetBool)
-        self.delta_deg = 32
+        self.delta_deg = 31
         self.AR_id = 0
         self.goalx_coord = 377
         self.t_goaly_coord = 227
@@ -195,13 +197,13 @@ class Motion_process:
         rospy.sleep(1.0)
 
     def search_target(self, goal):
+        global sum_deg
         if goal.BoolIn:
             global target_id
             self.arm.set_max_velocity_scaling_factor(0.5)
             self.arm.set_max_acceleration_scaling_factor(0.5)
             if goal.BoolIn:
                 print('called')
-                sum_deg = 0
                 current_deg = 0
                 deg = goal.Int32In
                 self.set_position('search_target')
