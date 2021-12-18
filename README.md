@@ -2,8 +2,7 @@
 cit robot-design-3-2021 crane_x7
 ---
 # このパッケージについて
-
-このパッケージは、rt-net様より販売されているcrane_x7を制御するものです。オリジナルのパッケージは[こちら](https://github.com/rt-net/crane_x7_ros)です。
+- このパッケージは、rt-net様より販売されているcrane_x7を制御するものです。オリジナルのパッケージは[こちら](https://github.com/rt-net/crane_x7_ros)です。
 ---
 # 実行環境
 - ROS Noetic
