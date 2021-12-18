@@ -70,7 +70,7 @@ class Motion_process:
         self.img_srv = ImageProcessServer()
         self.tilt = rospy.ServiceProxy('tilt_neck', SetBool)
         self.happy_club = rospy.ServiceProxy('happy_club', SetBool)
-        self.delta_deg = 35
+        self.delta_deg = 32
         self.AR_id = 0
         self.goalx_coord = 377
         self.t_goaly_coord = 227
@@ -208,7 +208,7 @@ class Motion_process:
                 while True:
                     self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg)}) #根本を回転
                     self.arm.go()
-                    rospy.sleep(0.1)
+                    rospy.sleep(1.0)
                     sum_deg += self.delta_deg
                     search_res = self.img_srv.srv_search_target(True)
                     self.feedback.BoolFB = search_res.success
@@ -239,7 +239,7 @@ class Motion_process:
                                 current_deg = int(deg-move)
                                 move = 0
                                 break
-                            move += 2*moveX.int32Out
+                            move += 1.5*moveX.int32Out
                             self.arm.set_joint_value_target({"crane_x7_shoulder_fixed_part_pan_joint":radians(deg-move)}) #根本を回転
                             self.arm.go()
 
@@ -249,14 +249,14 @@ class Motion_process:
                             if not moveY.int32Out:
                                 move = 0
                                 break
-                            move += 2*moveY.int32Out
+                            move += 1.5*moveY.int32Out
                             self.arm.set_joint_value_target({"crane_x7_upper_arm_revolute_part_rotate_joint":-1.88-radians(move)})
                             self.arm.set_joint_value_target({"crane_x7_shoulder_revolute_part_tilt_joint": 0.43-radians(move)})
                             self.arm.go()
                         break
                     deg += self.delta_deg
                 print('finish process')
-                self.result.Int32Res = current_deg
+                self.result.Int32Res = current_deg - 3
                 search_target_server.set_succeeded(result=self.result)
                 print('sent result')
             
@@ -334,15 +334,15 @@ class Motion_process:
         target_pose.position.x = arm_goal_pose.position.x + 0.005 * cos(current_deg)
         target_pose.position.y = arm_goal_pose.position.y + 0.005 * sin(current_deg)
         target_pose.position.z = CLUB_Z_POSITION
-        q = quaternion_from_euler(-3.14, 0.0, 0.0) #下向き
-        # target_pose.orientation.x = arm_goal_pose.orientation.x
-        # target_pose.orientation.y = arm_goal_pose.orientation.y
-        # target_pose.orientation.z = arm_goal_pose.orientation.z
-        # target_pose.orientation.w = arm_goal_pose.orientation.w
-        target_pose.orientation.x = q[0]
-        target_pose.orientation.y = q[1]
-        target_pose.orientation.z = q[2]
-        target_pose.orientation.w = q[3]
+        # q = quaternion_from_euler(-3.14, 0.0, 0.0) #下向き
+        target_pose.orientation.x = arm_goal_pose.orientation.x
+        target_pose.orientation.y = arm_goal_pose.orientation.y
+        target_pose.orientation.z = arm_goal_pose.orientation.z
+        target_pose.orientation.w = arm_goal_pose.orientation.w
+        # target_pose.orientation.x = q[0]
+        # target_pose.orientation.y = q[1]
+        # target_pose.orientation.z = q[2]
+        # target_pose.orientation.w = q[3]
         self.arm.set_pose_target(target_pose)
         self.arm.go()
         self.gripper.set_joint_value_target([0.2, 0.2])

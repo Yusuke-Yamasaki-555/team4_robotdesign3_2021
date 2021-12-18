@@ -144,7 +144,7 @@ def main():
         print("client:Failure swing_club")
     # """
 
-    start_deg = -30
+    start_deg = -32
     all_end = False
     i = 0
     while True:
@@ -256,10 +256,10 @@ def feedback_search_club(feedback):
 def feedback_search_target(feedback):
     if feedback.BoolFB:
         print("==client:Confirmed serach_target")
-        if feedback.Int32FB == 0: # sample(嫌なやつを見つけた時)
+        if feedback.Int32FB > 0: # sample(嫌なやつを見つけた時)
             search_target.cancel_goal()
     else:
-        if feedback.Int32FB == 180:
+        if feedback.Int32FB >= 80:
             search_target.cancel_goal()
 
 def feedback_swing_club(feedback):

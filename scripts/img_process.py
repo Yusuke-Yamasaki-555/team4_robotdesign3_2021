@@ -103,7 +103,7 @@ def main():
     rospy.init_node('img_process', anonymous=1)
     rospy.loginfo('start')
     adjust = Image_process(target_AR_id=[3, 6, 10])
-    target = Image_process(target_AR_id=[3, 10])
+    target = Image_process(target_AR_id=[3, 4, 10])
     club = Image_process(target_AR_id=[6])
     img_search_club_server = rospy.Service('img_search_club', SetBool, club.search)
     img_search_target_server = rospy.Service('img_search_target', SetBool, target.search)
