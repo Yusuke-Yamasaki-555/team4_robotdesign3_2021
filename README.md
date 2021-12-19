@@ -1,11 +1,17 @@
 # Team4_RobotDesign3_2021
-cit robot-design-3-2021 crane_x7
+- cit robot-design-3-2021 crane_x7
 ---
 # このパッケージについて
-- このパッケージは、株式会社RT(以下、RT)様([公式サイトはこちら](https://rt-net.jp/))より販売されているcrane_x7を制御するものです。前提として、RT様から配布されている[オリジナルのパッケージ](https://github.com/rt-net/crane_x7_ros)が必要です。
+- このパッケージは、株式会社アールティ(以下、RT)様([公式サイトはこちら](https://rt-net.jp/))より販売されているcrane_x7を制御するものです。前提として、RT様から配布されている[オリジナルのパッケージ](https://github.com/rt-net/crane_x7_ros)が必要です。
+
+# ライセンス・各種情報について
+- crane_x7についての各種情報は、RT様が公開されている[CRANE-X7_Informations](https://github.com/rt-net/crane_x7)よりご参照ください。
+
+- このパッケージのライセンスについては、このリポジトリに同梱されている**LICENSE**ファイルをご参照ください。
 ---
 # 概要
-- 
+- このリポジトリは、crane_x7に居合斬り(?)をさせるROSパッケージです。
+
 # 実行環境
 - ROS Noetic
 - Ubuntu 20.04.3 LTS
