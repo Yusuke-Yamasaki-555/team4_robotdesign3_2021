@@ -54,8 +54,22 @@ $ roslaunch crane_x7_d435 bringup_sim.launch
 #### 実機の場合
 - 実行する前にcrane_x7をPCに接続し、以下のコマンドを実行してデバイスドライバに実行権限を与えます。
 ```bash
-
+$ sudo chmod 666 /dev/ttyUSB0
 ```
+- 以下のコマンドを実行することでRvizとcrane_x7が起動します。
+```bash
+$ roslaunch realsense2_camera rs_camera.launch
+$ roslaunch crane_x7_bringup demo.launch fake_execution:=false
+```
+
+### ３．実行
+- 以下のコマンドを実行することで、crane_x7が居合斬り(?)をしてくれます。(シュミレータ・実機共通)
+```bash
+$ roalaunch team4_robotdesign3_2021 test.launch
+```
+
+- (実機で実行した場合、動作の途中でcrane_x7の第２関節の動力が失われることがありますが、仕様です)
+
 業務連絡：
 　各ディレクトリのREADME.mdは、好きに書き換えてくれて構わない。共有メモの感覚で。
   パス設定方法： (home directory)/.bashrc内最下段に以下を書き込み。あとはいつも道理のビルドをして、(home directory)/.gazebo/models/内の重複ものを消せばOK。
