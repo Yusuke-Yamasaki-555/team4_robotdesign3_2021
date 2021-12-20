@@ -29,6 +29,7 @@
 - Rviz 1.14.10
 - Gazebo 11.5
 - Moveit!(ROSのライブラリ)
+- OpenCV
 
 - 以上の基本に加えて、このパッケージが提供する動作は、Intel RealSence Depth Camera D435(以下、D435)([公式サイトはこちら](https://www.intelrealsense.com/depth-camera-d435/))の使用を前提としています。
 
