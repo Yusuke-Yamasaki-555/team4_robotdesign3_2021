@@ -23,12 +23,12 @@
 - なお、動作の一つとして特定のARマーカーを持つ印を見つけた時に嫌がる動作があります。この特定のARマーカーを持つ印を、シミュレータ上では他の印と同様のモデルを使用していますが、動作の様子を映した映像では金色のうんこのモデルを使用しています。
 ---
 ## 実行環境
-- ROS Noetic
+- ROS Noetic 
 - Ubuntu 20.04.3 LTS
 - ROS Distribution: Noetic Ninjemys 1.15.7
-- Rviz 
-- Gazebo 
-- Moveit!ライブラリ
+- Rviz 1.14.10
+- Gazebo 11.5
+- Moveit!(ROSのライブラリ)
 
 - 以上の基本に加えて、このパッケージが提供する動作は、Intel RealSence Depth Camera D435(以下、D435)([公式サイトはこちら](https://www.intelrealsense.com/depth-camera-d435/))の使用を前提としています。
 
@@ -64,7 +64,7 @@ $ git clone git@github.com:Yusuke-Yamasaki-555/Team4_RobotDesign3_2021.git # SSH
 - D435のシミュレータへのモデルの適用のため、Kuwamai様より公開されている[パッケージ](https://github.com/Kuwamai/crane_x7_d435)をインストールしてください。
 - また、実機で実行する場合、別途RealSenceをROSで利用するためのパッケージをいくつかインストールする必要があります。インストールの際に参考にしたサイトは[こちら](https://qiita.com/porizou1/items/be1eb78015828d43f9fb)です。
 
-- **~/.bashrc**内の一番下のコードが、以下のようになるようにしてください。
+- **~/.bashrc**内の一番下のコードが、以下になるようにしてください。
 ```bash
 source /opt/ros/noetic/setup.bash
 source ~/catkin_ws/devel/setup.bash
