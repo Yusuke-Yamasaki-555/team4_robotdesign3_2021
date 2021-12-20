@@ -23,16 +23,18 @@
 - なお、動作の一つとして特定のARマーカーを持つ印を見つけた時に嫌がる動作があります。この特定のARマーカーを持つ印を、シミュレータ上では他の印と同様のモデルを使用していますが、動作の様子を映した映像では金色のうんこのモデルを使用しています。
 ---
 ## 実行環境
-- ROS Noetic
+- ROS Noetic 
 - Ubuntu 20.04.3 LTS
 - ROS Distribution: Noetic Ninjemys 1.15.7
-- Rviz 
-- Gazebo 
-- Moveit!ライブラリ
+- Rviz 1.14.10
+- Gazebo 11.5
+- Moveit!(ROSのライブラリ)
 
 - 以上の基本に加えて、このパッケージが提供する動作は、Intel RealSence Depth Camera D435(以下、D435)([公式サイトはこちら](https://www.intelrealsense.com/depth-camera-d435/))の使用を前提としています。
 
 - 動作を行う環境は、以下の図を参照してください。
+![Screenshot from 2021-12-20 13-05-52](https://user-images.githubusercontent.com/91410662/146710408-88f6a3f9-1161-4cab-83f8-1a7b9919817d.png)
+
 ---
 ## パッケージ内容
 #### action/
@@ -64,24 +66,33 @@ $ git clone git@github.com:Yusuke-Yamasaki-555/Team4_RobotDesign3_2021.git # SSH
 - D435のシミュレータへのモデルの適用のため、Kuwamai様より公開されている[パッケージ](https://github.com/Kuwamai/crane_x7_d435)をインストールしてください。
 - また、実機で実行する場合、別途RealSenceをROSで利用するためのパッケージをいくつかインストールする必要があります。インストールの際に参考にしたサイトは[こちら](https://qiita.com/porizou1/items/be1eb78015828d43f9fb)です。
 
+- **~/.bashrc**内の一番下のコードが、以下になるようにしてください。
+```bash
+source /opt/ros/noetic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+export ROS_MASTER_URI=http://localhost:11311
+export ROS_HOSTNAME=localhost
+export GAZEBO_MODEL_PATH=$HOME/catkin_ws/src/team4_robotdesign3_2021/description/models:$GAZEBO_MODEL_PATH
+```
+
 - 以上が完了したら、以下のコマンドを使用してビルドしてください。
 ```bash
-$ ~/catkin_ws && catkin_make
-$ source ~/catkin_ws/devel/setup.bash
+$ cd ~/catkin_ws/
+$ catkin_make
+$ source ~/.bashrc
 ```
 
 ### ２．起動
 #### シミュレータの場合
-- 実行する前に、**~/catkin_ws/src/crane_x7_d435/launch/bringup_sim.launch**内の６行目の、**$(find <パッケージ名>)**のパッケージ名を、**team4_robotdesign3_2021**に書き換えてください。
 - 実行する前に、**~/.bashrc**内の一番下に、以下のコードを書き込んでください。
 ```bash
 export GAZEBO_MODEL_PATH=$HOME/catkin_ws/src/team4_robotdesign3_2021/description/models:$GAZEBO_MODEL_PATH
 ```
-- 以上が完了したら、ビルドをしてください。
+- 以上が完了したら、ビルドしてください。
 
-- 以下のコードを実行することで、シミュレータが起動します。
+- 以下のコマンドを実行することで、シミュレータが起動します。
 ```bash
-$ roslaunch crane_x7_d435 bringup_sim.launch
+$ roslaunch team4_robotdesign3_2021 run.launch
 ```
 
 #### 実機の場合
