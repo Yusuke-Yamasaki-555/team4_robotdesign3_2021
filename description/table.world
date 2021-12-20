@@ -9,84 +9,38 @@
       <uri>model://sun</uri>
     </include>
 
-    <!--model name="table">
-      <include>
-        <uri>model://table</uri>
-      </include-->
-
-      <!-- X7を机の端に配置するため、机を移動、回転する -->
-      <!--pose>0.29 0 0 0 0 1.5708</pose>
-    </model-->
-
-    <!--<model name="can_id1">
-      <include>
-        <uri>model://can_id1</uri>
-      </include>
-
-      <pose>0 -0.5 0 0 0 -1.57</pose>
-    </model>
-    
-    <model name="can_id2">
-      <include>
-        <uri>model://can_id2</uri>
-      </include>
-
-      <pose>0.354 -0.354 0 0 0 -0.78</pose>
-    </model>-->
-    
    <model name="can_id3">
       <include>
         <uri>model://can_id3</uri>
       </include>
-
-      <pose>0.354 -0.354 0.3 0 0 -0.78</pose>
+      <pose>0.43 0.25 0.3 0 0 0.52</pose>
     </model>
     
     <model name="stand">
       <include>
         <uri>model://stand</uri>
       </include>
-
-      <pose>0.354 -0.354 0 0 0 -0.78</pose>
-    </model>
-    
-    <model name="can_id4">
-      <include>
-        <uri>model://can_id4</uri>
-      </include>
-
-      <pose>0.5 0 0.3 0 0 0</pose>
-    </model>
-    
-    <model name="stand02">
-      <include>
-        <uri>model://stand</uri>
-      </include>
-
-      <pose>0.5 0 0 0 0 0</pose>
+      <pose>0.43 -0.25 0 0 0 -0.52</pose>
     </model>
     
    <model name="dislike_id10">
       <include>
         <uri>model://dislike_id10</uri>
       </include>
-
-      <pose>0.354 0.354 0.3 0 0 0.78</pose>
+      <pose>0.43 -0.25 0.3 0 0 -0.52</pose>
     </model>
     
     <model name="stand01">
       <include>
         <uri>model://stand</uri>
       </include>
-
-      <pose>0.354 0.354 0 0 0 0.78</pose>
+      <pose>0.43 0.25 0 0 0 0.52</pose>
     </model> 
     
     <model name="club">
       <include>
         <uri>model://club</uri>
       </include>
-
       <pose>0 0.1925 0 -1.57 0 0</pose>
     </model>
 
@@ -94,7 +48,6 @@
       <include>
         <uri>model://ARmarker_id06</uri>
       </include>
-
       <pose>0 0.15 0 0 0 0</pose>
     </model>
     
@@ -116,11 +69,11 @@
       <include>
         <uri>model://ground_plane</uri>
       </include>
-
       <joint name='ground_joint' type='fixed'>
         <parent>ground_plane::link</parent>
         <child>table::link</child>
       </joint>
     </model>
+    
   </world>
 </sdf>
