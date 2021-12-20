@@ -5,8 +5,8 @@
   <description>The team4_robotdesign3_2021 package</description>
 
 <!--team4 members-->
-  <maintainer email="yusuke-yamasaki@todo.todo">yusuke-yamasaki</maintainer>
-  <maintainer email="makoto-yoshigoe@todo.todo">makoto-yoshigoe</maintainer>
+  <maintainer email="yusukeyamasaki@todo.todo">YusukeYamasaki</maintainer>
+  <maintainer email="makotoyoshigoe@todo.todo">MakotoYoshigoe</maintainer>
 
 <!--crane_7_planning.srdfの改変元：crane_x7_moveit_config/config/crane_x7.srdf-->
   <author email="nomura@rt-net.jp">Hiroyuki Nomura</author>
