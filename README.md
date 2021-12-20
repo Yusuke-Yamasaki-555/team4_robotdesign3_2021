@@ -64,24 +64,33 @@ $ git clone git@github.com:Yusuke-Yamasaki-555/Team4_RobotDesign3_2021.git # SSH
 - D435のシミュレータへのモデルの適用のため、Kuwamai様より公開されている[パッケージ](https://github.com/Kuwamai/crane_x7_d435)をインストールしてください。
 - また、実機で実行する場合、別途RealSenceをROSで利用するためのパッケージをいくつかインストールする必要があります。インストールの際に参考にしたサイトは[こちら](https://qiita.com/porizou1/items/be1eb78015828d43f9fb)です。
 
+- **~/.bashrc**内の一番下のコードが、以下のようになるようにしてください。
+```bash
+source /opt/ros/noetic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+export ROS_MASTER_URI=http://localhost:11311
+export ROS_HOSTNAME=localhost
+export GAZEBO_MODEL_PATH=$HOME/catkin_ws/src/team4_robotdesign3_2021/description/models:$GAZEBO_MODEL_PATH
+```
+
 - 以上が完了したら、以下のコマンドを使用してビルドしてください。
 ```bash
-$ ~/catkin_ws && catkin_make
-$ source ~/catkin_ws/devel/setup.bash
+$ cd ~/catkin_ws/
+$ catkin_make
+$ source ~/.bashrc
 ```
 
 ### ２．起動
 #### シミュレータの場合
-- 実行する前に、**~/catkin_ws/src/crane_x7_d435/launch/bringup_sim.launch**内の６行目の、**$(find <パッケージ名>)**のパッケージ名を、**team4_robotdesign3_2021**に書き換えてください。
 - 実行する前に、**~/.bashrc**内の一番下に、以下のコードを書き込んでください。
 ```bash
 export GAZEBO_MODEL_PATH=$HOME/catkin_ws/src/team4_robotdesign3_2021/description/models:$GAZEBO_MODEL_PATH
 ```
-- 以上が完了したら、ビルドをしてください。
+- 以上が完了したら、ビルドしてください。
 
-- 以下のコードを実行することで、シミュレータが起動します。
+- 以下のコマンドを実行することで、シミュレータが起動します。
 ```bash
-$ roslaunch crane_x7_d435 bringup_sim.launch
+$ roslaunch team4_robotdesign3_2021 run.launch
 ```
 
 #### 実機の場合
