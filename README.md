@@ -33,6 +33,8 @@
 - 以上の基本に加えて、このパッケージが提供する動作は、Intel RealSence Depth Camera D435(以下、D435)([公式サイトはこちら](https://www.intelrealsense.com/depth-camera-d435/))の使用を前提としています。
 
 - 動作を行う環境は、以下の図を参照してください。
+![Screenshot from 2021-12-20 13-05-52](https://user-images.githubusercontent.com/91410662/146710408-88f6a3f9-1161-4cab-83f8-1a7b9919817d.png)
+
 ---
 ## パッケージ内容
 #### action/
