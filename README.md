@@ -20,7 +20,7 @@
 
 - [動作の様子](https://youtu.be/XXgtLH9gtCg)(リンク先：Youtube)
 
-- なお、動作の一つとして特定のARマーカーを持つ印を見つけた時に嫌がる動作があります。この特定のARマーカーを持つ印を、シュミレータ上では他の印と同様のモデルを使用していますが、動作の様子を映した映像では金色のうんこのモデルを使用しています。
+- なお、動作の一つとして特定のARマーカーを持つ印を見つけた時に嫌がる動作があります。この特定のARマーカーを持つ印を、シミュレータ上では他の印と同様のモデルを使用していますが、動作の様子を映した映像では金色のうんこのモデルを使用しています。
 ---
 ## 実行環境
 - ROS Noetic
@@ -39,7 +39,7 @@
 - actionに使用するmessageファイル置き場
 
 #### description/
-- シュミレータで使用するモデル置き場
+- シミュレータで使用するモデル置き場
 
 #### launch/
 - launchファイル置き場
@@ -61,8 +61,8 @@
 $ git clone https://github.com/Yusuke-Yamasaki-555/Team4_RobotDesign3_2021.git # HTTPS通信の場合
 $ git clone git@github.com:Yusuke-Yamasaki-555/Team4_RobotDesign3_2021.git # SSH通信の場合
 ```
-- D435のシュミレータへのモデルの適用のため、Kuwamai様より公開されている[パッケージ](https://github.com/Kuwamai/crane_x7_d435)をインストールしてください。
-- また、実機で実行する場合、別途RealSenceをROSで利用するためのパッケージをいくつかインストールする必要があります。
+- D435のシミュレータへのモデルの適用のため、Kuwamai様より公開されている[パッケージ](https://github.com/Kuwamai/crane_x7_d435)をインストールしてください。
+- また、実機で実行する場合、別途RealSenceをROSで利用するためのパッケージをいくつかインストールする必要があります。インストールの際に参考にしたサイトは[こちら](https://qiita.com/porizou1/items/be1eb78015828d43f9fb)です。
 
 - 以上が完了したら、以下のコマンドを使用してビルドしてください。
 ```bash
@@ -71,7 +71,7 @@ $ source ~/catkin_ws/devel/setup.bash
 ```
 
 ### ２．起動
-#### シュミレータの場合
+#### シミュレータの場合
 - 実行する前に、**~/catkin_ws/src/crane_x7_d435/launch/bringup_sim.launch**内の６行目の、**$(find <パッケージ名>)**のパッケージ名を、**team4_robotdesign3_2021**に書き換えてください。
 - 実行する前に、**~/.bashrc**内の一番下に、以下のコードを書き込んでください。
 ```bash
@@ -79,7 +79,7 @@ export GAZEBO_MODEL_PATH=$HOME/catkin_ws/src/team4_robotdesign3_2021/description
 ```
 - 以上が完了したら、ビルドをしてください。
 
-- 以下のコードを実行することで、シュミレータが起動します。
+- 以下のコードを実行することで、シミュレータが起動します。
 ```bash
 $ roslaunch crane_x7_d435 bringup_sim.launch
 ```
@@ -96,7 +96,7 @@ $ roslaunch crane_x7_bringup demo.launch fake_execution:=false
 ```
 
 ### ３．実行
-- 以下のコマンドを実行することで、crane_x7が居合斬り(?)をしてくれます。(シュミレータ・実機共通)
+- 以下のコマンドを実行することで、crane_x7が居合斬り(?)をしてくれます。(シミュレータ・実機共通)
 ```bash
 $ roalaunch team4_robotdesign3_2021 test.launch
 ```
