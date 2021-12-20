@@ -12,11 +12,12 @@
 ---
 ## 概要
 - 　このリポジトリは、crane_x7に居合斬り(?)をさせるROSパッケージです。
-- 動作の流れは、以下の画像を参照してください。
-![motion process]()
+- 動作の流れ
+![Screenshot from 2021-12-20 12-09-58](https://user-images.githubusercontent.com/91410662/146706503-1b3487f0-c8d8-46cc-97bf-9931d9f15d1d.png)
 
-- nodeの構成は、以下の画像を参照してください。
-![node]()
+- nodeの構成
+![Screenshot from 2021-12-20 12-07-44](https://user-images.githubusercontent.com/91410662/146706446-50dd3136-1775-4c80-976d-d3804f2a8ac2.png)
+)
 
 - [動作の様子](<youtubeへのリンク>)(リンク先：Youtube)
 
